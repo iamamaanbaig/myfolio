@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Amaan Baig — Product Designer</title>
+  <meta name="description" content="Amaan Baig is a product designer who makes complicated software feel obvious. Experience for judgment, AI for speed.">
+  <meta name="theme-color" content="#0A0A0A">
+  <meta property="og:title" content="Amaan Baig — Product Designer">
+  <meta property="og:description" content="I make complicated software feel obvious.">
+  <meta property="og:image" content="gifa.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0A0A0A;
+      --surface: #131313;
+      --line: #232323;
+      --text: #F4F4F0;
+      --muted: #8B8B85;
+      --dim: #4A4A47;
+      --green: #A6F36A;
+      --blue: #0A66C2;
+      --blue-hover: #1A7ADB;
+
+      --sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --pixel: "Pixelify Sans", ui-monospace, monospace;
+
+      --gutter: clamp(16px, 5vw, 100px);
+      --ease: cubic-bezier(.2, .8, .2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    ::selection { background: var(--green); color: var(--bg); }
+    :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; border-radius: 4px; }
+
+    .skip {
+      position: absolute; left: 16px; top: -48px; z-index: 20;
+      background: var(--green); color: var(--bg); padding: 8px 14px; border-radius: 999px; font-weight: 600;
+    }
+    .skip:focus { top: 16px; }
+
+    /* ---------- Header ---------- */
+    .nav {
+      position: fixed; inset: 0 0 auto 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 28px var(--gutter);
+      transition: padding .3s var(--ease), background .3s var(--ease), border-color .3s var(--ease);
+      border-bottom: 1px solid transparent;
+    }
+    .nav.scrolled {
+      padding-block: 16px;
+      background: rgba(10, 10, 10, .72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom-color: var(--line);
+    }
+    .brand {
+      font-weight: 500; font-size: clamp(16px, 1.6vw, 22px); letter-spacing: .02em; white-space: nowrap;
+    }
+    .brand span { color: var(--green); }
+    .social { display: flex; align-items: center; gap: 12px; font-size: clamp(14px, 1.5vw, 20px); }
+    .social .label { color: var(--text); }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--blue); color: #fff;
+      padding: 8px 20px; border-radius: 999px; font-weight: 500;
+      transition: background .2s, transform .2s var(--ease);
+    }
+    .pill:hover { background: var(--blue-hover); transform: translateY(-1px); }
+    .pill svg { width: 14px; height: 14px; }
+    .handle { color: var(--text); opacity: .9; transition: color .2s; }
+    .handle:hover { color: var(--green); }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      position: relative; min-height: 100svh;
+      display: grid; place-items: center; text-align: center;
+      padding: 140px var(--gutter) 120px;
+      isolation: isolate;
+    }
+    /* Pixel grid that lights up under the cursor */
+    .grid {
+      position: absolute; inset: 0; z-index: -1; pointer-events: none;
+      background-image: radial-gradient(circle, #2a2a2a 1px, transparent 1.2px);
+      background-size: 24px 24px;
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 20%, transparent 75%);
+              mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 20%, transparent 75%);
+    }
+    .grid::after {
+      content: ""; position: absolute; inset: 0;
+      background-image: radial-gradient(circle, var(--green) 1.2px, transparent 1.4px);
+      background-size: 24px 24px;
+      opacity: 0; transition: opacity .4s;
+      -webkit-mask-image: radial-gradient(180px circle at var(--mx, 50%) var(--my, 50%), #000, transparent 70%);
+              mask-image: radial-gradient(180px circle at var(--mx, 50%) var(--my, 50%), #000, transparent 70%);
+    }
+    .hero:hover .grid::after { opacity: .55; }
+
+    .headline { margin: 0; font-weight: 400; line-height: 1.08; }
+    .headline .line { display: block; }
+    .l1, .l3 { font-size: clamp(36px, 5.2vw, 80px); letter-spacing: -.01em; font-weight: 300; }
+    .l2 {
+      font-family: var(--pixel); font-weight: 700;
+      font-size: clamp(30px, 5.8vw, 100px);
+      letter-spacing: 0; line-height: 1.1;
+      margin: .12em 0 .08em;
+    }
+    .l2 .ch { display: inline-block; text-align: center; }
+    .l2 .ch.scrambling { color: var(--muted); }
+    .obvious { color: var(--green); font-weight: 400; }
+
+    .tagline {
+      display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+      gap: 14px 22px; margin-top: clamp(28px, 3.4vw, 44px);
+      font-size: clamp(16px, 1.6vw, 22px); font-weight: 400;
+    }
+    /* Pill-shaped image slot: drop an <img> inside .photo */
+    .photo {
+      position: relative; flex: none; overflow: hidden;
+      width: 112px; height: 68px; border-radius: 999px;
+      background: var(--text);
+    }
+    .photo img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* 3D glass spark */
+    .spark {
+      flex: none; width: 60px; height: 60px; overflow: visible;
+      filter: drop-shadow(0 6px 14px rgba(120, 230, 70, .35));
+      animation: float 5s ease-in-out infinite;
+    }
+    /* Tool cards orbiting the spark: 8 curved cards, the 4 images repeat (1 2 3 4 1 2 3 4).
+       Add images with --img-1 ... --img-4 on .orbit, e.g. --img-1: url('claude.png') */
+    .orbit {
+      --r: 54px;     /* ring radius */
+      --card: 34px;  /* card width and height, measured along the curve */
+      --img-1: none; --img-2: none; --img-3: none; --img-4: none;
+      --fill-1: #D97757; --fill-2: #10A37F; --fill-3: #000; --fill-4: #fff; /* placeholders until images are added */
+      position: relative; flex: none;
+      width: calc(var(--r) * 2 + var(--card)); height: 150px;
+      display: grid; place-items: center;
+      perspective: 900px; transform-style: preserve-3d;
+    }
+    .orbit > * { grid-area: 1 / 1; }
+    /* .tilt holds the ring's angle and a gentle float; .ring spins at a constant speed */
+    .tilt, .ring { display: block; position: relative; width: var(--card); height: var(--card); transform-style: preserve-3d; }
+    .tilt {
+      transform: rotateZ(-35deg) rotateX(-28deg);
+      animation: sway 3.5s ease-in-out infinite alternate;
+    }
+    .ring {
+      transform: rotateY(22.5deg);
+      animation: spin 24s linear infinite;
+    }
+    @keyframes sway {
+      from { transform: translateY(1.5px) rotateZ(-36deg) rotateX(-28deg); }
+      to   { transform: translateY(-1.5px) rotateZ(-34deg) rotateX(-28deg); }
+    }
+    @keyframes spin {
+      from { transform: rotateY(22.5deg); }
+      to   { transform: rotateY(-337.5deg); }
+    }
+    .tile, .slice { position: absolute; transform-style: preserve-3d; }
+    .tile { inset: 0; }
+    /* Each card is built from thin vertical slices so it bends with the ring */
+    .slice { top: 0; left: 50%; height: 100%; }
+    .slice i {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(rgba(10, 10, 10, var(--depth, 0)), rgba(10, 10, 10, var(--depth, 0))),
+        linear-gradient(rgba(0, 0, 0, var(--shade, 0)), rgba(0, 0, 0, var(--shade, 0))),
+        var(--img) var(--bx) 0 / var(--card) 100% no-repeat,
+        var(--fill);
+      -webkit-mask: var(--corner) var(--bx) 0 / var(--card) 100% no-repeat;
+              mask: var(--corner) var(--bx) 0 / var(--card) 100% no-repeat;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    }
+    /* Inner side of a card: only ever seen on the far side of the ring, so it is
+       always dimmed and softly blurred. Darkening (not opacity) keeps slice overlaps seamless. */
+    .slice i + i { transform: rotateY(180deg); --bx: var(--bx-back); --depth: .55; filter: blur(1px); }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-4px) rotate(8deg); }
+    }
+
+    .meta {
+      position: absolute; left: var(--gutter); right: var(--gutter); bottom: 32px;
+      display: flex; justify-content: space-between; align-items: end; gap: 16px;
+      font-size: 13px; color: var(--muted); letter-spacing: .04em; text-transform: uppercase;
+    }
+    .meta .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); margin-right: 8px; box-shadow: 0 0 12px var(--green); animation: pulse 2.4s infinite; }
+    .scroll-cue { display: inline-flex; align-items: center; gap: 10px; transition: color .2s; }
+    .scroll-cue:hover { color: var(--text); }
+    .scroll-cue i { width: 1px; height: 32px; background: linear-gradient(var(--muted), transparent); display: block; }
+
+    @keyframes pulse { 50% { opacity: .35; } }
+
+    /* ---------- Clients strip ---------- */
+    .strip {
+      border-block: 1px solid var(--line);
+      padding: 26px var(--gutter);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px 40px;
+    }
+    .eyebrow { font-family: var(--pixel); font-weight: 500; font-size: 14px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+    .clients { display: flex; flex-wrap: wrap; gap: 12px 48px; font-size: clamp(18px, 2vw, 26px); font-weight: 500; color: var(--text); }
+    .clients span { opacity: .75; transition: opacity .2s; }
+    .clients span:hover { opacity: 1; }
+
+    /* ---------- Sections ---------- */
+    section.block { padding: clamp(80px, 11vw, 160px) var(--gutter); }
+    .sec-head {
+      display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 16px;
+      margin-bottom: clamp(36px, 5vw, 64px);
+    }
+    .sec-title { margin: 8px 0 0; font-size: clamp(32px, 4.2vw, 60px); font-weight: 300; line-height: 1.05; letter-spacing: -.01em; }
+    .sec-title em { font-style: normal; color: var(--green); }
+    .sec-note { color: var(--muted); max-width: 34ch; margin: 0; }
+
+    /* Work grid */
+    .work { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 2.2vw, 32px); }
+    .card { display: block; }
+    .card .thumb {
+      position: relative; overflow: hidden; border-radius: 20px; background: var(--surface);
+      aspect-ratio: 2574 / 1745;
+    }
+    .card img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .8s var(--ease), filter .5s var(--ease);
+      filter: saturate(.85);
+    }
+    .card:hover img, .card:focus-visible img { transform: scale(1.04); filter: saturate(1); }
+    .card .cta {
+      position: absolute; right: 16px; bottom: 16px;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--bg); color: var(--text); padding: 10px 16px; border-radius: 999px;
+      font-size: 14px; font-weight: 500;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity .3s var(--ease), transform .3s var(--ease);
+    }
+    .card:hover .cta, .card:focus-visible .cta { opacity: 1; transform: none; }
+    .card .info { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 18px 4px 0; }
+    .card h3 { margin: 0; font-size: clamp(18px, 1.7vw, 24px); font-weight: 500; }
+    .card .num { font-family: var(--pixel); color: var(--green); font-size: 15px; margin-right: 12px; }
+    .card .kind { color: var(--muted); font-size: 14px; white-space: nowrap; }
+
+    /* Contact */
+    .contact { text-align: center; border-top: 1px solid var(--line); }
+    .contact .big {
+      font-family: var(--pixel); font-weight: 700;
+      font-size: clamp(34px, 7vw, 112px); line-height: 1.05; margin: 20px 0 36px;
+    }
+    .contact .big em { font-family: var(--sans); font-style: normal; font-weight: 300; color: var(--green); }
+    .contact .pill { font-size: 18px; padding: 14px 28px; }
+
+    footer {
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+      padding: 28px var(--gutter); border-top: 1px solid var(--line);
+      color: var(--muted); font-size: 13px;
+    }
+
+    /* Reveal on scroll */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+    .reveal.in { opacity: 1; transform: none; }
+    .hero .reveal { transition-delay: calc(var(--d, 0) * 120ms); }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 860px) {
+      .work { grid-template-columns: 1fr; }
+      .card .cta { opacity: 1; transform: none; }
+    }
+    @media (max-width: 640px) {
+      .nav { padding-block: 18px; }
+      .social .label, .handle { display: none; }
+      .pill { padding: 7px 16px; }
+      .l2 { font-size: clamp(30px, 10.6vw, 56px); }
+      .l2 .word { display: block; }
+      .meta { bottom: 20px; justify-content: center; }
+      .meta .loc, .meta .scroll-cue { display: none; }
+      .photo { width: 92px; height: 56px; }
+      .spark { width: 48px; height: 48px; }
+      .orbit { --r: 48px; --card: 30px; height: 116px; }
+      .tagline { flex-direction: column; gap: 14px; }
+      .card .info { flex-direction: column; gap: 4px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#work">Skip to work</a>
+
+  <header class="nav" id="nav">
+    <a class="brand" href="#top" aria-label="Amaan Baig, back to top">AMAAN BAIG<span>.</span></a>
+    <nav class="social" aria-label="Social">
+      <span class="label">Visit me on</span>
+      <a class="pill" href="https://www.linkedin.com/in/iamamaanbaig/" target="_blank" rel="noopener">Linkedin</a>
+      <a class="handle" href="https://www.linkedin.com/in/iamamaanbaig/" target="_blank" rel="noopener">@iamamaanbaig</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="hero" aria-label="Introduction">
+      <div class="grid" aria-hidden="true"></div>
+
+      <div>
+        <h1 class="headline">
+          <span class="line l1 reveal" style="--d:0">I MAKE</span>
+          <span class="line l2 reveal" style="--d:1" id="complex" aria-label="Complicated software">
+            <span class="word">COMPLICATED</span> <span class="word">SOFTWARE</span>
+          </span>
+          <span class="line l3 reveal" style="--d:2">FEEL <span class="obvious">Obvious.</span></span>
+        </h1>
+
+        <div class="tagline reveal" style="--d:3" id="tagline">
+          <span class="photo">
+            <!-- Add your image here, e.g. <img src="me.jpg" alt="Amaan Baig"> -->
+          </span>
+          <span>Experience for judgment.</span>
+          <!-- 8 curved cards repeat 4 images. Add them here, e.g.
+               style="--img-1:url('claude.png'); --img-2:url('chatgpt.png'); --img-3:url('notebooklm.png'); --img-4:url('figma.png')" -->
+          <span class="orbit" id="orbit" aria-hidden="true">
+            <span class="tilt"><span class="ring" id="ring"></span></span> <!-- cards are built by the script below -->
+            <svg class="spark" viewBox="0 0 100 100">
+              <defs>
+                <!-- green liquid inside the glass -->
+                <radialGradient id="sparkCore" cx="56%" cy="60%" r="58%">
+                  <stop offset="0" stop-color="#F2FFDC"/>
+                  <stop offset=".22" stop-color="#C4FB8C"/>
+                  <stop offset=".55" stop-color="#6FD83A"/>
+                  <stop offset="1" stop-color="#1B5E12"/>
+                </radialGradient>
+                <!-- shade on the lower-right faces for volume -->
+                <linearGradient id="sparkShade" x1="20%" y1="20%" x2="85%" y2="90%">
+                  <stop offset=".45" stop-color="#0B2A06" stop-opacity="0"/>
+                  <stop offset="1" stop-color="#0B2A06" stop-opacity=".55"/>
+                </linearGradient>
+                <!-- glass sheen on the upper-left faces -->
+                <linearGradient id="sparkSheen" x1="10%" y1="5%" x2="60%" y2="60%">
+                  <stop offset="0" stop-color="#fff" stop-opacity=".9"/>
+                  <stop offset=".4" stop-color="#fff" stop-opacity=".22"/>
+                  <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+                </linearGradient>
+                <!-- rim light -->
+                <linearGradient id="sparkRim" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#fff" stop-opacity="1"/>
+                  <stop offset=".5" stop-color="#E8FFD0" stop-opacity=".25"/>
+                  <stop offset="1" stop-color="#C8FF96" stop-opacity=".8"/>
+                </linearGradient>
+                <radialGradient id="sparkGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0" stop-color="#FAFFF0" stop-opacity=".95"/>
+                  <stop offset="1" stop-color="#B9FA7C" stop-opacity="0"/>
+                </radialGradient>
+                <filter id="sparkSoft" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="2.2"/>
+                </filter>
+                <clipPath id="sparkClip"><path d="M50 3C55 33 67 45 97 50 67 55 55 67 50 97 45 67 33 55 3 50 33 45 45 33 50 3Z"/></clipPath>
+              </defs>
+              <g clip-path="url(#sparkClip)">
+                <rect width="100" height="100" fill="url(#sparkCore)"/>
+                <rect width="100" height="100" fill="url(#sparkShade)"/>
+                <!-- refracted glow in the middle -->
+                <circle cx="52" cy="54" r="17" fill="url(#sparkGlow)" filter="url(#sparkSoft)"/>
+                <!-- upper-left facets catch the light -->
+                <path d="M50 3C55 33 67 45 97 50H50Z M3 50C33 45 45 33 50 3V50Z" fill="url(#sparkSheen)"/>
+                <!-- darker inner edge -->
+                <path d="M50 3C55 33 67 45 97 50 67 55 55 67 50 97 45 67 33 55 3 50 33 45 45 33 50 3Z" fill="none" stroke="#0E3A08" stroke-opacity=".45" stroke-width="5" filter="url(#sparkSoft)"/>
+              </g>
+              <path d="M50 3C55 33 67 45 97 50 67 55 55 67 50 97 45 67 33 55 3 50 33 45 45 33 50 3Z" fill="none" stroke="url(#sparkRim)" stroke-width="1.2"/>
+              <!-- specular highlights -->
+              <path d="M47.5 12C48.5 24 49 31 45 39" stroke="#fff" stroke-width="3" stroke-opacity=".55" stroke-linecap="round" fill="none" opacity=".9" filter="url(#sparkSoft)"/>
+              <ellipse cx="46.5" cy="22" rx="1.1" ry="4.5" fill="#fff" opacity=".95" transform="rotate(-6 46.5 22)"/>
+              <ellipse cx="24" cy="48.2" rx="9" ry="1.1" fill="#fff" opacity=".55"/>
+              <circle cx="62" cy="62" r="1.6" fill="#fff" opacity=".5"/>
+            </svg>
+          </span>
+          <span>AI for speed.</span>
+        </div>
+      </div>
+
+      <div class="meta">
+        <span><span class="dot" aria-hidden="true"></span>Product Designer · 4+ years</span>
+        <a class="scroll-cue" href="#work">Selected work <i aria-hidden="true"></i></a>
+        <span class="loc">Bangalore, IN</span>
+      </div>
+    </section>
+
+    <!-- ================= CLIENTS ================= -->
+    <div class="strip">
+      <span class="eyebrow">4+ years designing for</span>
+      <div class="clients">
+        <span>Nokia</span>
+        <span>JLL</span>
+        <span>LaSalle Investment Management</span>
+      </div>
+    </div>
+
+    <!-- ================= WORK ================= -->
+    <section class="block" id="work" aria-labelledby="work-title">
+      <div class="sec-head reveal">
+        <div>
+          <span class="eyebrow">Selected work</span>
+          <h2 class="sec-title" id="work-title">Dense systems, <em>made calm.</em></h2>
+        </div>
+        <p class="sec-note">Enterprise SaaS, financial workflows and consumer products, each simplified without losing depth.</p>
+      </div>
+
+      <div class="work">
+        <a class="card reveal" target="_blank" rel="noopener" href="https://www.figma.com/proto/BqtJK7eRdOptyFGzfkC5Pi/LaSalle's-Global-Incentive-Fee-Awards?node-id=1-2&t=FmVHeYi8r2axEgto-0&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1">
+          <div class="thumb">
+            <img src="gifa.png" alt="Global Incentive Fee dashboard showing allocation summaries and an awards table" loading="lazy">
+            <span class="cta">View case study ↗</span>
+          </div>
+          <div class="info"><h3><span class="num">01</span>Global Incentive Fee</h3><span class="kind">SaaS Product Design</span></div>
+        </a>
+
+        <a class="card reveal" target="_blank" rel="noopener" href="https://www.figma.com/proto/3DqieWCERJuFxGJdnibibN/Behance---Master-Fee-Template?node-id=114-6504&t=RHaSL8br9CtpbQKY-1&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1">
+          <div class="thumb">
+            <img src="ee.png" alt="Master Fee Template interface" loading="lazy">
+            <span class="cta">View case study ↗</span>
+          </div>
+          <div class="info"><h3><span class="num">02</span>Master Fee Template</h3><span class="kind">SaaS Product Design</span></div>
+        </a>
+
+        <a class="card reveal" target="_blank" rel="noopener" href="https://www.figma.com/proto/NQb8fKU5flfeKe854x19Uv/Behance---Smart-Food-product?node-id=29-202&t=IdI8MQFFGKFoBM61-1&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1">
+          <div class="thumb">
+            <img src="sfa.png" alt="Smart Food app screens" loading="lazy">
+            <span class="cta">View case study ↗</span>
+          </div>
+          <div class="info"><h3><span class="num">03</span>Smart Food App</h3><span class="kind">Product Design</span></div>
+        </a>
+
+        <a class="card reveal" target="_blank" rel="noopener" href="https://www.figma.com/proto/nhOVX1y1Do1PslJwK6GAfn/K8-resources---bechance?node-id=4-5&t=WUQCd58DIYmqkSFc-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1">
+          <div class="thumb">
+            <img src="k8.png" alt="K8 Resources Kubernetes management interface" loading="lazy">
+            <span class="cta">View case study ↗</span>
+          </div>
+          <div class="info"><h3><span class="num">04</span>K8 Resources</h3><span class="kind">SaaS Product Design</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ================= CONTACT ================= -->
+    <section class="block contact" id="contact" aria-labelledby="contact-title">
+      <span class="eyebrow reveal">Got something complicated?</span>
+      <h2 class="big reveal" id="contact-title">LET'S MAKE IT <em>obvious.</em></h2>
+      <a class="pill reveal" href="https://www.linkedin.com/in/iamamaanbaig/" target="_blank" rel="noopener">Say hi on Linkedin ↗</a>
+    </section>
+  </main>
+
+  <footer>
+    <span>© <span id="year">2026</span> Amaan Baig</span>
+    <span>Designed with judgment, built with speed.</span>
+  </footer>
+
+  <script>
+    (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      /* Header shrinks after scrolling */
+      var nav = document.getElementById('nav');
+      var onScroll = function () { nav.classList.toggle('scrolled', window.scrollY > 24); };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      /* Reveal on scroll */
+      var items = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window && !reduce) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+          });
+        }, { threshold: 0.15 });
+        items.forEach(function (el) { io.observe(el); });
+      } else {
+        items.forEach(function (el) { el.classList.add('in'); });
+      }
+
+      /* Cursor spotlight on the pixel grid */
+      var hero = document.getElementById('hero');
+      hero.addEventListener('pointermove', function (e) {
+        var r = hero.getBoundingClientRect();
+        hero.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        hero.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
+
+      /* Tool cards orbiting the AI spark: builds 8 curved cards; the spin itself is a CSS animation */
+      var orbit = document.getElementById('orbit');
+      var ring = document.getElementById('ring');
+      var CARDS = 8, SLICES = 8, GAP = 360 / CARDS;
+      var CORNER = 'url("data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" preserveAspectRatio="none"><rect width="40" height="40" rx="10"/></svg>') + '")';
+      function buildOrbit() {
+        var cs = getComputedStyle(orbit);
+        var r = parseFloat(cs.getPropertyValue('--r'));
+        var card = parseFloat(cs.getPropertyValue('--card'));
+        var arc = card / r;                       // card angle in radians
+        var d = arc / SLICES;                     // slice angle
+        var w = 2 * r * Math.sin(d / 2) + 1.2;    // slice width (+ overlap hides seams)
+        var html = '';
+        for (var c = 0; c < CARDS; c++) {
+          var k = c % 4 + 1;
+          html += '<span class="tile" style="--img:var(--img-' + k + ');--fill:var(--fill-' + k + ');--corner:' + CORNER.replace(/"/g, '&quot;') + ';transform:rotateY(' + c * GAP + 'deg)">';
+          for (var n = 0; n < SLICES; n++) {
+            var t = (n - (SLICES - 1) / 2) * d;   // slice offset from the card's centre
+            var shade = (0.22 * Math.abs(t) / (arc / 2)).toFixed(3);
+            html += '<span class="slice" style="width:' + w.toFixed(2) + 'px;margin-left:' + (-w / 2).toFixed(2) + 'px;' +
+              'transform:rotateY(' + (t * 180 / Math.PI).toFixed(3) + 'deg) translateZ(' + r + 'px);' +
+              '--bx:' + (-n * card / SLICES).toFixed(2) + 'px;--bx-back:' + (-(SLICES - 1 - n) * card / SLICES).toFixed(2) + 'px;--shade:' + shade + '">' +
+              '<i></i><i></i></span>';
+          }
+          html += '</span>';
+        }
+        ring.innerHTML = html;
+      }
+
+      buildOrbit();
+      var phone = window.matchMedia('(max-width: 640px)');
+      (phone.addEventListener ? phone.addEventListener.bind(phone, 'change') : phone.addListener.bind(phone))(buildOrbit);
+
+      /* "Complicated software": pixel scramble that resolves into the words */
+      var target = document.getElementById('complex');
+      var glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&*+=/<>0123456789';
+      var chars = [];
+      target.querySelectorAll('.word').forEach(function (word) {
+        var text = word.textContent;
+        word.textContent = '';
+        word.setAttribute('aria-hidden', 'true');
+        for (var i = 0; i < text.length; i++) {
+          var s = document.createElement('span');
+          s.className = 'ch';
+          s.textContent = text[i];
+          word.appendChild(s);
+          chars.push({ el: s, ch: text[i] });
+        }
+      });
+
+      function lockWidths() {
+        chars.forEach(function (c) { c.el.style.width = ''; c.el.textContent = c.ch; });
+        chars.forEach(function (c) { c.el.style.width = c.el.getBoundingClientRect().width + 'px'; });
+      }
+
+      var running = false;
+      function scramble(duration) {
+        if (reduce || running) return;
+        running = true;
+        var start = performance.now();
+        var order = chars.map(function (_, i) { return Math.random() * 0.7 + (i / chars.length) * 0.3; });
+        (function frame(now) {
+          var t = (now - start) / duration;
+          var done = true;
+          chars.forEach(function (c, i) {
+            if (t < order[i]) {
+              done = false;
+              c.el.textContent = glyphs[(Math.random() * glyphs.length) | 0];
+              c.el.classList.add('scrambling');
+            } else {
+              c.el.textContent = c.ch;
+              c.el.classList.remove('scrambling');
+            }
+          });
+          if (!done) requestAnimationFrame(frame); else running = false;
+        })(start);
+      }
+
+      var fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+      fontsReady.then(function () {
+        lockWidths();
+        setTimeout(function () { scramble(1400); }, 350);
+      });
+      window.addEventListener('resize', function () { if (!running) lockWidths(); });
+      target.addEventListener('pointerenter', function () { scramble(700); });
+    })();
+  </script>
+</body>
+</html>
