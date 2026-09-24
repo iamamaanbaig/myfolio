@@ -8,7 +8,6 @@
   <meta name="theme-color" content="#0A0A0A">
   <meta property="og:title" content="Amaan Baig — Product Designer">
   <meta property="og:description" content="I make complicated software feel obvious.">
-  <meta property="og:image" content="gifa.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -229,6 +228,30 @@
       .orbit { --r: 48px; --card: 30px; height: 116px; }
       .tagline { flex-direction: column; gap: 14px; }
     }
+    /* ---------- Pixel cursor ---------- */
+    /* Only for mouse/trackpad; the script adds .has-px-cursor once it's running */
+    .px-cursor { display: none; }
+    @media (hover: hover) and (pointer: fine) {
+      .has-px-cursor, .has-px-cursor * { cursor: none !important; }
+      .has-px-cursor .px-cursor {
+        display: block; position: fixed; left: 0; top: 0; z-index: 9999;
+        pointer-events: none;
+        opacity: 0; transition: opacity .2s;
+        will-change: transform;
+      }
+      .has-px-cursor .px-cursor.on { opacity: 1; }
+      .px-cursor svg {
+        --s: 1;
+        display: block; width: 44px; height: auto; overflow: visible;
+        transform-origin: 0 0; /* tilt and scale pivot on the arrow's tip, so clicks stay exact */
+        transform: perspective(320px) rotateX(10deg) rotateY(-16deg) scale(var(--s));
+        transition: transform .18s var(--ease), filter .25s;
+        filter: drop-shadow(0 0 4px rgba(166, 243, 106, .45)) drop-shadow(2px 4px 4px rgba(0, 0, 0, .55));
+      }
+      .px-cursor.hover svg { --s: 1.12; filter: drop-shadow(0 0 8px rgba(166, 243, 106, .85)) drop-shadow(2px 4px 4px rgba(0, 0, 0, .55)); }
+      .px-cursor.down svg { --s: .9; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -341,10 +364,107 @@
     <span>Designed with judgment, built with speed.</span>
   </footer>
 
+  <!-- Pixel cursor: glass cubes laid out as a classic arrow (built by the script below) -->
+  <div class="px-cursor" id="pxCursor" aria-hidden="true"></div>
+
   <script>
     (function () {
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       document.getElementById('year').textContent = new Date().getFullYear();
+
+      /* Pixel cursor: a 3D block arrow of glass cubes.
+         X = green glass rim cube, o = frosted white cube, space = empty. The tip is the top-left cube. */
+      (function () {
+        if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+        var MAP = [
+          'X',
+          'XX',
+          'XoX',
+          'XooX',
+          'XoooX',
+          'XooooX',
+          'XoooooX',
+          'XooooooX',
+          'XoooooooX',
+          'XooooooooX',
+          'XoooooooooX',
+          'XooooooXXXXX',
+          'XoooXooX',
+          'XooX XooX',
+          'XoX  XooX',
+          'XX    XooX',
+          'X     XooX',
+          '       XooX',
+          '       XooX',
+          '        XX'
+        ];
+        var U = 10, D = 4; // cube size and extrusion depth, in SVG units
+        var at = function (x, y) { return (MAP[y] || '').charAt(x) || ' '; };
+        var solid = function (x, y) { var c = at(x, y); return c === 'X' || c === 'o'; };
+        var sides = '', fronts = '';
+        MAP.forEach(function (row, y) {
+          row.split('').forEach(function (c, x) {
+            if (c === ' ') return;
+            var px = x * U, py = y * U, rim = c === 'X';
+            // side faces only where the neighbour is empty, drawn first so the front faces sit on top
+            if (!solid(x + 1, y)) sides += '<path d="M' + (px + U) + ' ' + py + 'l' + D + ' ' + D + 'v' + U + 'l' + -D + ' ' + -D + 'z" fill="url(#' + (rim ? 'pxSideG' : 'pxSideW') + ')"/>';
+            if (!solid(x, y + 1)) sides += '<path d="M' + px + ' ' + (py + U) + 'h' + U + 'l' + D + ' ' + D + 'h' + -U + 'z" fill="url(#' + (rim ? 'pxBottomG' : 'pxBottomW') + ')"/>';
+            fronts += '<use href="#' + (rim ? 'pxRim' : 'pxFill') + '" x="' + px + '" y="' + py + '" width="' + U + '" height="' + U + '"/>';
+          });
+        });
+        var W = 12 * U + D, H = MAP.length * U + D;
+        var el = document.getElementById('pxCursor');
+        el.innerHTML =
+          '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">' +
+            '<defs>' +
+              // green glass: glowing core, see-through towards the edges
+              '<radialGradient id="pxGlass" cx="42%" cy="38%" r="75%">' +
+                '<stop offset="0" stop-color="#E6FFCC"/><stop offset=".35" stop-color="#A6F36A" stop-opacity=".95"/>' +
+                '<stop offset=".8" stop-color="#3C9E22" stop-opacity=".8"/><stop offset="1" stop-color="#1B5E12" stop-opacity=".75"/>' +
+              '</radialGradient>' +
+              // frosted white glass with a faint green glow
+              '<radialGradient id="pxFrost" cx="40%" cy="35%" r="80%">' +
+                '<stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#EEF6EA"/><stop offset="1" stop-color="#CCDCC6"/>' +
+              '</radialGradient>' +
+              '<radialGradient id="pxInner" cx="50%" cy="50%" r="50%">' +
+                '<stop offset="0" stop-color="#C8FF96" stop-opacity=".35"/><stop offset="1" stop-color="#C8FF96" stop-opacity="0"/>' +
+              '</radialGradient>' +
+              '<linearGradient id="pxSideG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4DB52B"/><stop offset="1" stop-color="#1E6613"/></linearGradient>' +
+              '<linearGradient id="pxBottomG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2E8A1B"/><stop offset="1" stop-color="#14480C"/></linearGradient>' +
+              '<linearGradient id="pxSideW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9D6C3"/><stop offset="1" stop-color="#9FB09A"/></linearGradient>' +
+              '<linearGradient id="pxBottomW" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#AEBDA8"/><stop offset="1" stop-color="#8A9B85"/></linearGradient>' +
+              // one green glass rim cube
+              '<symbol id="pxRim" viewBox="0 0 10 10">' +
+                '<rect width="10" height="10" fill="url(#pxGlass)"/>' +
+                '<path d="M0 0H10L9 1H1V9L0 10Z" fill="#fff" fill-opacity=".4"/>' +              // lit top/left bevel
+                '<path d="M10 0V10H0L1 9H9V1Z" fill="#0B2A06" fill-opacity=".35"/>' +            // shaded bottom/right bevel
+                '<rect x="2" y="1.8" width="3.2" height="1.1" rx=".5" fill="#fff" fill-opacity=".85"/>' + // glint
+                '<rect x=".25" y=".25" width="9.5" height="9.5" fill="none" stroke="#E8FFD4" stroke-opacity=".45" stroke-width=".5"/>' +
+              '</symbol>' +
+              // one frosted white cube
+              '<symbol id="pxFill" viewBox="0 0 10 10">' +
+                '<rect width="10" height="10" fill="url(#pxFrost)"/>' +
+                '<rect width="10" height="10" fill="url(#pxInner)"/>' +
+                '<path d="M10 0V10H0L1 9H9V1Z" fill="#6E7F69" fill-opacity=".25"/>' +
+                '<rect x=".25" y=".25" width="9.5" height="9.5" fill="none" stroke="#8FA08A" stroke-opacity=".45" stroke-width=".5"/>' +
+              '</symbol>' +
+            '</defs>' + sides + fronts +
+          '</svg>';
+        document.documentElement.classList.add('has-px-cursor');
+
+        var x = 0, y = 0, queued = false;
+        function place() { queued = false; el.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)'; }
+        document.addEventListener('pointermove', function (e) {
+          if (e.pointerType && e.pointerType !== 'mouse') return;
+          x = e.clientX; y = e.clientY;
+          el.classList.add('on');
+          el.classList.toggle('hover', !!(e.target.closest && e.target.closest('a, button, [role="button"], .photo')));
+          if (!queued) { queued = true; requestAnimationFrame(place); }
+        }, { passive: true });
+        document.addEventListener('pointerdown', function () { el.classList.add('down'); });
+        document.addEventListener('pointerup', function () { el.classList.remove('down'); });
+        document.documentElement.addEventListener('mouseleave', function () { el.classList.remove('on'); });
+      })();
 
       /* Header shrinks after scrolling */
       var nav = document.getElementById('nav');
