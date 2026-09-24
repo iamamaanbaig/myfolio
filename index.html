@@ -50,12 +50,6 @@
     ::selection { background: var(--green); color: var(--bg); }
     :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; border-radius: 4px; }
 
-    .skip {
-      position: absolute; left: 16px; top: -48px; z-index: 20;
-      background: var(--green); color: var(--bg); padding: 8px 14px; border-radius: 999px; font-weight: 600;
-    }
-    .skip:focus { top: 16px; }
-
     /* ---------- Header ---------- */
     .nav {
       position: fixed; inset: 0 0 auto 0; z-index: 10;
@@ -200,65 +194,8 @@
       50%      { transform: translateY(-4px) rotate(8deg); }
     }
 
-    .meta {
-      position: absolute; left: var(--gutter); right: var(--gutter); bottom: 32px;
-      display: flex; justify-content: space-between; align-items: end; gap: 16px;
-      font-size: 13px; color: var(--muted); letter-spacing: .04em; text-transform: uppercase;
-    }
-    .meta .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); margin-right: 8px; box-shadow: 0 0 12px var(--green); animation: pulse 2.4s infinite; }
-    .scroll-cue { display: inline-flex; align-items: center; gap: 10px; transition: color .2s; }
-    .scroll-cue:hover { color: var(--text); }
-    .scroll-cue i { width: 1px; height: 32px; background: linear-gradient(var(--muted), transparent); display: block; }
-
-    @keyframes pulse { 50% { opacity: .35; } }
-
-    /* ---------- Clients strip ---------- */
-    .strip {
-      border-block: 1px solid var(--line);
-      padding: 26px var(--gutter);
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px 40px;
-    }
     .eyebrow { font-family: var(--pixel); font-weight: 500; font-size: 14px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
-    .clients { display: flex; flex-wrap: wrap; gap: 12px 48px; font-size: clamp(18px, 2vw, 26px); font-weight: 500; color: var(--text); }
-    .clients span { opacity: .75; transition: opacity .2s; }
-    .clients span:hover { opacity: 1; }
-
-    /* ---------- Sections ---------- */
     section.block { padding: clamp(80px, 11vw, 160px) var(--gutter); }
-    .sec-head {
-      display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 16px;
-      margin-bottom: clamp(36px, 5vw, 64px);
-    }
-    .sec-title { margin: 8px 0 0; font-size: clamp(32px, 4.2vw, 60px); font-weight: 300; line-height: 1.05; letter-spacing: -.01em; }
-    .sec-title em { font-style: normal; color: var(--green); }
-    .sec-note { color: var(--muted); max-width: 34ch; margin: 0; }
-
-    /* Work grid */
-    .work { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 2.2vw, 32px); }
-    .card { display: block; }
-    .card .thumb {
-      position: relative; overflow: hidden; border-radius: 20px; background: var(--surface);
-      aspect-ratio: 2574 / 1745;
-    }
-    .card img {
-      width: 100%; height: 100%; object-fit: cover;
-      transition: transform .8s var(--ease), filter .5s var(--ease);
-      filter: saturate(.85);
-    }
-    .card:hover img, .card:focus-visible img { transform: scale(1.04); filter: saturate(1); }
-    .card .cta {
-      position: absolute; right: 16px; bottom: 16px;
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--bg); color: var(--text); padding: 10px 16px; border-radius: 999px;
-      font-size: 14px; font-weight: 500;
-      opacity: 0; transform: translateY(8px);
-      transition: opacity .3s var(--ease), transform .3s var(--ease);
-    }
-    .card:hover .cta, .card:focus-visible .cta { opacity: 1; transform: none; }
-    .card .info { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 18px 4px 0; }
-    .card h3 { margin: 0; font-size: clamp(18px, 1.7vw, 24px); font-weight: 500; }
-    .card .num { font-family: var(--pixel); color: var(--green); font-size: 15px; margin-right: 12px; }
-    .card .kind { color: var(--muted); font-size: 14px; white-space: nowrap; }
 
     /* Contact */
     .contact { text-align: center; border-top: 1px solid var(--line); }
@@ -281,23 +218,16 @@
     .hero .reveal { transition-delay: calc(var(--d, 0) * 120ms); }
 
     /* ---------- Responsive ---------- */
-    @media (max-width: 860px) {
-      .work { grid-template-columns: 1fr; }
-      .card .cta { opacity: 1; transform: none; }
-    }
     @media (max-width: 640px) {
       .nav { padding-block: 18px; }
       .social .label, .handle { display: none; }
       .pill { padding: 7px 16px; }
       .l2 { font-size: clamp(30px, 10.6vw, 56px); }
       .l2 .word { display: block; }
-      .meta { bottom: 20px; justify-content: center; }
-      .meta .loc, .meta .scroll-cue { display: none; }
       .photo { width: 92px; height: 56px; }
       .spark { width: 48px; height: 48px; }
       .orbit { --r: 48px; --card: 30px; height: 116px; }
       .tagline { flex-direction: column; gap: 14px; }
-      .card .info { flex-direction: column; gap: 4px; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -307,7 +237,6 @@
   </style>
 </head>
 <body>
-  <a class="skip" href="#work">Skip to work</a>
 
   <header class="nav" id="nav">
     <a class="brand" href="#top" aria-label="Amaan Baig, back to top">AMAAN BAIG<span>.</span></a>
@@ -396,67 +325,6 @@
           </span>
           <span>AI for speed.</span>
         </div>
-      </div>
-
-      <div class="meta">
-        <span><span class="dot" aria-hidden="true"></span>Product Designer · 4+ years</span>
-        <a class="scroll-cue" href="#work">Selected work <i aria-hidden="true"></i></a>
-        <span class="loc">Bangalore, IN</span>
-      </div>
-    </section>
-
-    <!-- ================= CLIENTS ================= -->
-    <div class="strip">
-      <span class="eyebrow">4+ years designing for</span>
-      <div class="clients">
-        <span>Nokia</span>
-        <span>JLL</span>
-        <span>LaSalle Investment Management</span>
-      </div>
-    </div>
-
-    <!-- ================= WORK ================= -->
-    <section class="block" id="work" aria-labelledby="work-title">
-      <div class="sec-head reveal">
-        <div>
-          <span class="eyebrow">Selected work</span>
-          <h2 class="sec-title" id="work-title">Dense systems, <em>made calm.</em></h2>
-        </div>
-        <p class="sec-note">Enterprise SaaS, financial workflows and consumer products, each simplified without losing depth.</p>
-      </div>
-
-      <div class="work">
-        <a class="card reveal" target="_blank" rel="noopener" href="https://www.figma.com/proto/BqtJK7eRdOptyFGzfkC5Pi/LaSalle's-Global-Incentive-Fee-Awards?node-id=1-2&t=FmVHeYi8r2axEgto-0&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1">
-          <div class="thumb">
-            <img src="gifa.png" alt="Global Incentive Fee dashboard showing allocation summaries and an awards table" loading="lazy">
-            <span class="cta">View case study ↗</span>
-          </div>
-          <div class="info"><h3><span class="num">01</span>Global Incentive Fee</h3><span class="kind">SaaS Product Design</span></div>
-        </a>
-
-        <a class="card reveal" target="_blank" rel="noopener" href="https://www.figma.com/proto/3DqieWCERJuFxGJdnibibN/Behance---Master-Fee-Template?node-id=114-6504&t=RHaSL8br9CtpbQKY-1&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1">
-          <div class="thumb">
-            <img src="ee.png" alt="Master Fee Template interface" loading="lazy">
-            <span class="cta">View case study ↗</span>
-          </div>
-          <div class="info"><h3><span class="num">02</span>Master Fee Template</h3><span class="kind">SaaS Product Design</span></div>
-        </a>
-
-        <a class="card reveal" target="_blank" rel="noopener" href="https://www.figma.com/proto/NQb8fKU5flfeKe854x19Uv/Behance---Smart-Food-product?node-id=29-202&t=IdI8MQFFGKFoBM61-1&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1">
-          <div class="thumb">
-            <img src="sfa.png" alt="Smart Food app screens" loading="lazy">
-            <span class="cta">View case study ↗</span>
-          </div>
-          <div class="info"><h3><span class="num">03</span>Smart Food App</h3><span class="kind">Product Design</span></div>
-        </a>
-
-        <a class="card reveal" target="_blank" rel="noopener" href="https://www.figma.com/proto/nhOVX1y1Do1PslJwK6GAfn/K8-resources---bechance?node-id=4-5&t=WUQCd58DIYmqkSFc-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1">
-          <div class="thumb">
-            <img src="k8.png" alt="K8 Resources Kubernetes management interface" loading="lazy">
-            <span class="cta">View case study ↗</span>
-          </div>
-          <div class="info"><h3><span class="num">04</span>K8 Resources</h3><span class="kind">SaaS Product Design</span></div>
-        </a>
       </div>
     </section>
 
