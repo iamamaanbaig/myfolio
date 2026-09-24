@@ -241,13 +241,15 @@
       }
       .has-px-cursor .px-cursor.on { opacity: 1; }
       .px-cursor svg {
-        display: block; width: 26px; height: auto; overflow: visible;
-        transform-origin: 0 0;
+        --s: 1;
+        display: block; width: 44px; height: auto; overflow: visible;
+        transform-origin: 0 0; /* tilt and scale pivot on the arrow's tip, so clicks stay exact */
+        transform: perspective(320px) rotateX(10deg) rotateY(-16deg) scale(var(--s));
         transition: transform .18s var(--ease), filter .25s;
-        filter: drop-shadow(0 0 3px rgba(166, 243, 106, .55)) drop-shadow(0 2px 3px rgba(0, 0, 0, .6));
+        filter: drop-shadow(0 0 4px rgba(166, 243, 106, .45)) drop-shadow(2px 4px 4px rgba(0, 0, 0, .55));
       }
-      .px-cursor.hover svg { transform: scale(1.15); filter: drop-shadow(0 0 6px rgba(166, 243, 106, .9)) drop-shadow(0 2px 3px rgba(0, 0, 0, .6)); }
-      .px-cursor.down svg { transform: scale(.88); }
+      .px-cursor.hover svg { --s: 1.12; filter: drop-shadow(0 0 8px rgba(166, 243, 106, .85)) drop-shadow(2px 4px 4px rgba(0, 0, 0, .55)); }
+      .px-cursor.down svg { --s: .9; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -370,66 +372,83 @@
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       document.getElementById('year').textContent = new Date().getFullYear();
 
-      /* Pixel cursor: each X below is one glass cube; the arrow's tip is the top-left cube */
+      /* Pixel cursor: a 3D block arrow of glass cubes.
+         X = green glass rim cube, o = frosted white cube, space = empty. The tip is the top-left cube. */
       (function () {
         if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
         var MAP = [
-          'X......',
-          'XX.....',
-          'XXX....',
-          'XXXX...',
-          'XXXXX..',
-          'XXXXXX.',
-          'XXXXXXX',
-          'XXXX...',
-          'XX.XX..',
-          'X..XX..',
-          '....XX.',
-          '....XX.'
+          'X',
+          'XX',
+          'XoX',
+          'XooX',
+          'XoooX',
+          'XooooX',
+          'XoooooX',
+          'XooooooX',
+          'XoooooooX',
+          'XooooooooX',
+          'XoooooooooX',
+          'XooooooXXXXX',
+          'XoooXooX',
+          'XooX XooX',
+          'XoX  XooX',
+          'XX    XooX',
+          'X     XooX',
+          '       XooX',
+          '       XooX',
+          '        XX'
         ];
-        var U = 10; // one cube in SVG units
-        var cubes = '';
+        var U = 10, D = 4; // cube size and extrusion depth, in SVG units
+        var at = function (x, y) { return (MAP[y] || '').charAt(x) || ' '; };
+        var solid = function (x, y) { var c = at(x, y); return c === 'X' || c === 'o'; };
+        var sides = '', fronts = '';
         MAP.forEach(function (row, y) {
           row.split('').forEach(function (c, x) {
-            if (c === 'X') cubes += '<use href="#pxCube" x="' + x * U + '" y="' + y * U + '" width="' + U + '" height="' + U + '"/>';
+            if (c === ' ') return;
+            var px = x * U, py = y * U, rim = c === 'X';
+            // side faces only where the neighbour is empty, drawn first so the front faces sit on top
+            if (!solid(x + 1, y)) sides += '<path d="M' + (px + U) + ' ' + py + 'l' + D + ' ' + D + 'v' + U + 'l' + -D + ' ' + -D + 'z" fill="url(#' + (rim ? 'pxSideG' : 'pxSideW') + ')"/>';
+            if (!solid(x, y + 1)) sides += '<path d="M' + px + ' ' + (py + U) + 'h' + U + 'l' + D + ' ' + D + 'h' + -U + 'z" fill="url(#' + (rim ? 'pxBottomG' : 'pxBottomW') + ')"/>';
+            fronts += '<use href="#' + (rim ? 'pxRim' : 'pxFill') + '" x="' + px + '" y="' + py + '" width="' + U + '" height="' + U + '"/>';
           });
         });
+        var W = 12 * U + D, H = MAP.length * U + D;
         var el = document.getElementById('pxCursor');
         el.innerHTML =
-          '<svg viewBox="0 0 ' + MAP[0].length * U + ' ' + MAP.length * U + '" xmlns="http://www.w3.org/2000/svg">' +
+          '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">' +
             '<defs>' +
-              // glass body: glowing green core, turning see-through towards the edges
-              '<radialGradient id="pxBody" cx="50%" cy="50%" r="70%">' +
-                '<stop offset="0" stop-color="#D8FFB4" stop-opacity=".95"/><stop offset=".35" stop-color="#8FE356" stop-opacity=".85"/>' +
-                '<stop offset=".75" stop-color="#2F8A1C" stop-opacity=".6"/><stop offset="1" stop-color="#0C3A07" stop-opacity=".5"/>' +
+              // green glass: glowing core, see-through towards the edges
+              '<radialGradient id="pxGlass" cx="42%" cy="38%" r="75%">' +
+                '<stop offset="0" stop-color="#E6FFCC"/><stop offset=".35" stop-color="#A6F36A" stop-opacity=".95"/>' +
+                '<stop offset=".8" stop-color="#3C9E22" stop-opacity=".8"/><stop offset="1" stop-color="#1B5E12" stop-opacity=".75"/>' +
               '</radialGradient>' +
-              // soft light inside the cube
-              '<radialGradient id="pxGlow" cx="50%" cy="50%" r="50%">' +
-                '<stop offset="0" stop-color="#F4FFE6" stop-opacity=".9"/><stop offset="1" stop-color="#A6F36A" stop-opacity="0"/>' +
+              // frosted white glass with a faint green glow
+              '<radialGradient id="pxFrost" cx="40%" cy="35%" r="80%">' +
+                '<stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#EEF6EA"/><stop offset="1" stop-color="#CCDCC6"/>' +
               '</radialGradient>' +
-              // glass sheen across the top-left
-              '<linearGradient id="pxSheen" x1="0" y1="0" x2="1" y2="1">' +
-                '<stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".45" stop-color="#fff" stop-opacity=".08"/>' +
-                '<stop offset=".46" stop-color="#fff" stop-opacity="0"/>' +
-              '</linearGradient>' +
-              // Lego-style stud on the face
-              '<radialGradient id="pxStud" cx="40%" cy="35%" r="65%">' +
-                '<stop offset="0" stop-color="#F6FFEC" stop-opacity=".95"/><stop offset=".5" stop-color="#B9FA7C" stop-opacity=".55"/>' +
-                '<stop offset="1" stop-color="#2E7A1A" stop-opacity=".6"/>' +
+              '<radialGradient id="pxInner" cx="50%" cy="50%" r="50%">' +
+                '<stop offset="0" stop-color="#C8FF96" stop-opacity=".35"/><stop offset="1" stop-color="#C8FF96" stop-opacity="0"/>' +
               '</radialGradient>' +
-              '<symbol id="pxCube" viewBox="0 0 10 10">' +
-                '<rect x=".35" y=".35" width="9.3" height="9.3" rx="1.3" fill="url(#pxBody)"/>' +
-                '<circle cx="5" cy="5" r="3.6" fill="url(#pxGlow)"/>' +
-                '<rect x=".35" y=".35" width="9.3" height="9.3" rx="1.3" fill="url(#pxSheen)"/>' +
-                // bevels: lit top and left edges, shaded bottom and right edges
-                '<path d="M1.6 .35H8.4A1.3 1.3 0 0 1 9.65 1.6L8.3 1.7H1.7L1.7 8.3.35 8.4V1.6A1.3 1.3 0 0 1 1.6 .35Z" fill="#fff" fill-opacity=".38"/>' +
-                '<path d="M9.65 1.6V8.4A1.3 1.3 0 0 1 8.4 9.65H1.6A1.3 1.3 0 0 1 .35 8.4L1.7 8.3H8.3V1.7Z" fill="#0B2A06" fill-opacity=".45"/>' +
-                '<circle cx="5" cy="5" r="2.1" fill="url(#pxStud)"/>' +
-                '<circle cx="5" cy="5" r="2.1" fill="none" stroke="#0B2A06" stroke-opacity=".35" stroke-width=".35"/>' +
-                '<ellipse cx="4.3" cy="4.1" rx=".8" ry=".45" fill="#fff" fill-opacity=".9"/>' +
-                '<rect x=".35" y=".35" width="9.3" height="9.3" rx="1.3" fill="none" stroke="#DFFFC0" stroke-opacity=".35" stroke-width=".3"/>' +
+              '<linearGradient id="pxSideG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4DB52B"/><stop offset="1" stop-color="#1E6613"/></linearGradient>' +
+              '<linearGradient id="pxBottomG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2E8A1B"/><stop offset="1" stop-color="#14480C"/></linearGradient>' +
+              '<linearGradient id="pxSideW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9D6C3"/><stop offset="1" stop-color="#9FB09A"/></linearGradient>' +
+              '<linearGradient id="pxBottomW" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#AEBDA8"/><stop offset="1" stop-color="#8A9B85"/></linearGradient>' +
+              // one green glass rim cube
+              '<symbol id="pxRim" viewBox="0 0 10 10">' +
+                '<rect width="10" height="10" fill="url(#pxGlass)"/>' +
+                '<path d="M0 0H10L9 1H1V9L0 10Z" fill="#fff" fill-opacity=".4"/>' +              // lit top/left bevel
+                '<path d="M10 0V10H0L1 9H9V1Z" fill="#0B2A06" fill-opacity=".35"/>' +            // shaded bottom/right bevel
+                '<rect x="2" y="1.8" width="3.2" height="1.1" rx=".5" fill="#fff" fill-opacity=".85"/>' + // glint
+                '<rect x=".25" y=".25" width="9.5" height="9.5" fill="none" stroke="#E8FFD4" stroke-opacity=".45" stroke-width=".5"/>' +
               '</symbol>' +
-            '</defs>' + cubes +
+              // one frosted white cube
+              '<symbol id="pxFill" viewBox="0 0 10 10">' +
+                '<rect width="10" height="10" fill="url(#pxFrost)"/>' +
+                '<rect width="10" height="10" fill="url(#pxInner)"/>' +
+                '<path d="M10 0V10H0L1 9H9V1Z" fill="#6E7F69" fill-opacity=".25"/>' +
+                '<rect x=".25" y=".25" width="9.5" height="9.5" fill="none" stroke="#8FA08A" stroke-opacity=".45" stroke-width=".5"/>' +
+              '</symbol>' +
+            '</defs>' + sides + fronts +
           '</svg>';
         document.documentElement.classList.add('has-px-cursor');
 
