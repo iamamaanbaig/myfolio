@@ -139,12 +139,13 @@
       animation: float 5s ease-in-out infinite;
     }
     /* Tool cards orbiting the spark: 8 curved cards, the 4 images repeat (1 2 3 4 1 2 3 4).
-       Add images with --img-1 ... --img-4 on .orbit, e.g. --img-1: url('claude.png') */
+       The images live in assets/cards/; swap those files to change them. */
     .orbit {
       --r: 54px;     /* ring radius */
       --card: 34px;  /* card width and height, measured along the curve */
-      --img-1: none; --img-2: none; --img-3: none; --img-4: none;
-      --fill-1: #D97757; --fill-2: #10A37F; --fill-3: #000; --fill-4: #fff; /* placeholders until images are added */
+      --img-1: url('assets/cards/claude.jpg'); --img-2: url('assets/cards/chatgpt.jpg');
+      --img-3: url('assets/cards/notebooklm.jpg'); --img-4: url('assets/cards/figma.jpg');
+      --fill-1: #D77655; --fill-2: #74AA9C; --fill-3: #000; --fill-4: #fff; /* shown while the images load */
       position: relative; flex: none;
       width: calc(var(--r) * 2 + var(--card)); height: 150px;
       display: grid; place-items: center;
@@ -289,8 +290,7 @@
             <!-- Add your image here, e.g. <img src="me.jpg" alt="Amaan Baig"> -->
           </span>
           <span>Experience for judgment.</span>
-          <!-- 8 curved cards repeat 4 images. Add them here, e.g.
-               style="--img-1:url('claude.png'); --img-2:url('chatgpt.png'); --img-3:url('notebooklm.png'); --img-4:url('figma.png')" -->
+          <!-- 8 curved cards repeat 4 images: Claude, ChatGPT, NotebookLM, Figma (set in the .orbit CSS) -->
           <span class="orbit" id="orbit" aria-hidden="true">
             <span class="tilt"><span class="ring" id="ring"></span></span> <!-- cards are built by the script below -->
             <svg class="spark" viewBox="0 0 100 100">
