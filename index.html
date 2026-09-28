@@ -11,7 +11,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600&family=Pixelify+Sans:wght@500;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -27,7 +27,6 @@
 
       --sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
       --pixel: "Pixelify Sans", ui-monospace, monospace;
-      --serif: "Playfair Display", Georgia, serif;
 
       --gutter: clamp(16px, 5vw, 100px);
       --ease: cubic-bezier(.2, .8, .2, 1);
@@ -198,108 +197,6 @@
     .eyebrow { font-family: var(--pixel); font-weight: 500; font-size: 14px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
     section.block { padding: clamp(80px, 11vw, 160px) var(--gutter); }
 
-    /* ---------- Selected work ---------- */
-    .work {
-      --rail: 16.7vw;          /* number column */
-      --left: 21.6vw;          /* where titles start */
-      --wline: #2a2a27;        /* row dividers */
-      --wline-2: #3d3d38;      /* dividers inside an open project */
-      --wnum: #4a4a45;
-      padding-top: clamp(56px, 7vw, 120px);
-    }
-    .work + .contact { border-top: 0; }
-    .work-head { display: flex; justify-content: space-between; align-items: baseline; padding: 0 var(--gutter) 2.2vw var(--left); border-bottom: 1px solid var(--wline); }
-    .work-head h2 { margin: 0; font: italic 400 clamp(30px, 3.6vw, 64px)/1.1 var(--serif); }
-    .work-head span { color: var(--muted); font-size: clamp(13px, 1.25vw, 20px); }
-    .work-list { margin: 0; padding: 0; list-style: none; }
-    .work-item { position: relative; }
-    .work-item::after {        /* full-width divider under each project (moves down as a project opens) */
-      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--wline);
-      transition: opacity .4s;
-    }
-    .w-fold, .w-expand { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .75s var(--ease); }
-    .w-expand { grid-template-rows: 0fr; }
-    .work-item.open .w-expand { grid-template-rows: 1fr; }
-    .work-item.folded .w-fold { grid-template-rows: 0fr; }   /* rows below an open project fold away */
-    .work-item.folded::after { opacity: 0; }
-    .w-clip { min-height: 0; overflow: hidden; }
-    .w-row, .w-open { display: grid; grid-template-columns: var(--rail) calc(var(--left) - var(--rail)) 1fr; }
-    .w-row { position: relative; isolation: isolate; transition: opacity .9s var(--ease), transform .9s var(--ease); transition-delay: calc(var(--i, 0) * 90ms); }
-    .w-row::before {           /* soft light on hover */
-      content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .4s;
-      background: linear-gradient(90deg, rgba(166, 243, 106, .06), rgba(166, 243, 106, 0) 65%);
-    }
-    .w-num { grid-column: 1; position: relative; padding-top: 4.3vw; text-align: center; font: 200 8.6vw/.8 var(--sans); color: var(--wnum); transition: color .35s var(--ease); }
-    .w-head {
-      grid-column: 3; position: relative; display: block; width: 100%; margin: 0; padding: 4.3vw var(--gutter) 1.8vw 0;
-      background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent;
-    }
-    .w-title { display: block; max-width: 64vw; font-weight: 500; font-size: 4.45vw; line-height: 1.1; letter-spacing: -.01em; transition: translate .5s var(--ease); }
-    .w-meta { display: flex; justify-content: space-between; gap: 2vw; margin-top: 2.4vw; color: var(--muted); font-size: clamp(13px, 1.4vw, 24px); }
-    .w-go { position: absolute; right: var(--gutter); top: 5.6vw; font-size: 2.8vw; line-height: 1; color: var(--green); opacity: 0; transform: translateX(-1vw); transition: opacity .3s, transform .5s var(--ease); }
-    .work-item.lit .w-row::before { opacity: 1; }
-    .work-item.lit .w-num { color: var(--green); }
-    .work-item.lit .w-go { opacity: 1; transform: none; }
-    .work-item.lit .w-title { translate: 1vw 0; }
-    .w-head:focus-visible { outline-offset: -4px; }
-
-    /* Open project: the number stays put, turns white, and gets a green dot */
-    .work-item.open .w-row::before { opacity: 0; }
-    .work-item.open .w-num { color: var(--text); }
-    .work-item.open .w-title { translate: none; }
-    .work-item.open .w-go { opacity: 1; transform: rotate(90deg); }
-    .w-num::before {
-      content: ""; position: absolute; right: 1.8vw; top: calc(4.3vw + 3.2vw); width: 8px; height: 8px; border-radius: 50%;
-      background: var(--green); box-shadow: 0 0 14px var(--green); opacity: 0; transition: opacity .4s .3s;
-    }
-    .work-item.open .w-num::before { opacity: 1; }
-    /* The row divider splits into two pieces on one line: under the number, and under the title and meta */
-    .w-num::after, .w-head::after {
-      content: ""; position: absolute; bottom: 0; height: 1px; background: var(--wline-2);
-      transform: scaleX(0); transform-origin: left; transition: transform .8s var(--ease) .1s;
-    }
-    .w-num::after { left: 0; right: 0; }
-    .w-head::after { left: 0; right: var(--gutter); }
-    .work-item.open .w-num::after, .work-item.open .w-head::after { transform: none; }
-
-    /* Number column: the projects below, folded into their numbers */
-    .w-rail { grid-column: 1; position: relative; display: flex; flex-direction: column; align-items: center; gap: 6.7vw; padding: 5vw 0 5.6vw; background: #0b0b0a; }
-    .w-rail::after {           /* vertical divider down the edge of the number column */
-      content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 1px; background: var(--wline-2);
-      transform: scaleY(0); transform-origin: top; transition: transform .9s var(--ease) .2s;
-    }
-    .work-item.open .w-rail::after { transform: none; }
-    .w-rail button {
-      padding: 0 1vw; background: none; border: 0; cursor: pointer; font: 200 8.6vw/.8 var(--sans); color: var(--wnum);
-      opacity: 0; transform: translateY(40px);
-      transition: opacity .6s var(--ease), transform .8s var(--ease), color .3s; transition-delay: calc(.15s + var(--k, 0) * .08s), calc(.15s + var(--k, 0) * .08s), 0s;
-    }
-    .work-item.open .w-rail button { opacity: 1; transform: none; }
-    .w-rail button:hover, .w-rail button:focus-visible { color: var(--green); }
-
-    /* Project content */
-    .w-body { grid-column: 3; min-width: 0; padding: 3.6vw var(--gutter) 5vw 0; transition: opacity .3s; }
-    .work-item:not(.open) .w-body { opacity: 0; }
-    .pcs { display: grid; grid-template-columns: repeat(3, 1fr); }
-    .pcs-col { position: relative; padding: 0 2.2vw; }
-    .pcs-col:first-child { padding-left: 0; }
-    .pcs-col + .pcs-col::before { content: ""; position: absolute; left: 0; top: .3vw; bottom: .3vw; width: 1px; background: var(--wline-2); transform-origin: top; }
-    .pcs h4 { margin: 0 0 1.4vw; font: italic 400 clamp(22px, 2.5vw, 44px)/1.1 var(--serif); color: var(--green); }
-    .pcs p { margin: 0; font-size: clamp(15px, 1.46vw, 26px); line-height: 1.5; color: #d6d6d0; }
-    .w-soon { margin: 0; color: var(--muted); font-size: clamp(15px, 1.46vw, 26px); }
-    .w-visual { margin: 3.9vw 0 0; border-radius: clamp(8px, 1vw, 16px); overflow: hidden; background: #111; }
-    .w-visual img { display: block; width: 100%; height: auto; }
-    .work-item.enter .pcs-col, .work-item.enter .w-soon { animation: wUp .8s var(--ease) both; animation-delay: calc(.3s + var(--c, 0) * .12s); }
-    .work-item.enter .pcs-col + .pcs-col::before { animation: wGrow .9s var(--ease) both; animation-delay: calc(.35s + var(--c, 0) * .12s); }
-    .work-item.enter .w-visual { animation: wWipe 1.2s var(--ease) .5s both; }
-    .work-item.enter .w-visual img { animation: wSettle 1.6s var(--ease) .5s both; }
-    @keyframes wUp    { from { opacity: 0; transform: translateY(36px); } to { opacity: 1; transform: none; } }
-    @keyframes wGrow  { from { transform: scaleY(0); } to { transform: none; } }
-    @keyframes wWipe  { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
-    @keyframes wSettle{ from { transform: scale(1.08); } to { transform: none; } }
-    /* Scroll reveal (desktop only; the script adds .w-reveal) */
-    .w-reveal .work-item:not(.in) .w-row { opacity: 0; transform: translateY(30px); }
-
     /* Contact */
     .contact { text-align: center; border-top: 1px solid var(--line); }
     .contact .big {
@@ -331,25 +228,6 @@
       .spark { width: 48px; height: 48px; }
       .orbit { --r: 48px; --card: 30px; height: 116px; }
       .tagline { flex-direction: column; gap: 14px; }
-    }
-    @media (max-width: 760px) {
-      /* Selected work on phones: number left, title right; no hover effects, no animation, no number column */
-      .work { --rail: 64px; --left: 64px; }
-      .work *, .work *::before, .work *::after { transition: none !important; animation: none !important; }
-      .work-head { padding: 0 var(--gutter) 16px; }
-      .w-num { padding-top: 26px; font-size: 44px; }
-      .w-num::before, .w-go, .w-rail { display: none; }
-      .w-head { padding: 26px var(--gutter) 20px 0; }
-      .w-title { font-size: 26px; max-width: none; }
-      .w-meta { flex-direction: column; gap: 2px; margin-top: 12px; }
-      .w-open { grid-template-columns: 1fr; }
-      .w-body { grid-column: 1; padding: 24px var(--gutter) 32px 64px; }
-      .pcs { grid-template-columns: 1fr; gap: 24px; }
-      .pcs-col { padding: 0; }
-      .pcs-col + .pcs-col { padding-top: 24px; }
-      .pcs-col + .pcs-col::before { top: 0; bottom: auto; right: 0; width: auto; height: 1px; }
-      .pcs h4 { margin-bottom: 8px; }
-      .w-visual { margin-top: 28px; }
     }
     /* ---------- Pixel cursor ---------- */
     /* Only for mouse/trackpad; the script adds .has-px-cursor once it's running */
@@ -471,102 +349,6 @@
           <span>AI for speed.</span>
         </div>
       </div>
-    </section>
-
-    <!-- ================= SELECTED WORK ================= -->
-    <section class="work" id="work" aria-labelledby="work-title">
-      <div class="work-head">
-        <h2 id="work-title">Selected work</h2>
-        <span>04 projects</span>
-      </div>
-      <ol class="work-list">
-        <li class="work-item" style="--i:0">
-          <div class="w-fold"><div class="w-clip">
-            <div class="w-row">
-              <span class="w-num" aria-hidden="true">1</span>
-              <button class="w-head" type="button" aria-expanded="false" aria-controls="wx-0">
-                <span class="w-title">Saved Taxes</span>
-                <span class="w-meta"><span>Business process digitization</span><span>LaSalle Investment Management</span></span>
-                <span class="w-go" aria-hidden="true">→</span>
-              </button>
-            </div>
-            <div class="w-expand" id="wx-0"><div class="w-clip">
-              <div class="w-open">
-                <nav class="w-rail" aria-label="Other projects"></nav>
-                <div class="w-body">
-                    <div class="pcs">
-                      <div class="pcs-col" style="--c:0"><h4>Problem</h4><p>Stakeholders were not able to close the process by the deadline, because they first had to clear a backlog of errors in it.</p></div>
-                      <div class="pcs-col" style="--c:1"><h4>Cause</h4><p>Being high-level associates, stakeholders always have more pressing matters at hand, and only spend time on GIFA when it’s on red alert or when they find the time.</p></div>
-                      <div class="pcs-col" style="--c:2"><h4>Solution</h4><p>Designed a system that visualizes progress and creates a sense of responsibility to take action.</p></div>
-                    </div>
-                    <figure class="w-visual"><img src="assets/work/gifa-process-streamline.jpg" alt="Process Streamline card showing the Approvals and Payments stages, with progress on award allocations, approvals, document uploads and signatures" loading="lazy"></figure>
-                </div>
-              </div>
-            </div></div>
-          </div></div>
-        </li>
-        <li class="work-item" style="--i:1">
-          <div class="w-fold"><div class="w-clip">
-            <div class="w-row">
-              <span class="w-num" aria-hidden="true">2</span>
-              <button class="w-head" type="button" aria-expanded="false" aria-controls="wx-1">
-                <span class="w-title">Reduce Support Calls</span>
-                <span class="w-meta"><span>Feature Enhancement</span><span>Zithara.ai</span></span>
-                <span class="w-go" aria-hidden="true">→</span>
-              </button>
-            </div>
-            <div class="w-expand" id="wx-1"><div class="w-clip">
-              <div class="w-open">
-                <nav class="w-rail" aria-label="Other projects"></nav>
-                <div class="w-body">
-                    <p class="w-soon">The full case study is coming soon.</p>
-                </div>
-              </div>
-            </div></div>
-          </div></div>
-        </li>
-        <li class="work-item" style="--i:2">
-          <div class="w-fold"><div class="w-clip">
-            <div class="w-row">
-              <span class="w-num" aria-hidden="true">3</span>
-              <button class="w-head" type="button" aria-expanded="false" aria-controls="wx-2">
-                <span class="w-title">Saved Time on Fee Management Tasks</span>
-                <span class="w-meta"><span>Feature Design</span><span>LaSalle Investment Management</span></span>
-                <span class="w-go" aria-hidden="true">→</span>
-              </button>
-            </div>
-            <div class="w-expand" id="wx-2"><div class="w-clip">
-              <div class="w-open">
-                <nav class="w-rail" aria-label="Other projects"></nav>
-                <div class="w-body">
-                    <p class="w-soon">The full case study is coming soon.</p>
-                    <figure class="w-visual"><img src="assets/work/master-fee-template.jpg" alt="Master Fee Template interface" loading="lazy"></figure>
-                </div>
-              </div>
-            </div></div>
-          </div></div>
-        </li>
-        <li class="work-item" style="--i:3">
-          <div class="w-fold"><div class="w-clip">
-            <div class="w-row">
-              <span class="w-num" aria-hidden="true">4</span>
-              <button class="w-head" type="button" aria-expanded="false" aria-controls="wx-3">
-                <span class="w-title">Made Navigation between 100’s of resources obvious</span>
-                <span class="w-meta"><span>Business process digitization</span><span>LaSalle Investment Management</span></span>
-                <span class="w-go" aria-hidden="true">→</span>
-              </button>
-            </div>
-            <div class="w-expand" id="wx-3"><div class="w-clip">
-              <div class="w-open">
-                <nav class="w-rail" aria-label="Other projects"></nav>
-                <div class="w-body">
-                    <p class="w-soon">The full case study is coming soon.</p>
-                </div>
-              </div>
-            </div></div>
-          </div></div>
-        </li>
-      </ol>
     </section>
 
     <!-- ================= CONTACT ================= -->
@@ -796,90 +578,6 @@
       });
       window.addEventListener('resize', function () { if (!running) lockWidths(); });
       target.addEventListener('pointerenter', function () { scramble(700); });
-    })();
-  </script>
-  <script>
-    (function () {
-      /* Selected work. Desktop: hovering a project opens it in place; the rows below fold into
-         numbers in the left column, and the dividers split. Click (or Enter) keeps a project open.
-         Phones: a plain list; a tap opens a project instantly. */
-      var desk = window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 761px)');
-      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var section = document.getElementById('work');
-      var items = Array.prototype.slice.call(section.querySelectorAll('.work-item'));
-      var current = -1;
-
-      // Fill each project's number column with the numbers of the projects below it
-      items.forEach(function (item, i) {
-        var rail = item.querySelector('.w-rail');
-        items.slice(i + 1).forEach(function (other, k) {
-          var n = i + 2 + k, b = document.createElement('button');
-          b.type = 'button'; b.textContent = n; b.style.setProperty('--k', k);
-          b.setAttribute('aria-label', 'Open project ' + n + ': ' + other.querySelector('.w-title').textContent);
-          b.addEventListener('click', function () { open(n - 1, true, true); });
-          rail.appendChild(b);
-        });
-        item.querySelector('.w-expand').inert = true;
-      });
-
-      // Rows rise in as they scroll into view (desktop)
-      if (desk.matches && !reduce && 'IntersectionObserver' in window) {
-        section.classList.add('w-reveal');
-        var io = new IntersectionObserver(function (entries) {
-          entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-        }, { threshold: 0.2 });
-        items.forEach(function (el) { io.observe(el); });
-      }
-
-      function close() {
-        if (current < 0) return;
-        var item = items[current];
-        item.classList.remove('open', 'enter', 'lit');
-        item.pinned = false;
-        item.querySelector('.w-head').setAttribute('aria-expanded', 'false');
-        item.querySelector('.w-expand').inert = true;
-        items.forEach(function (o) { o.classList.remove('folded'); o.inert = false; });
-        current = -1;
-      }
-      function open(i, pin, scroll) {
-        if (current === i) { if (pin) items[i].pinned = true; return; }
-        close();
-        var item = items[i];
-        item.classList.add('open');
-        item.pinned = !!pin;
-        item.querySelector('.w-head').setAttribute('aria-expanded', 'true');
-        item.querySelector('.w-expand').inert = false;
-        if (desk.matches) {
-          items.forEach(function (o, k) { if (k > i) { o.classList.add('folded'); o.inert = true; } });
-          if (!reduce) { void item.offsetWidth; item.classList.add('enter'); }
-        }
-        current = i;
-        if (scroll) window.scrollTo({ top: item.getBoundingClientRect().top + window.scrollY - 90, behavior: reduce ? 'auto' : 'smooth' });
-      }
-
-      items.forEach(function (item, i) {
-        var timer;
-        item.addEventListener('mouseenter', function () {
-          if (!desk.matches) return;
-          item.classList.add('lit');
-          clearTimeout(timer);
-          // a short pause, so a quick sweep across the list doesn't open every row
-          timer = setTimeout(function () { if (current < 0 || !items[current].pinned) open(i); }, 140);
-        });
-        item.addEventListener('mouseleave', function () {
-          clearTimeout(timer);
-          item.classList.remove('lit');
-          if (current === i && !item.pinned) close();
-        });
-        item.querySelector('.w-head').addEventListener('click', function () {
-          if (current === i) {
-            if (item.pinned || !desk.matches) close(); else item.pinned = true;
-          } else {
-            open(i, true);
-          }
-        });
-      });
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
     })();
   </script>
 </body>
