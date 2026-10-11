@@ -430,47 +430,6 @@
       .tagline { flex-direction: column; gap: 14px; }
     }
 
-    /* ---------- "View Case Study" cursor ----------
-       Over a case-study preview image (mouse/trackpad only), this pill follows beside the pointer; the system cursor itself is unchanged.
-       Light theme: dark pill with a green arrow; dark theme: green pill with a white arrow. */
-    .cs-cursor {
-      position: fixed; left: 0; top: 0; z-index: 100; pointer-events: none;
-      display: inline-flex; align-items: center; gap: 12px; height: 40px; padding: 0 16px 0 20px; border-radius: 999px;
-      font: 400 17px/1 var(--sans); letter-spacing: -.01em; white-space: nowrap;
-      background: #131416; color: #fff;
-      opacity: 0; transform: translate(14px, 14px) scale(.6); transform-origin: 0 0;   /* sits just below-right of the pointer, so the hovered title stays readable */
-      transition: opacity .2s var(--ease), transform .3s var(--ease); will-change: translate, transform;
-    }
-    .cs-cursor svg { width: 16px; height: 16px; flex: none; }
-    .cs-cursor .arrow-light { display: none; }
-    :root:not([data-theme="light"]) .cs-cursor { background: var(--highlight); color: #0E100C; }
-    :root:not([data-theme="light"]) .cs-cursor .arrow-green { display: none; }
-    :root:not([data-theme="light"]) .cs-cursor .arrow-light { display: block; }
-    .cs-cursor.on { opacity: 1; transform: translate(14px, 14px) scale(1); }
-
-    /* ---------- Case-study preview ----------
-       Hovering a case study in the Work card shows its start image (Casestudythumbnails/CSnstart.png) where the hero text
-       sits, centred in the content area; the page content behind fades out and is switched off meanwhile.
-       Hovering the image itself zooms it into the end image (CSnend.png): the start image moves and scales so its device
-       lands where the device sits in the end image, while the end image grows in from the start device's place and fades up. */
-    .cs-preview {
-      position: fixed; z-index: 5; left: 50%; top: 50%; overflow: hidden;
-      width: min(calc(100vw - 2 * var(--frame) - 2 * var(--pad-x)), calc(78vh * 1.8)); aspect-ratio: 1440 / 800;
-      translate: -50% -50%; scale: .97; opacity: 0; pointer-events: none;
-      background: #fff; box-shadow: 0 0 0 1px var(--line), var(--card-shadow);
-      transition: opacity .35s var(--ease), scale .5s var(--ease);
-    }
-    :root:not([data-theme="light"]) .cs-preview { box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 32px 80px -24px rgba(0, 0, 0, .7); }
-    .cs-preview .shot { position: absolute; inset: 0; opacity: 0; transition: opacity .3s var(--ease); }
-    .cs-preview .shot.on { opacity: 1; }
-    .cs-preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform-origin: 0 0; transition: transform 1.2s cubic-bezier(.65, 0, .35, 1), opacity .5s var(--ease) .3s; }
-    .cs-preview .end { opacity: 0; transform: var(--from); }
-    .cs-preview.play .shot.on .start { transform: var(--to); }
-    .cs-preview.play .shot.on .end { opacity: 1; transform: none; }
-    .previewing .cs-preview { opacity: 1; scale: 1; pointer-events: auto; }
-    main, footer { transition: opacity .35s var(--ease); }
-    .previewing main, .previewing footer { opacity: 0; pointer-events: none; user-select: none; }
-
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -642,14 +601,6 @@
   </div>
 
 
-  <!-- Case-study preview: start/end images of the hovered case study (CS1..CS5, in list order) -->
-  <div class="cs-preview" id="csPreview" aria-hidden="true"><div class="shot"><img class="start" src="Casestudythumbnails/CS1start.png" alt="" loading="lazy" decoding="async"><img class="end" src="Casestudythumbnails/CS1end.png" alt="" loading="lazy" decoding="async"></div><div class="shot"><img class="start" src="Casestudythumbnails/CS2start.png" alt="" loading="lazy" decoding="async"><img class="end" src="Casestudythumbnails/CS2end.png" alt="" loading="lazy" decoding="async"></div><div class="shot"><img class="start" src="Casestudythumbnails/CS3start.png" alt="" loading="lazy" decoding="async"><img class="end" src="Casestudythumbnails/CS3end.png" alt="" loading="lazy" decoding="async"></div><div class="shot"><img class="start" src="Casestudythumbnails/CS4start.png" alt="" loading="lazy" decoding="async"><img class="end" src="Casestudythumbnails/CS4end.png" alt="" loading="lazy" decoding="async"></div><div class="shot"><img class="start" src="Casestudythumbnails/CS5start.png" alt="" loading="lazy" decoding="async"><img class="end" src="Casestudythumbnails/CS5end.png" alt="" loading="lazy" decoding="async"></div></div>
-
-  <div class="cs-cursor" id="csCursor" aria-hidden="true">View Case Study
-    <svg class="arrow-green" viewBox="0 0 16 16"><defs><linearGradient id="csArrow" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C8FF96"/><stop offset=".55" stop-color="#8EE356"/><stop offset="1" stop-color="#3C9E22"/></linearGradient></defs><path fill="url(#csArrow)" d="M5 1h10v10h-3.2V6.4L3.3 14.9 1.1 12.7 9.6 4.2H5z"/></svg>
-    <svg class="arrow-light" viewBox="0 0 16 16"><path fill="#fff" d="M5 1h10v10h-3.2V6.4L3.3 14.9 1.1 12.7 9.6 4.2H5z"/></svg>
-  </div>
-
   <script>
     (function () {
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -677,29 +628,6 @@
         });
       })();
 
-
-      /* "View Case Study" cursor: follows the pointer (eased) while it is over a case-study preview image */
-      (function () {
-        if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-        var el = document.getElementById('csCursor'), reduce = matchMedia('(prefers-reduced-motion: reduce)');
-        var x = 0, y = 0, cx = null, cy = null, running = false, on = false;
-        function tick() {
-          var k = reduce.matches ? 1 : .28;
-          cx += (x - cx) * k; cy += (y - cy) * k;
-          el.style.translate = cx.toFixed(1) + 'px ' + cy.toFixed(1) + 'px';
-          if (on || Math.abs(x - cx) + Math.abs(y - cy) > .3) requestAnimationFrame(tick); else running = false;
-        }
-        document.addEventListener('pointermove', function (e) {
-          if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
-          x = e.clientX; y = e.clientY;
-          var over = !!(e.target.closest && e.target.closest('.previewing .cs-preview'));
-          if (cx === null || (!on && over)) { cx = x; cy = y; }          // appear right under the pointer
-          if (over !== on) { on = over; el.classList.toggle('on', on); }
-          if (!running) { running = true; requestAnimationFrame(tick); }
-        }, { passive: true });
-        document.documentElement.addEventListener('mouseleave', function () { on = false; el.classList.remove('on'); });
-        window.addEventListener('wheel', function () { if (on) setTimeout(function () { var t = document.elementFromPoint(x, y); on = !!(t && t.closest('.previewing .cs-preview')); el.classList.toggle('on', on); }, 60); }, { passive: true });
-      })();
 
       /* Full-page scrolling (section snapping): one wheel/trackpad gesture or key press glides to the next or previous stop.
          Stops are each section's top plus the very bottom of the page, so a section taller than the screen
@@ -766,51 +694,15 @@
 
         // Work: hovering (or focusing, or tapping "Work") opens the case-study card; leaving closes it
         var work = document.getElementById('work-menu'), workBtn = work.querySelector('.work-btn'), shut, shown;
-        // case-study preview (mouse/trackpad only): the hovered case study's start image replaces the page content;
-        // the pointer can move onto the image, where it zooms into the end image and a click opens the case study
-        var preview = document.getElementById('csPreview'), shots = [].slice.call(preview.querySelectorAll('.shot'));
-        var caseLinks = work.querySelectorAll('.cases a'), current = -1, hideT;
-        var canPreview = matchMedia('(hover: hover) and (pointer: fine)').matches;
-        // where the main device sits in each image, in image pixels (1440 x 800): [left, right, top] for start, then end
-        var DEVICE = [[[122, 1317, 68], [303, 1138, 264]], [[40, 1330, 165], [28, 1413, 252]], [[35, 1000, 257], [46, 1074, 254]],
-                      [[221, 1220, 236], [120, 1321, 251]], [[219, 1221, 166], [35, 918, 234]]];
-        function fit(a, b) {   // transform that puts device box a where device box b is
-          var k = (b[1] - b[0]) / (a[1] - a[0]);
-          return 'translate(' + ((b[0] - k * a[0]) / 14.4).toFixed(3) + '%, ' + ((b[2] - k * a[2]) / 8).toFixed(3) + '%) scale(' + k.toFixed(4) + ')';
-        }
-        shots.forEach(function (sh, i) { sh.style.setProperty('--to', fit(DEVICE[i][0], DEVICE[i][1])); sh.style.setProperty('--from', fit(DEVICE[i][1], DEVICE[i][0])); });
-        function load(sh) { [].forEach.call(sh.querySelectorAll('img'), function (im) { im.loading = 'eager'; }); }
-        function showPreview(i) {
-          if (!canPreview) return;
-          clearTimeout(hideT);
-          if (i !== current) { preview.classList.remove('play'); current = i; }
-          shots.forEach(function (sh, k) { if (k === i) load(sh); sh.classList.toggle('on', k === i); });
-          document.body.classList.add('previewing');
-        }
-        function hidePreview() { clearTimeout(hideT); preview.classList.remove('play'); document.body.classList.remove('previewing'); }
-        function hideSoon() { clearTimeout(hideT); hideT = setTimeout(hidePreview, 250); }   // grace to cross the gap onto the image
-        [].forEach.call(work.querySelectorAll('.cases li'), function (li, i) { li.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse' || e.pointerType === 'pen') showPreview(i); }); });
-        var scroller = work.querySelector('.cases-scroll');
-        scroller.addEventListener('pointerleave', hideSoon);
-        preview.addEventListener('pointerenter', function () { clearTimeout(hideT); clearTimeout(shut); preview.classList.add('play'); });
-        preview.addEventListener('pointerleave', function (e) {
-          preview.classList.remove('play');
-          if (!scroller.contains(e.relatedTarget)) hideSoon();
-          if (!work.contains(e.relatedTarget)) shut = setTimeout(function () { setWork(false); }, 250);
-        });
-        preview.addEventListener('click', function () { if (caseLinks[current]) caseLinks[current].click(); });
-        preview.addEventListener('wheel', function () { setWork(false); }, { passive: true });   // scrolling the page drops the preview
         function setWork(open) {
           clearTimeout(shut);
-          if (!open) hidePreview();
-          else if (canPreview) shots.forEach(function (sh) { sh.querySelector('.start').loading = 'eager'; });   // load the start images as soon as the card opens
           work.classList.toggle('open', open); workBtn.setAttribute('aria-expanded', open);
           work.querySelectorAll('.cases a').forEach(function (a) { a.tabIndex = open ? 0 : -1; });
           clearTimeout(shown); work.classList.remove('shown');
           if (open) shown = setTimeout(function () { work.classList.add('shown'); count(); }, 560);   // after the card has opened
         }
         // "N more": how many case studies are not fully in view; clicking scrolls to the next one
-        var card = work.querySelector('.cases'), more = work.querySelector('.more');
+        var scroller = work.querySelector('.cases-scroll'), card = work.querySelector('.cases'), more = work.querySelector('.more');
         function below() {
           var bottom = scroller.getBoundingClientRect().bottom + 1;   // fully in view = ends at or above the bottom edge
           return [].filter.call(scroller.querySelectorAll('li'), function (li) { return li.getBoundingClientRect().bottom > bottom; });
@@ -830,7 +722,7 @@
         });
         setWork(false);
         work.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') setWork(true); });
-        work.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse' && !preview.contains(e.relatedTarget)) shut = setTimeout(function () { setWork(false); }, 250); });
+        work.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') shut = setTimeout(function () { setWork(false); }, 250); });
         workBtn.addEventListener('click', function () { setWork(!work.classList.contains('open')); });
         work.addEventListener('focusout', function (e) { if (!work.contains(e.relatedTarget)) setWork(false); });
         function setMenu(open) { side.classList.toggle('open', open); btn.setAttribute('aria-expanded', open); btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu'); }
