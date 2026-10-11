@@ -431,13 +431,13 @@
     }
 
     /* ---------- Case-study preview card ----------
-       Hovering a case study in the Work card shows a card beside it (in the content area, vertically centred) with that
+       Hovering a case study in the Work card shows a card beside it (in the content area, top-aligned with the Work card) with that
        case study's screens from Thumbnailimages/ (CSnimageK.png); when there are several they cross-fade in turn.
        The hero text dissolves meanwhile. Mouse/trackpad only. */
     .cs-preview {
-      position: fixed; z-index: 5; left: var(--pad-x); top: 50%;
-      width: min(calc(100vw - 2 * var(--frame) - 2 * var(--pad-x)), calc(70vh * 1.61)); aspect-ratio: 1.61;
-      translate: 0 -50%; scale: .97; transform-origin: 0 50%; opacity: 0; pointer-events: none;
+      position: fixed; z-index: 5; left: var(--pad-x); top: var(--cs-top, 200px);   /* --cs-top: the Work card's top, set on hover */
+      width: min(calc(100vw - 2 * var(--frame) - 2 * var(--pad-x)), calc((100vh - var(--cs-top, 200px) - 24px) * 1.61)); aspect-ratio: 1.61;
+      scale: .97; transform-origin: 0 0; opacity: 0; pointer-events: none;
       background: var(--card); box-shadow: 0 0 0 1px var(--line), var(--card-shadow);
       transition: opacity .35s var(--ease), scale .5s var(--ease);
     }
@@ -731,6 +731,7 @@
             [].forEach.call(ims, function (im, j) { im.loading = 'eager'; im.classList.toggle('on', j === 0); });
             if (ims.length > 1 && !reduce) cycle = setInterval(function () { ims[n].classList.remove('on'); n = (n + 1) % ims.length; ims[n].classList.add('on'); }, 2200);
           });
+          preview.style.setProperty('--cs-top', work.querySelector('.cases').getBoundingClientRect().top + 'px');
           document.body.classList.add('previewing');
         }
         function hidePreview() { clearInterval(cycle); document.body.classList.remove('previewing'); }
