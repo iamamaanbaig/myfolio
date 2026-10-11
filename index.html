@@ -776,17 +776,23 @@
         /* Each device: image, its natural width, where its screen bezel sits in the image [left, right, top] (px),
            the hover layout [left, top, width] of that bezel on the 1440 x 800 stage, and the resting layout
            [left, top, width, rotation] (pivoting on the bezel's top-left corner, or top-right with 'tr').
-           Back devices come first. Layouts measured from the case-study animation videos. */
+           Back devices come first. Layouts measured from the case-study animation videos.
+           Listed in the Work menu's order: thumbnails 1, 4, 5, 3, 2 (named by their Thumbnailimages/CSn files). */
         var DEVICES = [
+          // 1 · Saved million dollar taxes: thumbnail 1
           [['CS1image2', 889, [109, 780, 45], [37, 443, 673], [237, 470, 600, 0]],
            ['CS1image3', 889, [109, 780, 45], [691, 443, 711], [563, 470, 640, 0]],
            ['CS1image1', 1522, [124, 1318, 43], [303, 264, 834], [122, 68, 1195, 0]]],
-          [['CS2image1', 1523, [124, 1320, 39], [28, 251, 1385], [24, 271, 1262, -9.2]]],
+          // 2 · Reduce support calls: thumbnail 4
+          [['CS4image1', 1523, [124, 1319, 43], [121, 251, 1199], [221, 235, 998, 0]]],
+          // 3 · Increase leads generation: thumbnail 5
+          [['CS5image2', 1443, [123, 1320, 2], [638, 331, 769], [440, 352, 700, 0]],
+           ['CS5image1', 1440, [122, 1318, 3], [36, 234, 881], [220, 166, 1000, 0]]],
+          // 4 · Saved 40 min on fee management tasks: thumbnail 3
           [['CS3image2', 1442, [123, 1318, 3], [454, 318, 948], [479, 388, 938, 7.8, 'tr']],
            ['CS3image1', 1520, [122, 1308, 42], [46, 254, 1028], [26, 325, 977, -8]]],
-          [['CS4image1', 1523, [124, 1319, 43], [121, 251, 1199], [221, 235, 998, 0]]],
-          [['CS5image2', 1443, [123, 1320, 2], [638, 331, 769], [440, 352, 700, 0]],
-           ['CS5image1', 1440, [122, 1318, 3], [36, 234, 881], [220, 166, 1000, 0]]]
+          // 5 · Made error tracking easy: thumbnail 2
+          [['CS2image1', 1523, [124, 1320, 39], [28, 251, 1385], [24, 271, 1262, -9.2]]]
         ];
         DEVICES.forEach(function (devs, i) {
           devs.forEach(function (d) {
