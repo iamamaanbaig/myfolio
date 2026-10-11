@@ -453,7 +453,8 @@
        the hero text dissolves meanwhile. Mouse/trackpad only. The pointer can move onto the card, where the
        "View Case Study" pill follows it and a click opens the case study.
        Inside, the case study's device screens (Thumbnailimages/CSnimageK.png) are laid out on a 1440 x 800 stage, scaled to
-       the card. They appear in a resting layout and then glide into the hover layout (zoom, straighten, slide apart). */
+       the card. They show in a resting layout and glide into the hover layout (zoom, straighten, slide apart) while the
+       pointer is over the card. */
     .cs-preview {
       position: fixed; z-index: 5; left: var(--pad-x); top: var(--cs-top, 200px);   /* --cs-top: the Work card's top, set on hover */
       width: min(calc(100vw - 2 * var(--frame) - 2 * var(--pad-x)), calc((100vh - var(--cs-top, 200px) - 24px) * 1.8)); aspect-ratio: 1440 / 800;
@@ -813,11 +814,7 @@
             if (k !== i) { if (set.classList.contains('play')) setTimeout(function () { if (!set.classList.contains('on')) set.classList.remove('play'); }, 400); return; }   // back to rest once faded out
             [].forEach.call(set.querySelectorAll('img'), function (im) { im.loading = 'eager'; });
           });
-          // once its screens have loaded: resting layout first, then glide into the hover layout
-          whenReady(sets[i], function () {
-            if (!sets[i].classList.contains('on') || sets[i].classList.contains('play')) return;
-            clearTimeout(playT); playT = setTimeout(function () { sets[i].classList.add('play'); }, 250);
-          });
+          whenReady(sets[i], function () {});   // shows once its screens have loaded, in the resting layout
           document.body.classList.add('previewing');
         }
         function hidePreview() {
@@ -828,8 +825,10 @@
         var caseLinks = work.querySelectorAll('.cases a'), scroller = work.querySelector('.cases-scroll'), hideT;
         function hideSoon() { clearTimeout(hideT); hideT = setTimeout(hidePreview, 250); }   // grace to cross the gap onto the card
         scroller.addEventListener('pointerleave', hideSoon);
-        preview.addEventListener('pointerenter', function () { clearTimeout(hideT); clearTimeout(shut); });
+        // hovering the card itself glides its devices into the hover layout; leaving glides them back
+        preview.addEventListener('pointerenter', function () { clearTimeout(hideT); clearTimeout(shut); var set = preview.querySelector('.set.on'); if (set) set.classList.add('play'); });
         preview.addEventListener('pointerleave', function (e) {
+          sets.forEach(function (set) { set.classList.remove('play'); });
           if (!scroller.contains(e.relatedTarget)) hideSoon();
           if (!work.contains(e.relatedTarget)) shut = setTimeout(function () { setWork(false); }, 250);
         });
