@@ -58,7 +58,7 @@
     /* ---------- Light theme ---------- */
     :root[data-theme="light"] {
       /* layers: base (page) -> canvas (the site, inset with a soft shadow) -> cards (white, soft shadows) */
-      --bg: #E9EBEE;
+      --bg: #F8F9FA;   /* same as the canvas: no grey frame around the site */
       --canvas: #F8F9FA;
       --card: #FFFFFF;
       --surface: #FFFFFF;
@@ -96,8 +96,8 @@
     /* ---------- Side navigation ---------- */
     /* --frame: canvas inset from the window; --pad-x: hero/contact side padding (clears the sidebar on both sides, so content is centred on the page);
        --w: the width the headline has to fit in */
-    :root { --side: 280px; --frame: 12px; --pad-x: calc(var(--side) + 24px); --w: calc(100vw - 2 * var(--frame) - 2 * var(--pad-x)); }
-    .canvas { margin: var(--frame); border-radius: 24px; background: var(--canvas); box-shadow: var(--canvas-shadow); overflow: clip;
+    :root { --side: 280px; --frame: 0px; --pad-x: calc(var(--side) + 24px); --w: calc(100vw - 2 * var(--frame) - 2 * var(--pad-x)); }
+    .canvas { margin: var(--frame); background: var(--canvas); overflow: clip;
       transition: background-color .4s var(--ease), box-shadow .4s var(--ease); }
     .side {
       position: fixed; inset: var(--frame) auto var(--frame) var(--frame); z-index: 10; width: var(--side);
@@ -548,7 +548,7 @@
           root.dataset.theme = t;
           var label = 'Switch to ' + (t === 'light' ? 'dark' : 'light') + ' theme';
           btns.forEach(function (b) { var l = b.querySelector('.theme-label'); if (l) l.textContent = label; else b.setAttribute('aria-label', label); });
-          meta.setAttribute('content', t === 'light' ? '#E9EBEE' : '#0A0A0A');
+          meta.setAttribute('content', t === 'light' ? '#F8F9FA' : '#0A0A0A');
         }
         show(root.dataset.theme);
         btns.forEach(function (b) {
