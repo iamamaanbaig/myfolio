@@ -174,15 +174,16 @@
     .cases p { margin: 8px 0 0; font-size: 14px; line-height: 1.45; text-wrap: pretty; color: var(--muted); }
     /* company logos under each case study: 24px tall; the light or dark artwork follows the theme */
     .cs-logos { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 10px; margin-top: 14px; }
-    .cs-logos img { display: block; height: 24px; width: auto; }
-    /* Excel Edge is the only two-line logo: at 24px its letters are ~11px. At 31px its capitals are 14.4px,
-       the same as JLL's capitals; aligned to the same bottom line as the other logos */
-    .cs-logos img.excel { height: 31px; }
+    .cs-logos img { display: block; height: 16px; width: auto; }
+    /* Excel Edge is the only two-line logo: at the shared height its letters would be tiny. At 21px its capitals are 9.6px,
+       the same as JLL's capitals at 16px; aligned to the same bottom line as the other logos */
+    .cs-logos img.excel { height: 21px; }
     :root[data-theme="light"] .cs-logos .lg-dark, :root:not([data-theme="light"]) .cs-logos .lg-light { display: none; }
-    /* case study 1: LaSalle | JLL Technologies. At 24px the pair needs ~306px; when it doesn't fit the card, JLL drops
-       below LaSalle and the divider hides (the script marks the row .stacked) */
-    .cs-logos .sep { flex: none; width: 1px; height: 18px; align-self: center; background: var(--muted); opacity: .45; }
-    .cs-logos.stacked .sep { display: none; }
+    /* case study 1: LaSalle | JLL Technologies side by side on one line (~208px at 16px); if a narrow card can't fit that,
+       the pair scales down together */
+    .cs-logos.pair { flex-wrap: nowrap; align-items: center; container-type: inline-size; }
+    .cs-logos.pair img { height: min(16px, calc((100cqw - 21px) / 11.71)); }   /* 11.71 = combined width-to-height ratio of the two logos */
+    .cs-logos .sep { flex: none; width: 1px; height: 12px; background: var(--muted); opacity: .45; }
     .cases a:hover h3, .cases a:focus-visible h3 { color: var(--green-ink); }
     :root[data-theme="light"] .cases a:hover h3, :root[data-theme="light"] .cases a:focus-visible h3 { color: var(--text); }   /* light: titles keep their colour on hover */
     /* each case study rises in after the one before */
@@ -602,7 +603,7 @@
           work.classList.toggle('open', open); workBtn.setAttribute('aria-expanded', open);
           work.querySelectorAll('.cases a').forEach(function (a) { a.tabIndex = open ? 0 : -1; });
           clearTimeout(shown); work.classList.remove('shown');
-          if (open) { pairs(); shown = setTimeout(function () { work.classList.add('shown'); count(); }, 560); }   // after the card has opened
+          if (open) shown = setTimeout(function () { work.classList.add('shown'); count(); }, 560);   // after the card has opened
         }
         // "N more": how many case studies are not fully in view; clicking scrolls to the next one
         var scroller = work.querySelector('.cases-scroll'), card = work.querySelector('.cases'), more = work.querySelector('.more');
@@ -617,16 +618,6 @@
           card.classList.toggle('end', n === 0);
           card.classList.toggle('scrolled', scroller.scrollTop > 2);
         }
-        // case study 1's logo pair: hide the divider when JLL has wrapped below LaSalle
-        function pairs() {
-          work.querySelectorAll('.cs-logos.pair').forEach(function (row) {
-            var shown = [].filter.call(row.querySelectorAll('img'), function (im) { return im.offsetWidth > 0; });
-            row.classList.remove('stacked');
-            if (shown.length > 1 && shown[shown.length - 1].offsetTop > shown[0].offsetTop + 2) row.classList.add('stacked');
-          });
-        }
-        window.addEventListener('resize', pairs);
-        new MutationObserver(pairs).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
         scroller.addEventListener('scroll', count, { passive: true });
         window.addEventListener('resize', count);
         more.addEventListener('click', function () {
