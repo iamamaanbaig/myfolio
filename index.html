@@ -357,12 +357,12 @@
     .contact {
       --c-ink: #FFFFFF; --c-handle: #747774; color: var(--c-ink); }   /* dark: colours sampled from the design */
     :root[data-theme="light"] .contact { --c-ink: var(--text); --c-handle: var(--muted); }
-    .at { width: clamp(180px, calc(var(--w) * .507), 440px); margin: 0 auto clamp(20px, calc(var(--w) * .0457), 42px); }
+    .at { width: clamp(150px, min(calc(var(--w) * .507), calc(100svh - 520px)), 440px);   /* also shrinks on short screens, so contact + footer fit one screen */ margin: 0 auto clamp(20px, calc(var(--w) * .0457), 42px); }
     .at svg { display: block; width: 100%; height: auto; }
     .ask { margin: 0 0 clamp(10px, calc(var(--w) * .024), 22px); font-family: var(--display); font-weight: 400; line-height: 1; white-space: nowrap;
       font-size: clamp(14px, calc(var(--w) * .065), 64px); }
     .contact .big { margin: 0 0 clamp(18px, calc(var(--w) * .0397), 36px); font-family: var(--sans); font-weight: 400; line-height: 1; letter-spacing: .011em; white-space: nowrap;
-      font-size: clamp(24px, calc(var(--w) * .104), 104px); }
+      font-size: clamp(32px, calc(var(--w) * .0712), 90px); }   /* same size as "FEEL" / "I MAKE" in the hero */
     .links { --btn-h: clamp(48px, calc(var(--w) * .105), 92px); --vr-h: clamp(26px, calc(var(--w) * .048), 42px); display: flex; justify-content: center; align-items: flex-start; gap: clamp(14px, calc(var(--w) * .05), 46px); }
     .link { --btn-w: clamp(124px, calc(var(--w) * .335), 300px); width: var(--btn-w); display: flex; flex-direction: column; align-items: center; gap: clamp(4px, calc(var(--w) * .006), 6px); }   /* as wide as its button; the caption centres under it and may run wider */
     .btn {
@@ -380,7 +380,18 @@
     .vr { align-self: flex-start; width: 1px; height: var(--vr-h); margin-top: calc((var(--btn-h) - var(--vr-h)) / 2); background: var(--c-ink); opacity: .95; }   /* centred on the buttons */
     .handle { font-size: clamp(11px, calc(var(--w) * .0286), 24px); white-space: nowrap; color: var(--c-handle); letter-spacing: .01em; }
 
+    /* full-page sections: the contact section and the footer together fill one screen */
+    :root { --foot-h: 76px; }
+    section.block.contact { padding-block: clamp(28px, 4.5svh, 64px); }
+    .contact { min-height: calc(100svh - var(--foot-h)); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    /* touch devices use the browser's own section snapping (mouse, trackpad and keys are handled by the script) */
+    @media (pointer: coarse) {
+      html { scroll-snap-type: y mandatory; }
+      .hero, .contact { scroll-snap-align: start; }
+      footer { scroll-snap-align: end; }
+    }
     footer {
+      min-height: var(--foot-h); align-items: center;
       display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
       padding: 28px var(--pad-x); border-top: 1px solid var(--line);
       color: var(--muted); font-size: 13px; letter-spacing: .005em;
@@ -617,6 +628,58 @@
         });
       })();
 
+
+      /* Full-page scrolling (section snapping): one wheel/trackpad gesture or key press glides to the next or previous stop.
+         Stops are each section's top plus the very bottom of the page, so a section taller than the screen
+         (contact on short laptops) is revealed in one more step. */
+      (function () {
+        if (matchMedia('(pointer: coarse)').matches) return;   // touch: CSS scroll snap
+        var reduce = matchMedia('(prefers-reduced-motion: reduce)');
+        var animating = false, quietUntil = 0;
+        function stops() {
+          var bottom = document.documentElement.scrollHeight - innerHeight, list = [];
+          document.querySelectorAll('#hero, #contact').forEach(function (sec) {
+            var y = Math.min(Math.round(sec.getBoundingClientRect().top + scrollY), bottom);
+            if (!list.length || y - list[list.length - 1] > 2) list.push(y);
+          });
+          if (bottom - list[list.length - 1] > 2) list.push(bottom);
+          return list;
+        }
+        function ease(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }   // ease-in-out (cubic)
+        function glide(to) {
+          var from = scrollY, dist = to - from, start = performance.now(), dur = reduce.matches ? 0 : 900;
+          if (Math.abs(dist) < 1) return;
+          animating = true;
+          (function step(now) {
+            var t = dur ? Math.min(1, (now - start) / dur) : 1;
+            window.scrollTo({ top: from + dist * ease(t), behavior: 'instant' });
+            if (t < 1) requestAnimationFrame(step); else { animating = false; quietUntil = performance.now() + 200; }
+          })(start);
+        }
+        function go(dir) {
+          var list = stops(), y = scrollY, i;
+          if (dir > 0) { for (i = 0; i < list.length; i++) if (list[i] > y + 2) return glide(list[i]); }
+          else { for (i = list.length - 1; i >= 0; i--) if (list[i] < y - 2) return glide(list[i]); }
+        }
+        window.addEventListener('wheel', function (e) {
+          if (e.ctrlKey) return;                                                       // pinch-zoom
+          var sc = e.target.closest && e.target.closest('.cases-scroll');
+          if (sc && sc.scrollHeight > sc.clientHeight + 1) return;                       // the case-study list scrolls itself
+          var dir = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0; if (!dir) return;
+          e.preventDefault();
+          var now = performance.now(), busy = animating || now < quietUntil;
+          quietUntil = Math.max(quietUntil, now + 200);                                  // a gesture ends after 200ms without wheel events
+          if (!busy) go(dir);                                                           // so a trackpad's coasting doesn't skip a section
+        }, { passive: false });
+        window.addEventListener('keydown', function (e) {
+          if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
+          var k = e.key;
+          if (k === 'Home' || k === 'End') { e.preventDefault(); var l = stops(); glide(k === 'Home' ? l[0] : l[l.length - 1]); return; }
+          var dir = (k === 'PageDown' || k === 'ArrowDown' || (k === ' ' && !e.shiftKey)) ? 1 : (k === 'PageUp' || k === 'ArrowUp' || (k === ' ' && e.shiftKey)) ? -1 : 0;
+          if (!dir) return;
+          e.preventDefault(); if (!animating) go(dir);
+        });
+      })();
 
       /* Side navigation: the section in view is highlighted; on phones the menu button slides it in */
       (function () {
