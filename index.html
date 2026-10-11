@@ -195,6 +195,10 @@
     .work.open .cases li:nth-child(3) { transition-delay: .26s; }
     .work.open .cases li:nth-child(4) { transition-delay: .32s; }
     .work.open .cases li:nth-child(5) { transition-delay: .38s; }
+    /* spotlight: hovering (or tabbing to) a case study fades the others back; once the card has opened, without the stagger delay */
+    .work.shown .cases li { transition-delay: 0s; transition-duration: .25s; }
+    .work.open .cases-scroll ul:hover > li:not(:hover),
+    .work.open .cases-scroll ul:has(a:focus-visible) > li:not(:has(a:focus-visible)) { opacity: .35; }
     /* sidebar: the round button with its label, as one control */
     .theme-row {
       margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 12px;
