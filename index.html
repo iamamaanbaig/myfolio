@@ -430,6 +430,27 @@
       .tagline { flex-direction: column; gap: 14px; }
     }
 
+    /* ---------- Case-study preview card ----------
+       Hovering a case study in the Work card shows a card beside it (in the content area, top-aligned with the Work card) with that
+       case study's screens from Thumbnailimages/ (CSnimageK.png); when there are several they cross-fade in turn.
+       The hero text dissolves meanwhile. Mouse/trackpad only. */
+    .cs-preview {
+      position: fixed; z-index: 5; left: var(--pad-x); top: var(--cs-top, 200px);   /* --cs-top: the Work card's top, set on hover */
+      width: min(calc(100vw - 2 * var(--frame) - 2 * var(--pad-x)), calc((100vh - var(--cs-top, 200px) - 24px) * 1.61)); aspect-ratio: 1.61;
+      scale: .97; transform-origin: 0 0; opacity: 0; pointer-events: none;
+      background: var(--card); box-shadow: 0 0 0 1px var(--line), var(--card-shadow);
+      transition: opacity .35s var(--ease), scale .5s var(--ease);
+    }
+    :root:not([data-theme="light"]) .cs-preview { box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 32px 80px -24px rgba(0, 0, 0, .7); }
+    .cs-preview .set { position: absolute; inset: 6% 5%; opacity: 0; transition: opacity .3s var(--ease); }
+    .cs-preview .set.on { opacity: 1; }
+    .cs-preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity .6s var(--ease); }
+    .cs-preview img.on { opacity: 1; }
+    .cs-preview img.padded { scale: 1.3; }   /* these two screens come with wide margins; this matches their device size to the others */
+    .previewing .cs-preview { opacity: 1; scale: 1; }
+    main, footer { transition: opacity .35s var(--ease), filter .35s var(--ease); }
+    .previewing main, .previewing footer { opacity: 0; filter: blur(6px); pointer-events: none; user-select: none; }
+
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -601,6 +622,9 @@
   </div>
 
 
+  <!-- Case-study preview card: screens of the hovered case study (CS1..CS5, in list order) -->
+  <div class="cs-preview" id="csPreview" aria-hidden="true"><div class="set"><img src="Thumbnailimages/CS1image1.png" alt="" loading="lazy" decoding="async"><img class="padded" src="Thumbnailimages/CS1image2.png" alt="" loading="lazy" decoding="async"><img class="padded" src="Thumbnailimages/CS1image3.png" alt="" loading="lazy" decoding="async"></div><div class="set"><img src="Thumbnailimages/CS2image1.png" alt="" loading="lazy" decoding="async"></div><div class="set"><img src="Thumbnailimages/CS3image1.png" alt="" loading="lazy" decoding="async"><img src="Thumbnailimages/CS3image2.png" alt="" loading="lazy" decoding="async"></div><div class="set"><img src="Thumbnailimages/CS4image1.png" alt="" loading="lazy" decoding="async"></div><div class="set"><img src="Thumbnailimages/CS5image1.png" alt="" loading="lazy" decoding="async"><img src="Thumbnailimages/CS5image2.png" alt="" loading="lazy" decoding="async"></div></div>
+
   <script>
     (function () {
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -694,8 +718,29 @@
 
         // Work: hovering (or focusing, or tapping "Work") opens the case-study card; leaving closes it
         var work = document.getElementById('work-menu'), workBtn = work.querySelector('.work-btn'), shut, shown;
+        // case-study preview card (mouse/trackpad only): the hovered case study's screens replace the hero text
+        var preview = document.getElementById('csPreview'), sets = [].slice.call(preview.querySelectorAll('.set')), cycle;
+        var canPreview = matchMedia('(hover: hover) and (pointer: fine)').matches;
+        function showPreview(i) {
+          if (!canPreview) return;
+          clearInterval(cycle);
+          sets.forEach(function (set, k) {
+            set.classList.toggle('on', k === i);
+            if (k !== i) return;
+            var ims = set.querySelectorAll('img'), n = 0;
+            [].forEach.call(ims, function (im, j) { im.loading = 'eager'; im.classList.toggle('on', j === 0); });
+            if (ims.length > 1 && !reduce) cycle = setInterval(function () { ims[n].classList.remove('on'); n = (n + 1) % ims.length; ims[n].classList.add('on'); }, 2200);
+          });
+          preview.style.setProperty('--cs-top', work.querySelector('.cases').getBoundingClientRect().top + 'px');
+          document.body.classList.add('previewing');
+        }
+        function hidePreview() { clearInterval(cycle); document.body.classList.remove('previewing'); }
+        [].forEach.call(work.querySelectorAll('.cases li'), function (li, i) { li.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse' || e.pointerType === 'pen') showPreview(i); }); });
+        work.querySelector('.cases-scroll').addEventListener('pointerleave', hidePreview);
         function setWork(open) {
           clearTimeout(shut);
+          if (!open) hidePreview();
+          else if (canPreview) sets.forEach(function (set) { set.querySelector('img').loading = 'eager'; });   // load each first screen as soon as the card opens
           work.classList.toggle('open', open); workBtn.setAttribute('aria-expanded', open);
           work.querySelectorAll('.cases a').forEach(function (a) { a.tabIndex = open ? 0 : -1; });
           clearTimeout(shown); work.classList.remove('shown');
