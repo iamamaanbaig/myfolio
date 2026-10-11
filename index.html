@@ -449,7 +449,7 @@
     .cs-cursor.on { opacity: 1; transform: translate(14px, 14px) scale(1); }
 
     /* ---------- Case-study preview card ----------
-       Hovering a case study in the Work card shows a white card beside it (in the content area, centred on the screen);
+       Hovering a case study in the Work card shows a card beside it (in the content area, centred on the screen);
        the hero text dissolves meanwhile. Mouse/trackpad only. The pointer can move onto the card, where the
        "View Case Study" pill follows it and a click opens the case study.
        Inside, the case study's device screens (Thumbnailimages/CSnimageK.png) are laid out on a 1440 x 800 stage, scaled to
@@ -459,7 +459,7 @@
       position: fixed; z-index: 5; left: var(--pad-x); top: 50%; translate: 0 -50%;
       width: min(calc(100vw - 2 * var(--frame) - 2 * var(--pad-x)), calc((100vh - 48px) * 1.8)); aspect-ratio: 1440 / 800;
       overflow: hidden; scale: .97; transform-origin: 0 50%; opacity: 0; pointer-events: none;
-      background: #fff; box-shadow: 0 0 0 1px var(--line), var(--card-shadow);
+      background: var(--card); box-shadow: 0 0 0 1px var(--line), var(--card-shadow);
       transition: opacity .35s var(--ease), scale .5s var(--ease);
     }
     :root:not([data-theme="light"]) .cs-preview { box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 32px 80px -24px rgba(0, 0, 0, .7); }
