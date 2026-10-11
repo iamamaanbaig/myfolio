@@ -9,11 +9,22 @@
   <meta property="og:title" content="Amaan Baig — Product Designer">
   <meta property="og:description" content="I make complicated software feel obvious.">
 
+  <script>
+    // Theme before first paint: the visitor's choice if saved, else their system setting
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+  <link rel="preload" href="assets/fonts/ppmondwest-regular.otf" as="font" type="font/otf" crossorigin>
   <style>
+    @font-face { font-family: "PP Mondwest"; src: url("assets/fonts/ppmondwest-regular.otf") format("opentype"); font-weight: 400; font-display: swap; }
     :root {
       --bg: #0A0A0A;
       --surface: #131313;
@@ -21,16 +32,49 @@
       --text: #F4F4F0;
       --muted: #8B8B85;
       --dim: #4A4A47;
-      --green: #A6F36A;
+      --green: #AAFF66;          /* bright green: fills, glows, highlights */
+      --highlight: #AAFF66;      /* marker behind "Obvious." / "obvious." */
+      --on-highlight: #0E100C;   /* text on the marker: always dark, so it reads on the bright green in both themes */
+      --green-ink: #AAFF66;      /* green for text */
+      --nav-bg: rgba(10, 10, 10, .72);
+      --canvas: #0A0A0A;          /* dark: canvas = page, so the layers don't show */
+      --card: #141414;
+      --canvas-shadow: none;
+      --soft-shadow: none;
+      --tint: 10, 10, 10;        /* far-side carousel cards fade toward the background */
+      /* AI star (glass) colours */
+      --sp-1: #F2FFDC; --sp-2: #C4FB8C; --sp-3: #6FD83A; --sp-4: #1B5E12; --sp-shade: #0B2A06; --sp-edge: #0E3A08;
+      --sp-rim-1: #E8FFD0; --sp-rim-2: #C8FF96; --sp-glow-1: #FAFFF0; --sp-glow-2: #B9FA7C; --sp-shadow: rgba(120, 230, 70, .35);
       --blue: #0A66C2;
       --blue-hover: #1A7ADB;
 
       --sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-      --pixel: "Pixelify Sans", ui-monospace, monospace;
+      --display: "PP Mondwest", Georgia, serif;
 
       --gutter: clamp(16px, 5vw, 100px);
       --ease: cubic-bezier(.2, .8, .2, 1);
+      color-scheme: dark;
     }
+    /* ---------- Light theme ---------- */
+    :root[data-theme="light"] {
+      /* layers: base (page) -> canvas (the site, inset with a soft shadow) -> cards (white, soft shadows) */
+      --bg: #E9EBEE;
+      --canvas: #F8F9FA;
+      --card: #FFFFFF;
+      --surface: #FFFFFF;
+      --line: #E2E5E9;
+      --text: #121316;
+      --muted: #6B7079;
+      --dim: #C3C7CD;
+      --canvas-shadow: 0 1px 2px rgba(16, 24, 40, .025), 0 24px 64px -32px rgba(16, 24, 40, .07);
+      --soft-shadow: 0 1px 2px rgba(16, 24, 40, .03), 0 6px 18px -8px rgba(16, 24, 40, .07);
+      --card-shadow: 0 1px 2px rgba(16, 24, 40, .03), 0 12px 32px -16px rgba(16, 24, 40, .07), 0 32px 72px -32px rgba(16, 24, 40, .08);
+      --green-ink: #2F7D12;      /* bright green is too faint as text on light (about 1.4:1); this is about 5:1 */
+      --nav-bg: rgba(248, 249, 250, .82);
+      --tint: 248, 249, 250;
+      color-scheme: light;
+    }
+    body { transition: background-color .4s var(--ease), color .4s var(--ease); }
 
     *, *::before, *::after { box-sizing: border-box; }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
@@ -46,30 +90,102 @@
     }
     a { color: inherit; text-decoration: none; }
     img { display: block; max-width: 100%; }
-    ::selection { background: var(--green); color: var(--bg); }
-    :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; border-radius: 4px; }
+    ::selection { background: var(--green); color: #0A0A0A; }
+    :focus-visible { outline: 2px solid var(--green-ink); outline-offset: 3px; border-radius: 4px; }
 
-    /* ---------- Header ---------- */
-    .nav {
-      position: fixed; inset: 0 0 auto 0; z-index: 10;
-      display: flex; align-items: center; justify-content: space-between; gap: 16px;
-      padding: 28px var(--gutter);
-      transition: padding .3s var(--ease), background .3s var(--ease), border-color .3s var(--ease);
-      border-bottom: 1px solid transparent;
+    /* ---------- Side navigation ---------- */
+    /* --frame: canvas inset from the window; --pad-x: hero/contact side padding (clears the sidebar on both sides, so content is centred on the page);
+       --w: the width the headline has to fit in */
+    :root { --side: 280px; --frame: 12px; --pad-x: calc(var(--side) + 24px); --w: calc(100vw - 2 * var(--frame) - 2 * var(--pad-x)); }
+    .canvas { margin: var(--frame); border-radius: 24px; background: var(--canvas); box-shadow: var(--canvas-shadow); overflow: clip;
+      transition: background-color .4s var(--ease), box-shadow .4s var(--ease); }
+    .side {
+      position: fixed; inset: var(--frame) auto var(--frame) var(--frame); z-index: 10; width: var(--side);
+      display: flex; flex-direction: column; padding: 40px 32px;
+      background: transparent; transition: background-color .4s var(--ease), translate .45s var(--ease);
     }
-    .nav.scrolled {
-      padding-block: 16px;
-      background: rgba(10, 10, 10, .72);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom-color: var(--line);
+    .brand { font-weight: 600; font-size: 18px; letter-spacing: .02em; white-space: nowrap; }
+    .brand span { color: var(--green-ink); }
+    /* the nav fills the sidebar's height, so an open Work card can stretch to the space left above Contact */
+    .side nav { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+    .menu { list-style: none; margin: 48px 0 28px; padding: 0; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+    .work { display: flex; flex-direction: column; min-height: 0; flex: 0 1 auto; }
+    .work.open { flex: 1 1 0; }
+    .menu > li + li { margin-top: 30px; }
+    /* optically even: HOME -> Work and the last square -> Contact are both 38px, letter to letter */
+    .menu > li.work { margin-top: 27px; }
+    .menu > li.work + li { margin-top: 33px; }
+    .menu a, .menu .label {
+      display: inline-block; font-size: 20px; line-height: 1.2; letter-spacing: -.005em; color: var(--muted);
+      transition: color .2s var(--ease);
     }
-    .brand {
-      font-weight: 500; font-size: clamp(16px, 1.6vw, 22px); letter-spacing: .02em; white-space: nowrap;
+    .menu a:hover { color: var(--text); }
+    .menu a.on { color: var(--text); font-weight: 600; text-transform: uppercase; letter-spacing: .02em; }   /* the section in view */
+    /* the five squares under Work: one per case study (placeholders until the work is added) */
+.work-btn { align-self: flex-start; padding: 0; border: 0; background: none; font: inherit; text-align: left; cursor: pointer; }
+    .work.open .work-btn { color: var(--text); }
+    /* closed: one square per case study; open: the case-study card. Both sit in a box whose height animates (0fr -> 1fr) */
+    .fold { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .5s var(--ease), margin .5s var(--ease); }
+    .fold > * { min-height: 0; overflow: hidden; }
+    .dots-fold { margin-top: 20px; }
+    .work.open .dots-fold { grid-template-rows: 0fr; margin-top: 0; }
+    .dots { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; transition: opacity .25s var(--ease), translate .35s var(--ease); }
+    .work.open .dots { opacity: 0; translate: 0 -6px; }
+    .dots li { width: 12px; height: 12px; background: var(--dim); }
+    /* the card's box grows from nothing to fill the free height (flex-grow 0 -> 1) */
+    .card-fold { flex: 0 0 0; min-height: 0; transition: flex-grow .55s var(--ease), margin .55s var(--ease); }
+    .work.open .card-fold { flex: 1 1 0; margin-top: 14px; }
+    .card-fold > div { width: calc(var(--side) - 24px); height: 100%; }   /* as wide as possible while ending 16px before the hero's content */
+    .work.shown .card-fold > div { overflow: visible; }     /* once open, let the soft shadow show */
+    .cases {
+      position: relative; height: 100%; display: flex; flex-direction: column;
+      background: var(--card); border-radius: 14px; padding: 16px 20px 0;
+      box-shadow: var(--card-shadow);
+      opacity: 0; scale: .97; transform-origin: top left;
+      transition: opacity .35s var(--ease), scale .5s var(--ease), background-color .4s var(--ease);
     }
-    .brand span { color: var(--green); }
+    .work.open .cases { opacity: 1; scale: 1; }
+    .cases .kicker { display: block; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+:root:not([data-theme="light"]) .cases { box-shadow: 0 1px 0 rgba(255, 255, 255, .04) inset, 0 12px 32px -8px rgba(0, 0, 0, .7); }
+    /* the list scrolls inside the card; its bottom fades while there is more below */
+    .cases-scroll {
+      flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none;
+      -webkit-mask: linear-gradient(#000 calc(100% - 48px), transparent); mask: linear-gradient(#000 calc(100% - 48px), transparent);
+    }
+    .cases-scroll::-webkit-scrollbar { display: none; }
+    .cases.end .cases-scroll { -webkit-mask: none; mask: none; }
+    .cases ul { list-style: none; margin: 0; padding: 0; }
+    /* "N more": down arrow + count of case studies below the visible part */
+    .more {
+      display: flex; align-items: center; gap: 6px; width: 100%; padding: 8px 0 12px; border: 0; background: none;
+      font: inherit; font-size: 12px; color: var(--muted); cursor: pointer; transition: color .2s var(--ease), opacity .3s var(--ease);
+    }
+    .more:hover { color: var(--text); }
+    .more svg { width: 10px; height: 10px; animation: nudge 1.6s var(--ease) infinite; }
+    @keyframes nudge { 0%, 100% { translate: 0 0; } 50% { translate: 0 3px; } }
+    .cases.end .more { opacity: 0; pointer-events: none; }
+    .cases li + li { border-top: 1px solid var(--line); }
+    .cases a { display: block; padding: 10px 0 14px; }
+    .cases h3 { margin: 0; font-size: 22px; font-weight: 400; line-height: 1.18; letter-spacing: -.015em; text-wrap: balance; color: var(--text); transition: color .2s var(--ease); }
+    .cases p { margin: 8px 0 0; font-size: 14px; line-height: 1.45; text-wrap: pretty; color: var(--muted); }
+    .cases a:hover h3, .cases a:focus-visible h3 { color: var(--green-ink); }
+    /* each case study rises in after the one before */
+    .cases .kicker, .cases li { opacity: 0; translate: 0 10px; transition: opacity .4s var(--ease), translate .5s var(--ease); }
+    .work.open .cases .kicker, .work.open .cases li { opacity: 1; translate: 0 0; }
+    .work.open .cases .kicker { transition-delay: .08s; }
+    .work.open .cases li:nth-child(1) { transition-delay: .14s; }
+    .work.open .cases li:nth-child(2) { transition-delay: .2s; }
+    .work.open .cases li:nth-child(3) { transition-delay: .26s; }
+    /* sidebar: the round button with its label, as one control */
+    .theme-row {
+      margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 12px;
+      padding: 0; border: 0; background: none; font: inherit; font-size: 14px; letter-spacing: -.005em; color: var(--muted); cursor: pointer;
+      transition: color .2s var(--ease);
+    }
+    .theme-row:hover { color: var(--text); }
+    .theme-row:hover .theme { border-color: var(--green-ink); color: var(--green-ink); transform: translateY(-1px); }
+    .menu-btn, .topbar { display: none; }
     .social { display: flex; align-items: center; gap: 12px; font-size: clamp(14px, 1.5vw, 20px); }
-    .social .label { color: var(--text); }
     .pill {
       display: inline-flex; align-items: center; gap: 8px;
       background: var(--blue); color: #fff;
@@ -78,51 +194,50 @@
     }
     .pill:hover { background: var(--blue-hover); transform: translateY(-1px); }
     .pill svg { width: 14px; height: 14px; }
-    .handle { color: var(--text); opacity: .9; transition: color .2s; }
-    .handle:hover { color: var(--green); }
+    /* theme switch: sun in dark (switch to light), moon in light */
+    .theme {
+      display: inline-grid; place-items: center; flex: none;
+      width: 38px; height: 38px; padding: 0; border-radius: 999px;
+      border: 1px solid var(--line); background: var(--card); color: var(--text); cursor: pointer; box-shadow: var(--soft-shadow);
+      transition: border-color .2s, color .2s, transform .2s var(--ease), background-color .4s var(--ease);
+    }
+    .theme:hover { border-color: var(--green-ink); color: var(--green-ink); transform: translateY(-1px); }
+    .theme svg { width: 18px; height: 18px; grid-area: 1 / 1; transition: opacity .3s var(--ease), transform .4s var(--ease); }
+    .theme .moon { opacity: 0; transform: rotate(-90deg) scale(.6); }
+    :root[data-theme="light"] .theme .sun { opacity: 0; transform: rotate(90deg) scale(.6); }
+    :root[data-theme="light"] .theme .moon { opacity: 1; transform: none; }
 
     /* ---------- Hero ---------- */
     .hero {
-      position: relative; min-height: 100svh;
+      position: relative; min-height: calc(100svh - 2 * var(--frame));
       display: grid; place-items: center; text-align: center;
-      padding: 140px var(--gutter) 120px;
+      padding: 120px var(--pad-x) 120px;
       isolation: isolate;
     }
-    /* Pixel grid that lights up under the cursor */
-    .grid {
-      position: absolute; inset: 0; z-index: -1; pointer-events: none;
-      background-image: radial-gradient(circle, #2a2a2a 1px, transparent 1.2px);
-      background-size: 24px 24px;
-      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 20%, transparent 75%);
-              mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 20%, transparent 75%);
-    }
-    .grid::after {
-      content: ""; position: absolute; inset: 0;
-      background-image: radial-gradient(circle, var(--green) 1.2px, transparent 1.4px);
-      background-size: 24px 24px;
-      opacity: 0; transition: opacity .4s;
-      -webkit-mask-image: radial-gradient(180px circle at var(--mx, 50%) var(--my, 50%), #000, transparent 70%);
-              mask-image: radial-gradient(180px circle at var(--mx, 50%) var(--my, 50%), #000, transparent 70%);
-    }
-    .hero:hover .grid::after { opacity: .55; }
 
     .headline { margin: 0; font-weight: 400; line-height: 1.08; }
     .headline .line { display: block; }
-    .l1, .l3 { font-size: clamp(36px, 5.2vw, 80px); letter-spacing: -.01em; font-weight: 300; }
+    .l1, .l3 { font-size: clamp(32px, calc(var(--w) * .0712), 90px); letter-spacing: -.02em; font-weight: 300; }
     .l2 {
-      font-family: var(--pixel); font-weight: 700;
-      font-size: clamp(30px, 5.8vw, 100px);
-      letter-spacing: 0; line-height: 1.1;
-      margin: .12em 0 .08em;
+      font-family: var(--display); font-weight: 400;
+      font-size: clamp(30px, calc(var(--w) * .0782), 100px);
+      letter-spacing: 0; line-height: 1.1; white-space: nowrap;
+      margin: .142em 0 -.026em;   /* evens the optical gaps above and below (the two fonts sit differently in their line boxes) */
     }
     .l2 .ch { display: inline-block; text-align: center; }
     .l2 .ch.scrambling { color: var(--muted); }
-    .obvious { color: var(--green); font-weight: 400; }
+    /* "Obvious." matches "FEEL" (same size, weight, colour) on a #AAFF66 marker */
+    .obvious, .contact .big em {
+      font-family: var(--sans); font-style: normal; font-weight: 300; letter-spacing: -.02em;
+      color: var(--on-highlight); background: var(--highlight);
+      display: inline-block; line-height: .98; padding: .04em .12em .1em; margin-left: .03em; border-radius: .14em;   /* a snug marker, not the font's full line box */
+    }
+    :root[data-theme="light"] .obvious, :root[data-theme="light"] .contact .big em { color: var(--text); }
 
     .tagline {
       display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
       gap: 14px 22px; margin-top: clamp(28px, 3.4vw, 44px);
-      font-size: clamp(16px, 1.6vw, 22px); font-weight: 400;
+      font-size: clamp(15px, calc(var(--w) * .0272), 22px); font-weight: 400; letter-spacing: -.005em;
     }
     /* Pill-shaped image slot: drop an <img> inside .photo */
     .photo {
@@ -135,7 +250,7 @@
     /* 3D glass spark */
     .spark {
       flex: none; width: 60px; height: 60px; overflow: visible;
-      filter: drop-shadow(0 6px 14px rgba(120, 230, 70, .35));
+      filter: drop-shadow(0 6px 14px var(--sp-shadow));
       animation: float 5s ease-in-out infinite;
     }
     /* Tool cards orbiting the spark: 8 curved cards, the 4 images repeat (1 2 3 4 1 2 3 4).
@@ -149,9 +264,11 @@
       position: relative; flex: none;
       width: calc(var(--r) * 2 + var(--card)); height: 150px;
       display: grid; place-items: center;
-      perspective: 900px; transform-style: preserve-3d;
+      perspective: 900px;   /* flat: the star stays out of the cards' 3D scene, so its glow isn't clipped to a square */
     }
     .orbit > * { grid-area: 1 / 1; }
+    .orbit .spark { position: relative; z-index: 0; }
+    .orbit .tilt { z-index: 1; }   /* the cards (front sides only; the back sides are hidden) pass over the star */
     /* .tilt holds the ring's angle and a gentle float; .ring spins at a constant speed */
     .tilt, .ring { display: block; position: relative; width: var(--card); height: var(--card); transform-style: preserve-3d; }
     .tilt {
@@ -177,7 +294,7 @@
     .slice i {
       position: absolute; inset: 0;
       background:
-        linear-gradient(rgba(10, 10, 10, var(--depth, 0)), rgba(10, 10, 10, var(--depth, 0))),
+        linear-gradient(rgba(var(--tint), var(--depth, 0)), rgba(var(--tint), var(--depth, 0))),
         linear-gradient(rgba(0, 0, 0, var(--shade, 0)), rgba(0, 0, 0, var(--shade, 0))),
         var(--img) var(--bx) 0 / var(--card) 100% no-repeat,
         var(--fill);
@@ -185,31 +302,47 @@
               mask: var(--corner) var(--bx) 0 / var(--card) 100% no-repeat;
       backface-visibility: hidden; -webkit-backface-visibility: hidden;
     }
-    /* Inner side of a card: only ever seen on the far side of the ring, so it is
-       always dimmed and softly blurred. Darkening (not opacity) keeps slice overlaps seamless. */
-    .slice i + i { transform: rotateY(180deg); --bx: var(--bx-back); --depth: .55; filter: blur(1px); }
+    /* Inner side of a card (seen only on the far side of the ring, behind the star): hidden, so cards vanish as they pass behind */
+    .slice i + i { display: none; }
 
     @keyframes float {
       0%, 100% { transform: translateY(0) rotate(0deg); }
       50%      { transform: translateY(-4px) rotate(8deg); }
     }
 
-    .eyebrow { font-family: var(--pixel); font-weight: 500; font-size: 14px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
-    section.block { padding: clamp(80px, 11vw, 160px) var(--gutter); }
+    /* "Scroll to see work": bottom centre of the first screen */
+    .scroll-hint {
+      position: absolute; left: 50%; bottom: clamp(24px, 4vh, 44px); translate: -50% 0;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      color: var(--text); font-size: 14px; letter-spacing: .01em; white-space: nowrap;
+      transition: opacity .2s, translate .3s var(--ease);
+    }
+    .scroll-hint:hover { translate: -50% 3px; }
+    .scroll-hint svg { width: 22px; height: auto; overflow: visible; }
+    .scroll-hint .wheel { animation: wheel 1.8s var(--ease) infinite; }
+    @keyframes wheel {
+      0%   { transform: translateY(0); opacity: 1; }
+      60%  { transform: translateY(5px); opacity: 0; }
+      61%  { transform: translateY(0); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+    /* role title above the hero headline */
+    .role { margin: 0 0 clamp(18px, calc(var(--w) * .036), 36px); font-size: clamp(12px, calc(var(--w) * .0165), 15px); }
+    section.block { padding: clamp(80px, 11vw, 160px) var(--pad-x); }
 
     /* Contact */
     .contact { text-align: center; border-top: 1px solid var(--line); }
     .contact .big {
-      font-family: var(--pixel); font-weight: 700;
-      font-size: clamp(34px, 7vw, 112px); line-height: 1.05; margin: 20px 0 36px;
+      font-family: var(--display); font-weight: 400; text-wrap: balance;
+      font-size: clamp(34px, calc(var(--w) * .07), 96px); line-height: 1.1; margin: 20px 0 40px;
     }
-    .contact .big em { font-family: var(--sans); font-style: normal; font-weight: 300; color: var(--green); }
-    .contact .pill { font-size: 18px; padding: 14px 28px; }
+    .contact .pill { font-size: 17px; font-weight: 500; letter-spacing: -.005em; padding: 14px 28px; }
 
     footer {
       display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-      padding: 28px var(--gutter); border-top: 1px solid var(--line);
-      color: var(--muted); font-size: 13px;
+      padding: 28px var(--pad-x); border-top: 1px solid var(--line);
+      color: var(--muted); font-size: 13px; letter-spacing: .005em;
     }
 
     /* Reveal on scroll */
@@ -218,9 +351,24 @@
     .hero .reveal { transition-delay: calc(var(--d, 0) * 120ms); }
 
     /* ---------- Responsive ---------- */
+    @media (max-width: 1100px) {
+      :root { --side: 0px; --frame: 0px; --pad-x: var(--gutter); }
+      .canvas { border-radius: 0; }
+      .side { background: var(--canvas); }
+      .topbar {
+        display: flex; align-items: center; gap: 12px; position: fixed; inset: 0 0 auto 0; z-index: 11;
+        padding: 16px var(--gutter); background: var(--nav-bg); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      }
+      .topbar .brand { margin-right: auto; }
+      .menu-btn { display: inline-grid; place-items: center; width: 38px; height: 38px; padding: 0; border-radius: 999px;
+        border: 1px solid var(--line); background: transparent; color: var(--text); cursor: pointer; }
+      .menu-btn svg { width: 18px; height: 18px; }
+      .side { inset: 0 auto 0 0; width: min(300px, 82vw); z-index: 12; translate: -100% 0; box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0); transition: translate .45s var(--ease), box-shadow .45s var(--ease), background-color .4s; }
+      .side.open { translate: 0 0; box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .35); }
+      .side .theme-row { display: none; }   /* on phones it sits in the top bar */
+      .card-fold > div { width: auto; }
+    }
     @media (max-width: 640px) {
-      .nav { padding-block: 18px; }
-      .social .label, .handle { display: none; }
       .pill { padding: 7px 16px; }
       .l2 { font-size: clamp(30px, 10.6vw, 56px); }
       .l2 .word { display: block; }
@@ -228,29 +376,6 @@
       .spark { width: 48px; height: 48px; }
       .orbit { --r: 48px; --card: 30px; height: 116px; }
       .tagline { flex-direction: column; gap: 14px; }
-    }
-    /* ---------- Pixel cursor ---------- */
-    /* Only for mouse/trackpad; the script adds .has-px-cursor once it's running */
-    .px-cursor { display: none; }
-    @media (hover: hover) and (pointer: fine) {
-      .has-px-cursor, .has-px-cursor * { cursor: none !important; }
-      .has-px-cursor .px-cursor {
-        display: block; position: fixed; left: 0; top: 0; z-index: 9999;
-        pointer-events: none;
-        opacity: 0; transition: opacity .2s;
-        will-change: transform;
-      }
-      .has-px-cursor .px-cursor.on { opacity: 1; }
-      .px-cursor svg {
-        --s: 1;
-        display: block; width: 44px; height: auto; overflow: visible;
-        transform-origin: 0 0; /* tilt and scale pivot on the arrow's tip, so clicks stay exact */
-        transform: perspective(320px) rotateX(10deg) rotateY(-16deg) scale(var(--s));
-        transition: transform .18s var(--ease), filter .25s;
-        filter: drop-shadow(0 0 4px rgba(166, 243, 106, .45)) drop-shadow(2px 4px 4px rgba(0, 0, 0, .55));
-      }
-      .px-cursor.hover svg { --s: 1.12; filter: drop-shadow(0 0 8px rgba(166, 243, 106, .85)) drop-shadow(2px 4px 4px rgba(0, 0, 0, .55)); }
-      .px-cursor.down svg { --s: .9; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -262,21 +387,58 @@
 </head>
 <body>
 
-  <header class="nav" id="nav">
+  <!-- Phones: top bar with menu and theme buttons -->
+  <div class="topbar">
     <a class="brand" href="#top" aria-label="Amaan Baig, back to top">AMAAN BAIG<span>.</span></a>
-    <nav class="social" aria-label="Social">
-      <span class="label">Visit me on</span>
-      <a class="pill" href="https://www.linkedin.com/in/iamamaanbaig/" target="_blank" rel="noopener">Linkedin</a>
-      <a class="handle" href="https://www.linkedin.com/in/iamamaanbaig/" target="_blank" rel="noopener">@iamamaanbaig</a>
-    </nav>
-  </header>
+    <button class="theme" id="theme" type="button" aria-label="Switch to light theme">
+      <svg class="sun" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M7 7h4v4H7zM8 1h2v3H8zM8 14h2v3H8zM1 8h3v2H1zM14 8h3v2h-3zM3 3h2v2H3zM13 3h2v2h-2zM3 13h2v2H3zM13 13h2v2h-2z"/></svg>
+      <svg class="moon" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M7 2h4v1H9v1H8v2H7v4h1v2h1v1h2v1h3v1h-1v1h-2v1H7v-1H5v-1H4v-1H3v-2H2V7h1V5h1V4h1V3h2z"/></svg>
+    </button>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="side">
+      <svg viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M2 4h14v2H2zM2 8h14v2H2zM2 12h14v2H2z"/></svg>
+    </button>
+  </div>
 
+  <!-- Side navigation -->
+  <aside class="side" id="side">
+    <a class="brand" href="#top" aria-label="Amaan Baig, back to top">AMAAN BAIG<span>.</span></a>
+    <nav aria-label="Main">
+      <ul class="menu">
+        <li><a href="#top" class="on" data-spy="hero">Home</a></li>
+        <li class="work" id="work-menu">
+          <button class="label work-btn" type="button" aria-expanded="false" aria-controls="work-cases">Work</button>
+          <div class="fold dots-fold"><div><ul class="dots" aria-hidden="true"><li></li><li></li><li></li></ul></div></div>
+          <div class="fold card-fold"><div>
+            <div class="cases" id="work-cases">
+              <span class="kicker">Select Case Study</span>
+              <div class="cases-scroll"><ul>
+                <li><a href="#"><h3>Saved million dollar taxes</h3><p>By reducing errors in business processes and designing a system that helps users stick to process deadlines that cost heavy taxes.</p></a></li>
+                <li><a href="#"><h3>Reduce support calls</h3><p>By making the task of creating a new automation easy.</p></a></li>
+                <li><a href="#"><h3>Increase leads generation</h3></a></li>
+              </ul></div>
+              <button class="more" type="button" tabindex="-1"><svg viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M4 0h2v6h2v1H7v1H6v1H4V8H3V7H2V6h2z"/></svg><span></span></button>
+            </div>
+          </div></div>
+        </li>
+        <li><a href="#contact" data-spy="contact">Contact</a></li>
+      </ul>
+    </nav>
+    <button class="theme-row" id="theme2" type="button">
+      <span class="theme" aria-hidden="true">
+      <svg class="sun" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M7 7h4v4H7zM8 1h2v3H8zM8 14h2v3H8zM1 8h3v2H1zM14 8h3v2h-3zM3 3h2v2H3zM13 3h2v2h-2zM3 13h2v2H3zM13 13h2v2h-2z"/></svg>
+      <svg class="moon" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M7 2h4v1H9v1H8v2H7v4h1v2h1v1h2v1h3v1h-1v1h-2v1H7v-1H5v-1H4v-1H3v-2H2V7h1V5h1V4h1V3h2z"/></svg>
+      </span>
+      <span class="theme-label">Switch to light theme</span>
+    </button>
+  </aside>
+
+  <div class="canvas">
   <main id="top">
     <!-- ================= HERO ================= -->
     <section class="hero" id="hero" aria-label="Introduction">
-      <div class="grid" aria-hidden="true"></div>
 
       <div>
+        <p class="role eyebrow reveal" style="--d:0">UX &amp; Product Designer</p>
         <h1 class="headline">
           <span class="line l1 reveal" style="--d:0">I MAKE</span>
           <span class="line l2 reveal" style="--d:1" id="complex" aria-label="Complicated software">
@@ -297,15 +459,15 @@
               <defs>
                 <!-- green liquid inside the glass -->
                 <radialGradient id="sparkCore" cx="56%" cy="60%" r="58%">
-                  <stop offset="0" stop-color="#F2FFDC"/>
-                  <stop offset=".22" stop-color="#C4FB8C"/>
-                  <stop offset=".55" stop-color="#6FD83A"/>
-                  <stop offset="1" stop-color="#1B5E12"/>
+                  <stop offset="0" stop-color="#F2FFDC" style="stop-color: var(--sp-1)"/>
+                  <stop offset=".22" stop-color="#C4FB8C" style="stop-color: var(--sp-2)"/>
+                  <stop offset=".55" stop-color="#6FD83A" style="stop-color: var(--sp-3)"/>
+                  <stop offset="1" stop-color="#1B5E12" style="stop-color: var(--sp-4)"/>
                 </radialGradient>
                 <!-- shade on the lower-right faces for volume -->
                 <linearGradient id="sparkShade" x1="20%" y1="20%" x2="85%" y2="90%">
-                  <stop offset=".45" stop-color="#0B2A06" stop-opacity="0"/>
-                  <stop offset="1" stop-color="#0B2A06" stop-opacity=".55"/>
+                  <stop offset=".45" stop-color="#0B2A06" stop-opacity="0" style="stop-color: var(--sp-shade)"/>
+                  <stop offset="1" stop-color="#0B2A06" stop-opacity=".55" style="stop-color: var(--sp-shade)"/>
                 </linearGradient>
                 <!-- glass sheen on the upper-left faces -->
                 <linearGradient id="sparkSheen" x1="10%" y1="5%" x2="60%" y2="60%">
@@ -316,12 +478,12 @@
                 <!-- rim light -->
                 <linearGradient id="sparkRim" x1="0" y1="0" x2="1" y2="1">
                   <stop offset="0" stop-color="#fff" stop-opacity="1"/>
-                  <stop offset=".5" stop-color="#E8FFD0" stop-opacity=".25"/>
-                  <stop offset="1" stop-color="#C8FF96" stop-opacity=".8"/>
+                  <stop offset=".5" stop-color="#E8FFD0" stop-opacity=".25" style="stop-color: var(--sp-rim-1)"/>
+                  <stop offset="1" stop-color="#C8FF96" stop-opacity=".8" style="stop-color: var(--sp-rim-2)"/>
                 </linearGradient>
                 <radialGradient id="sparkGlow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0" stop-color="#FAFFF0" stop-opacity=".95"/>
-                  <stop offset="1" stop-color="#B9FA7C" stop-opacity="0"/>
+                  <stop offset="0" stop-color="#FAFFF0" stop-opacity=".95" style="stop-color: var(--sp-glow-1)"/>
+                  <stop offset="1" stop-color="#B9FA7C" stop-opacity="0" style="stop-color: var(--sp-glow-2)"/>
                 </radialGradient>
                 <filter id="sparkSoft" x="-30%" y="-30%" width="160%" height="160%">
                   <feGaussianBlur stdDeviation="2.2"/>
@@ -336,7 +498,7 @@
                 <!-- upper-left facets catch the light -->
                 <path d="M50 3C55 33 67 45 97 50H50Z M3 50C33 45 45 33 50 3V50Z" fill="url(#sparkSheen)"/>
                 <!-- darker inner edge -->
-                <path d="M50 3C55 33 67 45 97 50 67 55 55 67 50 97 45 67 33 55 3 50 33 45 45 33 50 3Z" fill="none" stroke="#0E3A08" stroke-opacity=".45" stroke-width="5" filter="url(#sparkSoft)"/>
+                <path d="M50 3C55 33 67 45 97 50 67 55 55 67 50 97 45 67 33 55 3 50 33 45 45 33 50 3Z" fill="none" stroke="#0E3A08" style="stroke: var(--sp-edge)" stroke-opacity=".45" stroke-width="5" filter="url(#sparkSoft)"/>
               </g>
               <path d="M50 3C55 33 67 45 97 50 67 55 55 67 50 97 45 67 33 55 3 50 33 45 45 33 50 3Z" fill="none" stroke="url(#sparkRim)" stroke-width="1.2"/>
               <!-- specular highlights -->
@@ -349,13 +511,21 @@
           <span>AI for speed.</span>
         </div>
       </div>
+
+      <a class="scroll-hint" href="#contact">
+        <svg viewBox="0 0 22 34" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <rect x=".75" y=".75" width="20.5" height="32.5" rx="10.25"/>
+          <path class="wheel" d="M11 8v6" stroke-linecap="round"/>
+        </svg>
+        Scroll to see work
+      </a>
     </section>
 
     <!-- ================= CONTACT ================= -->
     <section class="block contact" id="contact" aria-labelledby="contact-title">
       <span class="eyebrow reveal">Got something complicated?</span>
-      <h2 class="big reveal" id="contact-title">LET'S MAKE IT <em>obvious.</em></h2>
-      <a class="pill reveal" href="https://www.linkedin.com/in/iamamaanbaig/" target="_blank" rel="noopener">Say hi on Linkedin ↗</a>
+      <h2 class="big reveal" id="contact-title">LET’S MAKE IT <em>obvious.</em></h2>
+      <a class="pill reveal" href="https://www.linkedin.com/in/iamamaanbaig/" target="_blank" rel="noopener">Say hi on LinkedIn ↗</a>
     </section>
   </main>
 
@@ -363,114 +533,86 @@
     <span>© <span id="year">2026</span> Amaan Baig</span>
     <span>Designed with judgment, built with speed.</span>
   </footer>
+  </div>
 
-  <!-- Pixel cursor: glass cubes laid out as a classic arrow (built by the script below) -->
-  <div class="px-cursor" id="pxCursor" aria-hidden="true"></div>
 
   <script>
     (function () {
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       document.getElementById('year').textContent = new Date().getFullYear();
 
-      /* Pixel cursor: a 3D block arrow of glass cubes.
-         X = green glass rim cube, o = frosted white cube, space = empty. The tip is the top-left cube. */
+      // Theme switch: remembers the choice; follows the system setting until one is made
       (function () {
-        if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-        var MAP = [
-          'X',
-          'XX',
-          'XoX',
-          'XooX',
-          'XoooX',
-          'XooooX',
-          'XoooooX',
-          'XooooooX',
-          'XoooooooX',
-          'XooooooooX',
-          'XoooooooooX',
-          'XooooooXXXXX',
-          'XoooXooX',
-          'XooX XooX',
-          'XoX  XooX',
-          'XX    XooX',
-          'X     XooX',
-          '       XooX',
-          '       XooX',
-          '        XX'
-        ];
-        var U = 10, D = 4; // cube size and extrusion depth, in SVG units
-        var at = function (x, y) { return (MAP[y] || '').charAt(x) || ' '; };
-        var solid = function (x, y) { var c = at(x, y); return c === 'X' || c === 'o'; };
-        var sides = '', fronts = '';
-        MAP.forEach(function (row, y) {
-          row.split('').forEach(function (c, x) {
-            if (c === ' ') return;
-            var px = x * U, py = y * U, rim = c === 'X';
-            // side faces only where the neighbour is empty, drawn first so the front faces sit on top
-            if (!solid(x + 1, y)) sides += '<path d="M' + (px + U) + ' ' + py + 'l' + D + ' ' + D + 'v' + U + 'l' + -D + ' ' + -D + 'z" fill="url(#' + (rim ? 'pxSideG' : 'pxSideW') + ')"/>';
-            if (!solid(x, y + 1)) sides += '<path d="M' + px + ' ' + (py + U) + 'h' + U + 'l' + D + ' ' + D + 'h' + -U + 'z" fill="url(#' + (rim ? 'pxBottomG' : 'pxBottomW') + ')"/>';
-            fronts += '<use href="#' + (rim ? 'pxRim' : 'pxFill') + '" x="' + px + '" y="' + py + '" width="' + U + '" height="' + U + '"/>';
+        var root = document.documentElement, btns = [document.getElementById('theme'), document.getElementById('theme2')], meta = document.querySelector('meta[name="theme-color"]');
+        function show(t) {
+          root.dataset.theme = t;
+          var label = 'Switch to ' + (t === 'light' ? 'dark' : 'light') + ' theme';
+          btns.forEach(function (b) { var l = b.querySelector('.theme-label'); if (l) l.textContent = label; else b.setAttribute('aria-label', label); });
+          meta.setAttribute('content', t === 'light' ? '#E9EBEE' : '#0A0A0A');
+        }
+        show(root.dataset.theme);
+        btns.forEach(function (b) {
+          b.addEventListener('click', function () {
+            var t = root.dataset.theme === 'light' ? 'dark' : 'light';
+            show(t); try { localStorage.setItem('theme', t); } catch (e) {}
           });
         });
-        var W = 12 * U + D, H = MAP.length * U + D;
-        var el = document.getElementById('pxCursor');
-        el.innerHTML =
-          '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">' +
-            '<defs>' +
-              // green glass: glowing core, see-through towards the edges
-              '<radialGradient id="pxGlass" cx="42%" cy="38%" r="75%">' +
-                '<stop offset="0" stop-color="#E6FFCC"/><stop offset=".35" stop-color="#A6F36A" stop-opacity=".95"/>' +
-                '<stop offset=".8" stop-color="#3C9E22" stop-opacity=".8"/><stop offset="1" stop-color="#1B5E12" stop-opacity=".75"/>' +
-              '</radialGradient>' +
-              // frosted white glass with a faint green glow
-              '<radialGradient id="pxFrost" cx="40%" cy="35%" r="80%">' +
-                '<stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#EEF6EA"/><stop offset="1" stop-color="#CCDCC6"/>' +
-              '</radialGradient>' +
-              '<radialGradient id="pxInner" cx="50%" cy="50%" r="50%">' +
-                '<stop offset="0" stop-color="#C8FF96" stop-opacity=".35"/><stop offset="1" stop-color="#C8FF96" stop-opacity="0"/>' +
-              '</radialGradient>' +
-              '<linearGradient id="pxSideG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4DB52B"/><stop offset="1" stop-color="#1E6613"/></linearGradient>' +
-              '<linearGradient id="pxBottomG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2E8A1B"/><stop offset="1" stop-color="#14480C"/></linearGradient>' +
-              '<linearGradient id="pxSideW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9D6C3"/><stop offset="1" stop-color="#9FB09A"/></linearGradient>' +
-              '<linearGradient id="pxBottomW" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#AEBDA8"/><stop offset="1" stop-color="#8A9B85"/></linearGradient>' +
-              // one green glass rim cube
-              '<symbol id="pxRim" viewBox="0 0 10 10">' +
-                '<rect width="10" height="10" fill="url(#pxGlass)"/>' +
-                '<path d="M0 0H10L9 1H1V9L0 10Z" fill="#fff" fill-opacity=".4"/>' +              // lit top/left bevel
-                '<path d="M10 0V10H0L1 9H9V1Z" fill="#0B2A06" fill-opacity=".35"/>' +            // shaded bottom/right bevel
-                '<rect x="2" y="1.8" width="3.2" height="1.1" rx=".5" fill="#fff" fill-opacity=".85"/>' + // glint
-                '<rect x=".25" y=".25" width="9.5" height="9.5" fill="none" stroke="#E8FFD4" stroke-opacity=".45" stroke-width=".5"/>' +
-              '</symbol>' +
-              // one frosted white cube
-              '<symbol id="pxFill" viewBox="0 0 10 10">' +
-                '<rect width="10" height="10" fill="url(#pxFrost)"/>' +
-                '<rect width="10" height="10" fill="url(#pxInner)"/>' +
-                '<path d="M10 0V10H0L1 9H9V1Z" fill="#6E7F69" fill-opacity=".25"/>' +
-                '<rect x=".25" y=".25" width="9.5" height="9.5" fill="none" stroke="#8FA08A" stroke-opacity=".45" stroke-width=".5"/>' +
-              '</symbol>' +
-            '</defs>' + sides + fronts +
-          '</svg>';
-        document.documentElement.classList.add('has-px-cursor');
-
-        var x = 0, y = 0, queued = false;
-        function place() { queued = false; el.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)'; }
-        document.addEventListener('pointermove', function (e) {
-          if (e.pointerType && e.pointerType !== 'mouse') return;
-          x = e.clientX; y = e.clientY;
-          el.classList.add('on');
-          el.classList.toggle('hover', !!(e.target.closest && e.target.closest('a, button, [role="button"], .photo')));
-          if (!queued) { queued = true; requestAnimationFrame(place); }
-        }, { passive: true });
-        document.addEventListener('pointerdown', function () { el.classList.add('down'); });
-        document.addEventListener('pointerup', function () { el.classList.remove('down'); });
-        document.documentElement.addEventListener('mouseleave', function () { el.classList.remove('on'); });
+        matchMedia('(prefers-color-scheme: light)').addEventListener('change', function (e) {
+          var saved = null; try { saved = localStorage.getItem('theme'); } catch (err) {}
+          if (!saved) show(e.matches ? 'light' : 'dark');
+        });
       })();
 
-      /* Header shrinks after scrolling */
-      var nav = document.getElementById('nav');
-      var onScroll = function () { nav.classList.toggle('scrolled', window.scrollY > 24); };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
+
+      /* Side navigation: the section in view is highlighted; on phones the menu button slides it in */
+      (function () {
+        var links = [].slice.call(document.querySelectorAll('.menu a[data-spy]'));
+        var side = document.getElementById('side'), btn = document.getElementById('menuBtn');
+        function spy() {
+          var mid = window.innerHeight * .45, current = links[0];
+          links.forEach(function (a) { var sec = document.getElementById(a.dataset.spy); if (sec && sec.getBoundingClientRect().top <= mid) current = a; });
+          links.forEach(function (a) { a.classList.toggle('on', a === current); if (a === current) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+        }
+        window.addEventListener('scroll', spy, { passive: true }); spy();
+
+        // Work: hovering (or focusing, or tapping "Work") opens the case-study card; leaving closes it
+        var work = document.getElementById('work-menu'), workBtn = work.querySelector('.work-btn'), shut, shown;
+        function setWork(open) {
+          clearTimeout(shut);
+          work.classList.toggle('open', open); workBtn.setAttribute('aria-expanded', open);
+          work.querySelectorAll('.cases a').forEach(function (a) { a.tabIndex = open ? 0 : -1; });
+          clearTimeout(shown); work.classList.remove('shown');
+          if (open) shown = setTimeout(function () { work.classList.add('shown'); count(); }, 560);   // after the card has opened
+        }
+        // "N more": how many case studies are not fully in view; clicking scrolls to the next one
+        var scroller = work.querySelector('.cases-scroll'), card = work.querySelector('.cases'), more = work.querySelector('.more');
+        function below() {
+          var bottom = scroller.getBoundingClientRect().bottom + 1;   // fully in view = ends at or above the bottom edge
+          return [].filter.call(scroller.querySelectorAll('li'), function (li) { return li.getBoundingClientRect().bottom > bottom; });
+        }
+        function count() {
+          var n = below().length;
+          more.querySelector('span').textContent = n + ' more';
+          more.setAttribute('aria-label', 'Show ' + n + ' more case ' + (n === 1 ? 'study' : 'studies'));
+          card.classList.toggle('end', n === 0);
+        }
+        scroller.addEventListener('scroll', count, { passive: true });
+        window.addEventListener('resize', count);
+        more.addEventListener('click', function () {
+          var next = below()[0]; if (!next) return;
+          scroller.scrollBy({ top: next.getBoundingClientRect().top - scroller.getBoundingClientRect().top, behavior: 'smooth' });
+        });
+        setWork(false);
+        work.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') setWork(true); });
+        work.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') shut = setTimeout(function () { setWork(false); }, 250); });
+        workBtn.addEventListener('click', function () { setWork(!work.classList.contains('open')); });
+        work.addEventListener('focusout', function (e) { if (!work.contains(e.relatedTarget)) setWork(false); });
+        function setMenu(open) { side.classList.toggle('open', open); btn.setAttribute('aria-expanded', open); btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu'); }
+        btn.addEventListener('click', function () { setMenu(!side.classList.contains('open')); });
+        side.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
+        document.addEventListener('click', function (e) { if (side.classList.contains('open') && !side.contains(e.target) && !btn.contains(e.target)) setMenu(false); });
+      })();
 
       /* Reveal on scroll */
       var items = document.querySelectorAll('.reveal');
@@ -484,14 +626,6 @@
       } else {
         items.forEach(function (el) { el.classList.add('in'); });
       }
-
-      /* Cursor spotlight on the pixel grid */
-      var hero = document.getElementById('hero');
-      hero.addEventListener('pointermove', function (e) {
-        var r = hero.getBoundingClientRect();
-        hero.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-        hero.style.setProperty('--my', (e.clientY - r.top) + 'px');
-      });
 
       /* Tool cards orbiting the AI spark: builds 8 curved cards; the spin itself is a CSS animation */
       var orbit = document.getElementById('orbit');
