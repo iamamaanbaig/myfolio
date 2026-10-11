@@ -449,17 +449,17 @@
     .cs-cursor.on { opacity: 1; transform: translate(14px, 14px) scale(1); }
 
     /* ---------- Case-study preview card ----------
-       Hovering a case study in the Work card shows a card beside it (in the content area, top-aligned with the Work card);
+       Hovering a case study in the Work card shows a white card beside it (in the content area, centred on the screen);
        the hero text dissolves meanwhile. Mouse/trackpad only. The pointer can move onto the card, where the
        "View Case Study" pill follows it and a click opens the case study.
        Inside, the case study's device screens (Thumbnailimages/CSnimageK.png) are laid out on a 1440 x 800 stage, scaled to
        the card. They show in a resting layout and glide into the hover layout (zoom, straighten, slide apart) while the
        pointer is over the card. */
     .cs-preview {
-      position: fixed; z-index: 5; left: var(--pad-x); top: var(--cs-top, 200px);   /* --cs-top: the Work card's top, set on hover */
-      width: min(calc(100vw - 2 * var(--frame) - 2 * var(--pad-x)), calc((100vh - var(--cs-top, 200px) - 24px) * 1.8)); aspect-ratio: 1440 / 800;
-      overflow: hidden; scale: .97; transform-origin: 0 0; opacity: 0; pointer-events: none;
-      background: var(--card); box-shadow: 0 0 0 1px var(--line), var(--card-shadow);
+      position: fixed; z-index: 5; left: var(--pad-x); top: 50%; translate: 0 -50%;
+      width: min(calc(100vw - 2 * var(--frame) - 2 * var(--pad-x)), calc((100vh - 48px) * 1.8)); aspect-ratio: 1440 / 800;
+      overflow: hidden; scale: .97; transform-origin: 0 50%; opacity: 0; pointer-events: none;
+      background: #fff; box-shadow: 0 0 0 1px var(--line), var(--card-shadow);
       transition: opacity .35s var(--ease), scale .5s var(--ease);
     }
     :root:not([data-theme="light"]) .cs-preview { box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 32px 80px -24px rgba(0, 0, 0, .7); }
@@ -807,7 +807,6 @@
         function showPreview(i) {
           if (!canPreview) return;
           clearTimeout(playT); clearTimeout(hideT);
-          preview.style.setProperty('--cs-top', work.querySelector('.cases').getBoundingClientRect().top + 'px');
           fitStage();
           sets.forEach(function (set, k) {
             set.classList.toggle('on', k === i);
