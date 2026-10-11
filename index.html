@@ -246,12 +246,12 @@
     .l2 .ch { display: inline-block; text-align: center; }
     .l2 .ch.scrambling { color: var(--muted); }
     /* "Obvious." matches "FEEL" (same size, weight, colour) on a #AAFF66 marker */
-    .obvious, .contact .big em {
+    .obvious {
       font-family: var(--sans); font-style: normal; font-weight: 300; letter-spacing: -.02em;
       color: var(--on-highlight); background: var(--highlight);
       display: inline-block; line-height: .98; padding: .04em .12em .1em; margin-left: .03em;   /* a snug marker, not the font's full line box */
     }
-    :root[data-theme="light"] .obvious, :root[data-theme="light"] .contact .big em { color: var(--text); }
+    :root[data-theme="light"] .obvious { color: var(--text); }
 
     .tagline {
       display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
@@ -352,11 +352,33 @@
 
     /* Contact */
     .contact { text-align: center; border-top: 1px solid var(--line); }
-    .contact .big {
-      font-family: var(--display); font-weight: 400; text-wrap: balance;
-      font-size: clamp(34px, calc(var(--w) * .07), 96px); line-height: 1.1; margin: 20px 0 40px;
+    /* green square with a pixel "@", then the ask, the call and two big buttons; sizes follow --w like the hero */
+    /* spacing below matches the design letter-to-letter: 43 / 45 / 41 / 15px at 1440 */
+    .contact {
+      --c-ink: #FFFFFF; --c-handle: #747774; color: var(--c-ink); }   /* dark: colours sampled from the design */
+    :root[data-theme="light"] .contact { --c-ink: var(--text); --c-handle: var(--muted); }
+    .at { width: clamp(180px, calc(var(--w) * .507), 440px); margin: 0 auto clamp(20px, calc(var(--w) * .0457), 42px); }
+    .at svg { display: block; width: 100%; height: auto; }
+    .ask { margin: 0 0 clamp(10px, calc(var(--w) * .024), 22px); font-family: var(--display); font-weight: 400; line-height: 1; white-space: nowrap;
+      font-size: clamp(14px, calc(var(--w) * .065), 64px); }
+    .contact .big { margin: 0 0 clamp(18px, calc(var(--w) * .0397), 36px); font-family: var(--sans); font-weight: 400; line-height: 1; letter-spacing: .011em; white-space: nowrap;
+      font-size: clamp(24px, calc(var(--w) * .104), 104px); }
+    .links { --btn-h: clamp(48px, calc(var(--w) * .105), 92px); --vr-h: clamp(26px, calc(var(--w) * .048), 42px); display: flex; justify-content: center; align-items: flex-start; gap: clamp(14px, calc(var(--w) * .05), 46px); }
+    .link { --btn-w: clamp(124px, calc(var(--w) * .335), 300px); width: var(--btn-w); display: flex; flex-direction: column; align-items: center; gap: clamp(4px, calc(var(--w) * .006), 6px); }   /* as wide as its button; the caption centres under it and may run wider */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .28em;
+      width: var(--btn-w); height: var(--btn-h); border-radius: 999px; flex: none;
+      font-size: clamp(18px, calc(var(--w) * .052), 46px); font-weight: 400; letter-spacing: -.01em;
+      transition: transform .2s var(--ease), background-color .2s var(--ease), box-shadow .2s var(--ease);
     }
-    .contact .pill { font-size: 17px; font-weight: 500; letter-spacing: -.005em; padding: 14px 28px; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-li { background: #0066C8; color: #fff; }
+    .btn-li:hover { background: var(--blue-hover); }
+    .btn-mail { background: #fff; color: #5A5D5C; box-shadow: var(--soft-shadow); }
+    :root[data-theme="light"] .btn-mail { box-shadow: 0 0 0 1px var(--line), var(--soft-shadow); }
+    .btn-mail .gm { height: .82em; width: auto; }
+    .vr { align-self: flex-start; width: 1px; height: var(--vr-h); margin-top: calc((var(--btn-h) - var(--vr-h)) / 2); background: var(--c-ink); opacity: .95; }   /* centred on the buttons */
+    .handle { font-size: clamp(11px, calc(var(--w) * .0286), 24px); white-space: nowrap; color: var(--c-handle); letter-spacing: .01em; }
 
     footer {
       display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
@@ -544,9 +566,20 @@
 
     <!-- ================= CONTACT ================= -->
     <section class="block contact" id="contact" aria-labelledby="contact-title">
-      <span class="eyebrow reveal">Got something complicated?</span>
-      <h2 class="big reveal" id="contact-title">LET’S MAKE IT <em>obvious.</em></h2>
-      <a class="pill reveal" href="https://www.linkedin.com/in/iamamaanbaig/" target="_blank" rel="noopener">Say hi on LinkedIn ↗</a>
+      <div class="at reveal"><svg viewBox="0 0 25 25" shape-rendering="crispEdges" aria-hidden="true"><rect width="25" height="25" fill="var(--highlight)"/><path transform="translate(3.5 3.5)" d="M5 0h8v1h-8zM3 1h2v1h-2zM13 1h2v1h-2zM2 2h1v1h-1zM15 2h1v1h-1zM1 3h1v1h-1zM16 3h1v1h-1zM1 4h1v1h-1zM16 4h1v1h-1zM0 5h1v1h-1zM7 5h3v1h-3zM12 5h2v1h-2zM17 5h1v1h-1zM0 6h1v1h-1zM5 6h2v1h-2zM10 6h4v1h-4zM17 6h1v1h-1zM0 7h1v1h-1zM4 7h2v1h-2zM11 7h2v1h-2zM17 7h1v1h-1zM0 8h1v1h-1zM4 8h2v1h-2zM11 8h2v1h-2zM17 8h1v1h-1zM0 9h1v1h-1zM3 9h2v1h-2zM11 9h2v1h-2zM17 9h1v1h-1zM0 10h1v1h-1zM3 10h2v1h-2zM10 10h2v1h-2zM16 10h1v1h-1zM0 11h1v1h-1zM3 11h2v1h-2zM10 11h2v1h-2zM16 11h1v1h-1zM0 12h1v1h-1zM4 12h2v1h-2zM9 12h1v1h-1zM11 12h1v1h-1zM14 12h2v1h-2zM1 13h1v1h-1zM5 13h4v1h-4zM12 13h2v1h-2zM1 14h1v1h-1zM16 14h1v1h-1zM2 15h1v1h-1zM15 15h1v1h-1zM3 16h2v1h-2zM13 16h2v1h-2zM5 17h8v1h-8z" fill="#0E100C"/></svg></div>
+      <p class="ask reveal">GOT SOMETHING COMPLICATED?</p>
+      <h2 class="big reveal" id="contact-title">LET’S CONNECT ON</h2>
+      <div class="links reveal">
+        <div class="link">
+          <a class="btn btn-li" href="https://www.linkedin.com/in/iamamaanbaig/" target="_blank" rel="noopener">LinkedIn</a>
+          <span class="handle">@iamamaanbaig</span>
+        </div>
+        <span class="vr" aria-hidden="true"></span>
+        <div class="link">
+          <a class="btn btn-mail" href="mailto:iamamaanbaig@gmail.com"><svg class="gm" viewBox="52 42 88 66" aria-hidden="true"><path fill="#4285f4" d="M58 108h14V74L52 59v43c0 3.32 2.69 6 6 6"/><path fill="#34a853" d="M120 108h14c3.32 0 6-2.69 6-6V59l-20 15"/><path fill="#fbbc04" d="M120 48v26l20-15v-8c0-7.42-8.47-11.65-14.4-7.2"/><path fill="#ea4335" d="M72 74V48l24 18 24-18v26L96 92"/><path fill="#c5221f" d="M52 51v8l20 15V48l-5.6-4.2c-5.94-4.45-14.4-.22-14.4 7.2"/></svg>Email</a>
+          <span class="handle">iamamaanbaig@gmail.com</span>
+        </div>
+      </div>
     </section>
   </main>
 
