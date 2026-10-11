@@ -139,7 +139,7 @@
     .work.shown .card-fold > div { overflow: visible; }     /* once open, let the soft shadow show */
     .cases {
       position: relative; height: 100%; display: flex; flex-direction: column;
-      background: var(--card); border-radius: 14px; padding: 16px 20px 0;
+      background: var(--card); padding: 16px 20px 0;
       box-shadow: var(--card-shadow);
       opacity: 0; scale: .97; transform-origin: top left;
       transition: opacity .35s var(--ease), scale .5s var(--ease), background-color .4s var(--ease);
@@ -166,9 +166,11 @@
     .cases.end .more { opacity: 0; pointer-events: none; }
     .cases li + li { border-top: 1px solid var(--line); }
     .cases a { display: block; padding: 10px 0 14px; }
-    .cases h3 { margin: 0; font-size: 22px; font-weight: 400; line-height: 1.18; letter-spacing: -.015em; text-wrap: balance; color: var(--text); transition: color .2s var(--ease); }
+    .cases h3 { margin: 0; font-size: 22px; font-weight: 400; line-height: 1.18; letter-spacing: -.015em; text-wrap: balance; color: var(--text); transition: color .2s var(--ease), font-weight .2s var(--ease), letter-spacing .2s var(--ease); }
+    .cases a:hover h3, .cases a:focus-visible h3 { font-weight: 500; letter-spacing: -.024em; }   /* heavier on hover; tighter tracking keeps the line length, so nothing re-wraps */
     .cases p { margin: 8px 0 0; font-size: 14px; line-height: 1.45; text-wrap: pretty; color: var(--muted); }
     .cases a:hover h3, .cases a:focus-visible h3 { color: var(--green-ink); }
+    :root[data-theme="light"] .cases a:hover h3, :root[data-theme="light"] .cases a:focus-visible h3 { color: var(--text); }   /* light: titles keep their colour on hover */
     /* each case study rises in after the one before */
     .cases .kicker, .cases li { opacity: 0; translate: 0 10px; transition: opacity .4s var(--ease), translate .5s var(--ease); }
     .work.open .cases .kicker, .work.open .cases li { opacity: 1; translate: 0 0; }
@@ -232,7 +234,7 @@
     .obvious, .contact .big em {
       font-family: var(--sans); font-style: normal; font-weight: 300; letter-spacing: -.02em;
       color: var(--on-highlight); background: var(--highlight);
-      display: inline-block; line-height: .98; padding: .04em .12em .1em; margin-left: .03em; border-radius: .14em;   /* a snug marker, not the font's full line box */
+      display: inline-block; line-height: .98; padding: .04em .12em .1em; margin-left: .03em;   /* a snug marker, not the font's full line box */
     }
     :root[data-theme="light"] .obvious, :root[data-theme="light"] .contact .big em { color: var(--text); }
 
