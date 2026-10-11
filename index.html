@@ -436,7 +436,7 @@
 
     /* ---------- "View Case Study" cursor ----------
        Over the case-study preview card (mouse/trackpad only), this pill follows beside the pointer; the system cursor itself is unchanged.
-       Light theme: dark pill with a green arrow; dark theme: green pill with a white arrow. */
+       Light theme: dark pill with a green arrow; dark theme: green pill with the arrow in the text colour. */
     .cs-cursor {
       position: fixed; left: 0; top: 0; z-index: 100; pointer-events: none;
       display: inline-flex; align-items: center; gap: 12px; height: 40px; padding: 0 16px 0 20px; border-radius: 999px;
@@ -651,7 +651,7 @@
 
   <div class="cs-cursor" id="csCursor" aria-hidden="true">View Case Study
     <svg class="arrow-green" viewBox="0 0 16 16"><defs><linearGradient id="csArrow" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C8FF96"/><stop offset=".55" stop-color="#8EE356"/><stop offset="1" stop-color="#3C9E22"/></linearGradient></defs><path fill="url(#csArrow)" d="M5 1h10v10h-3.2V6.4L3.3 14.9 1.1 12.7 9.6 4.2H5z"/></svg>
-    <svg class="arrow-light" viewBox="0 0 16 16"><path fill="#fff" d="M5 1h10v10h-3.2V6.4L3.3 14.9 1.1 12.7 9.6 4.2H5z"/></svg>
+    <svg class="arrow-light" viewBox="0 0 16 16"><path fill="currentColor" d="M5 1h10v10h-3.2V6.4L3.3 14.9 1.1 12.7 9.6 4.2H5z"/></svg>
   </div>
 
   <script>
