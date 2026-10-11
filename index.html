@@ -195,9 +195,11 @@
     .work.open .cases li:nth-child(3) { transition-delay: .26s; }
     .work.open .cases li:nth-child(4) { transition-delay: .32s; }
     .work.open .cases li:nth-child(5) { transition-delay: .38s; }
-    /* spotlight: hovering (or tabbing to) a case study fades the others back; once the card has opened, without the stagger delay */
+    /* spotlight: hovering (or tabbing to) a case study fades the others back, and they stay faded while the pointer is on
+       that case study's thumbnail (.spot / .active, set by the preview script); once the card has opened, without the stagger delay */
     .work.shown .cases li { transition-delay: 0s; transition-duration: .25s; }
     .work.open .cases-scroll ul:hover > li:not(:hover),
+    .work.open.spot .cases-scroll li:not(.active),
     .work.open .cases-scroll ul:has(a:focus-visible) > li:not(:has(a:focus-visible)) { opacity: .35; }
     /* sidebar: the round button with its label, as one control */
     .theme-row {
@@ -824,13 +826,16 @@
             [].forEach.call(set.querySelectorAll('img'), function (im) { im.loading = 'eager'; });
           });
           whenReady(sets[i], function () {});   // shows once its screens have loaded, in the resting layout
+          caseItems.forEach(function (li, k) { li.classList.toggle('active', k === i); });   // spotlight the case study being previewed
+          work.classList.add('spot');
           document.body.classList.add('previewing');
         }
         function hidePreview() {
-          clearTimeout(playT); clearTimeout(hideT); document.body.classList.remove('previewing');
+          clearTimeout(playT); clearTimeout(hideT); document.body.classList.remove('previewing'); work.classList.remove('spot');
           setTimeout(function () { if (!document.body.classList.contains('previewing')) sets.forEach(function (set) { set.classList.remove('play'); }); }, 400);   // back to rest once faded out
         }
-        [].forEach.call(work.querySelectorAll('.cases li'), function (li, i) { li.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse' || e.pointerType === 'pen') showPreview(i); }); });
+        var caseItems = [].slice.call(work.querySelectorAll('.cases li'));
+        caseItems.forEach(function (li, i) { li.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse' || e.pointerType === 'pen') showPreview(i); }); });
         var caseLinks = work.querySelectorAll('.cases a'), scroller = work.querySelector('.cases-scroll'), hideT;
         function hideSoon() { clearTimeout(hideT); hideT = setTimeout(hidePreview, 250); }   // grace to cross the gap onto the card
         scroller.addEventListener('pointerleave', hideSoon);
