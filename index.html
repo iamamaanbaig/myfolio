@@ -430,9 +430,28 @@
       .tagline { flex-direction: column; gap: 14px; }
     }
 
+    /* ---------- "View Case Study" cursor ----------
+       Over the case-study preview card (mouse/trackpad only), this pill follows beside the pointer; the system cursor itself is unchanged.
+       Light theme: dark pill with a green arrow; dark theme: green pill with a white arrow. */
+    .cs-cursor {
+      position: fixed; left: 0; top: 0; z-index: 100; pointer-events: none;
+      display: inline-flex; align-items: center; gap: 12px; height: 40px; padding: 0 16px 0 20px; border-radius: 999px;
+      font: 400 17px/1 var(--sans); letter-spacing: -.01em; white-space: nowrap;
+      background: #131416; color: #fff;
+      opacity: 0; transform: translate(14px, 14px) scale(.6); transform-origin: 0 0;   /* sits just below-right of the pointer, so the hovered title stays readable */
+      transition: opacity .2s var(--ease), transform .3s var(--ease); will-change: translate, transform;
+    }
+    .cs-cursor svg { width: 16px; height: 16px; flex: none; }
+    .cs-cursor .arrow-light { display: none; }
+    :root:not([data-theme="light"]) .cs-cursor { background: var(--highlight); color: #0E100C; }
+    :root:not([data-theme="light"]) .cs-cursor .arrow-green { display: none; }
+    :root:not([data-theme="light"]) .cs-cursor .arrow-light { display: block; }
+    .cs-cursor.on { opacity: 1; transform: translate(14px, 14px) scale(1); }
+
     /* ---------- Case-study preview card ----------
        Hovering a case study in the Work card shows a card beside it (in the content area, top-aligned with the Work card);
-       the hero text dissolves meanwhile. Mouse/trackpad only.
+       the hero text dissolves meanwhile. Mouse/trackpad only. The pointer can move onto the card, where the
+       "View Case Study" pill follows it and a click opens the case study.
        Inside, the case study's device screens (Thumbnailimages/CSnimageK.png) are laid out on a 1440 x 800 stage, scaled to
        the card. They appear in a resting layout and then glide into the hover layout (zoom, straighten, slide apart). */
     .cs-preview {
@@ -447,7 +466,7 @@
     .cs-preview .set.on.ready { opacity: 1; }   /* ready: all its screens have loaded */
     .cs-preview .set img { position: absolute; max-width: none; transform: var(--rest); transition: transform .4s cubic-bezier(.2, .8, .2, 1); }
     .cs-preview .set.play img { transform: none; }
-    .previewing .cs-preview { opacity: 1; scale: 1; }
+    .previewing .cs-preview { opacity: 1; scale: 1; pointer-events: auto; }
     main, footer { transition: opacity .35s var(--ease), filter .35s var(--ease); }
     .previewing main, .previewing footer { opacity: 0; filter: blur(6px); pointer-events: none; user-select: none; }
 
@@ -625,6 +644,11 @@
   <!-- Case-study preview card: the hovered case study's devices (CS1..CS5, in list order; built by the script) -->
   <div class="cs-preview" id="csPreview" aria-hidden="true"><div class="set"></div><div class="set"></div><div class="set"></div><div class="set"></div><div class="set"></div></div>
 
+  <div class="cs-cursor" id="csCursor" aria-hidden="true">View Case Study
+    <svg class="arrow-green" viewBox="0 0 16 16"><defs><linearGradient id="csArrow" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C8FF96"/><stop offset=".55" stop-color="#8EE356"/><stop offset="1" stop-color="#3C9E22"/></linearGradient></defs><path fill="url(#csArrow)" d="M5 1h10v10h-3.2V6.4L3.3 14.9 1.1 12.7 9.6 4.2H5z"/></svg>
+    <svg class="arrow-light" viewBox="0 0 16 16"><path fill="#fff" d="M5 1h10v10h-3.2V6.4L3.3 14.9 1.1 12.7 9.6 4.2H5z"/></svg>
+  </div>
+
   <script>
     (function () {
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -652,6 +676,29 @@
         });
       })();
 
+
+      /* "View Case Study" cursor: follows the pointer (eased) while it is over the case-study preview card */
+      (function () {
+        if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+        var el = document.getElementById('csCursor'), reduce = matchMedia('(prefers-reduced-motion: reduce)');
+        var x = 0, y = 0, cx = null, cy = null, running = false, on = false;
+        function tick() {
+          var k = reduce.matches ? 1 : .28;
+          cx += (x - cx) * k; cy += (y - cy) * k;
+          el.style.translate = cx.toFixed(1) + 'px ' + cy.toFixed(1) + 'px';
+          if (on || Math.abs(x - cx) + Math.abs(y - cy) > .3) requestAnimationFrame(tick); else running = false;
+        }
+        document.addEventListener('pointermove', function (e) {
+          if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+          x = e.clientX; y = e.clientY;
+          var over = !!(e.target.closest && e.target.closest('.previewing .cs-preview'));
+          if (cx === null || (!on && over)) { cx = x; cy = y; }          // appear right under the pointer
+          if (over !== on) { on = over; el.classList.toggle('on', on); }
+          if (!running) { running = true; requestAnimationFrame(tick); }
+        }, { passive: true });
+        document.documentElement.addEventListener('mouseleave', function () { on = false; el.classList.remove('on'); });
+        window.addEventListener('wheel', function () { if (on) setTimeout(function () { var t = document.elementFromPoint(x, y); on = !!(t && t.closest('.previewing .cs-preview')); el.classList.toggle('on', on); }, 60); }, { passive: true });
+      })();
 
       /* Full-page scrolling (section snapping): one wheel/trackpad gesture or key press glides to the next or previous stop.
          Stops are each section's top plus the very bottom of the page, so a section taller than the screen
@@ -758,7 +805,7 @@
         window.addEventListener('resize', fitStage);
         function showPreview(i) {
           if (!canPreview) return;
-          clearTimeout(playT);
+          clearTimeout(playT); clearTimeout(hideT);
           preview.style.setProperty('--cs-top', work.querySelector('.cases').getBoundingClientRect().top + 'px');
           fitStage();
           sets.forEach(function (set, k) {
@@ -774,11 +821,20 @@
           document.body.classList.add('previewing');
         }
         function hidePreview() {
-          clearTimeout(playT); document.body.classList.remove('previewing');
+          clearTimeout(playT); clearTimeout(hideT); document.body.classList.remove('previewing');
           setTimeout(function () { if (!document.body.classList.contains('previewing')) sets.forEach(function (set) { set.classList.remove('play'); }); }, 400);   // back to rest once faded out
         }
         [].forEach.call(work.querySelectorAll('.cases li'), function (li, i) { li.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse' || e.pointerType === 'pen') showPreview(i); }); });
-        work.querySelector('.cases-scroll').addEventListener('pointerleave', hidePreview);
+        var caseLinks = work.querySelectorAll('.cases a'), scroller = work.querySelector('.cases-scroll'), hideT;
+        function hideSoon() { clearTimeout(hideT); hideT = setTimeout(hidePreview, 250); }   // grace to cross the gap onto the card
+        scroller.addEventListener('pointerleave', hideSoon);
+        preview.addEventListener('pointerenter', function () { clearTimeout(hideT); clearTimeout(shut); });
+        preview.addEventListener('pointerleave', function (e) {
+          if (!scroller.contains(e.relatedTarget)) hideSoon();
+          if (!work.contains(e.relatedTarget)) shut = setTimeout(function () { setWork(false); }, 250);
+        });
+        preview.addEventListener('click', function () { var a = caseLinks[sets.findIndex(function (s) { return s.classList.contains('on'); })]; if (a) a.click(); });
+        preview.addEventListener('wheel', function () { setWork(false); }, { passive: true });   // scrolling the page drops the preview
         function setWork(open) {
           clearTimeout(shut);
           if (!open) hidePreview();
@@ -789,7 +845,7 @@
           if (open) shown = setTimeout(function () { work.classList.add('shown'); count(); }, 560);   // after the card has opened
         }
         // "N more": how many case studies are not fully in view; clicking scrolls to the next one
-        var scroller = work.querySelector('.cases-scroll'), card = work.querySelector('.cases'), more = work.querySelector('.more');
+        var card = work.querySelector('.cases'), more = work.querySelector('.more');
         function below() {
           var bottom = scroller.getBoundingClientRect().bottom + 1;   // fully in view = ends at or above the bottom edge
           return [].filter.call(scroller.querySelectorAll('li'), function (li) { return li.getBoundingClientRect().bottom > bottom; });
@@ -809,7 +865,7 @@
         });
         setWork(false);
         work.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') setWork(true); });
-        work.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') shut = setTimeout(function () { setWork(false); }, 250); });
+        work.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse' && !preview.contains(e.relatedTarget)) shut = setTimeout(function () { setWork(false); }, 250); });
         workBtn.addEventListener('click', function () { setWork(!work.classList.contains('open')); });
         work.addEventListener('focusout', function (e) { if (!work.contains(e.relatedTarget)) setWork(false); });
         function setMenu(open) { side.classList.toggle('open', open); btn.setAttribute('aria-expanded', open); btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu'); }
