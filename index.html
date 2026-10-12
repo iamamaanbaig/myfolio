@@ -386,6 +386,46 @@
     .vr { align-self: flex-start; width: 1px; height: var(--vr-h); margin-top: calc((var(--btn-h) - var(--vr-h)) / 2); background: var(--c-ink); opacity: .95; }   /* centred on the buttons */
     .handle { font-size: clamp(12px, calc(var(--w) * .0165), 15px);   /* same size as the "UX & Product Designer" title */ white-space: nowrap; color: var(--c-handle); letter-spacing: .01em; }
 
+
+    /* ---------- Case study section (between the hero and contact) ----------
+       Shows the case study picked in the Work menu: an index of its sections, then the sections side by side as plain
+       containers (no background, empty for now); the next one peeks in past the arrow on the right. */
+    :root { --accent: var(--green); }
+    :root[data-theme="light"] { --accent: var(--text); }   /* light: highlights use the text colour, no green */
+    /* the index sits level with "Home" in the menu, on the content column's left edge, on one line at laptop widths;
+       a narrower gutter on the right holds the arrow */
+    .case { --cs-left: var(--pad-x); --cs-gutter: 176px; position: relative; height: calc(100svh - 2 * var(--frame)); padding: 112px var(--cs-gutter) 32px var(--cs-left);
+      display: flex; flex-direction: column; overflow: hidden; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .cs-index { display: flex; gap: 16px; align-items: flex-start; }
+    .cs-index > span { font-family: var(--display); font-size: 16px; line-height: 34px; color: var(--muted); }
+    .cs-tabs { flex: 1; display: flex; flex-wrap: wrap; padding: 1px 0 0 1px; }   /* wraps to a new line only when out of space */
+    .cs-tabs button { flex: 0 0 auto; height: 34px; padding: 0 22px; margin: -1px 0 0 -1px; border: 1px solid var(--line); background: none; cursor: pointer;
+      font-family: var(--display); font-size: 16px; color: var(--muted); white-space: nowrap; transition: color .2s var(--ease), background-color .2s var(--ease); }
+    .cs-tabs button:hover { color: var(--text); }
+    .cs-tabs button.on { position: relative; z-index: 1; color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 12%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent); }
+    :root[data-theme="light"] .cs-tabs button.on { background: color-mix(in srgb, var(--accent) 6%, transparent); box-shadow: inset 0 0 0 1px var(--accent); }
+    .cs-stage { flex: 1 1 auto; min-height: 0; margin-top: 24px; }
+    .cs-track { display: flex; gap: 120px; height: 100%; transition: translate .7s var(--ease); }
+    .cs-track > section { flex: 0 0 calc(100vw - 2 * var(--frame) - var(--cs-left) - var(--cs-gutter)); height: 100%; transition: opacity .5s var(--ease); }
+    .cs-track > section:not(.on) { opacity: .25; }
+    .cs-next { position: absolute; right: calc(var(--cs-gutter) / 2); top: 50%; translate: 50% -50%; display: grid; place-items: center; width: 44px; height: 44px;
+      padding: 0; border: 0; border-radius: 50%; background: none; color: var(--accent); cursor: pointer;
+      transition: background-color .2s var(--ease), opacity .3s var(--ease), translate .3s var(--ease); }
+    .cs-next:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); translate: calc(50% + 3px) -50%; }
+    .cs-next svg { width: 30px; height: 30px; }
+    .cs-next[hidden] { display: grid; opacity: 0; pointer-events: none; }
+    .dots li.on { background: var(--accent); }
+    .menu .work-btn.on { color: var(--text); font-weight: 600; text-transform: uppercase; letter-spacing: .02em; }   /* the case study section in view */
+    @media (max-width: 1100px) {
+      .case { --cs-left: var(--pad-x); --cs-gutter: var(--pad-x); padding-top: 88px; }
+      .cs-index { flex-direction: column; gap: 8px; }
+      .cs-tabs button { padding: 0 14px; font-size: 15px; }
+      .cs-next { top: auto; bottom: 20px; right: var(--pad-x); translate: none; background: color-mix(in srgb, var(--accent) 12%, transparent); }
+      .cs-next:hover { translate: 3px 0; }
+    }
+
     /* full-page sections: the contact section and the footer together fill one screen */
     :root { --foot-h: 76px; }
     section.block.contact { padding-block: clamp(28px, 4.5svh, 64px); }
@@ -393,7 +433,7 @@
     /* touch devices use the browser's own section snapping (mouse, trackpad and keys are handled by the script) */
     @media (pointer: coarse) {
       html { scroll-snap-type: y mandatory; }
-      .hero, .contact { scroll-snap-align: start; }
+      .hero, .case, .contact { scroll-snap-align: start; }
       footer { scroll-snap-align: end; }
     }
     footer {
@@ -505,17 +545,17 @@
       <ul class="menu">
         <li><a href="#top" class="on" data-spy="hero">Home</a></li>
         <li class="work" id="work-menu">
-          <button class="label work-btn" type="button" aria-expanded="false" aria-controls="work-cases">Work</button>
+          <button class="label work-btn" data-spy="case-study" type="button" aria-expanded="false" aria-controls="work-cases">Work</button>
           <div class="fold dots-fold"><div><ul class="dots" aria-hidden="true"><li></li><li></li><li></li><li></li><li></li></ul></div></div>
           <div class="fold card-fold"><div>
             <div class="cases" id="work-cases">
               <span class="kicker">Select Case Study</span>
               <div class="cases-scroll"><ul>
-                <li><a href="case-study.html?cs=1"><h3>Saved million dollar taxes</h3><p>By reducing errors in business processes and designing a system that helps users stick to process deadlines that cost heavy taxes.</p><span class="cs-logos pair"><img class="lg-light" src="logos/Lasallelogolighttheme.svg" alt="LaSalle"><img class="lg-dark" src="logos/Lasallelogodarktheme.svg" alt="LaSalle"><span class="sep" aria-hidden="true"></span><img class="lg-light" src="logos/Jlllogolighttheme.svg" alt="JLL Technologies"><img class="lg-dark" src="logos/Jlllogodarktheme.svg" alt="JLL Technologies"></span></a></li>
-                <li><a href="case-study.html?cs=2"><h3>Reduce support calls</h3><p>By making the task of creating a new automation easy.</p><span class="cs-logos"><img class="lg-light" src="logos/Zitharalogolighttheme.svg" alt="Zithara.ai"><img class="lg-dark" src="logos/Zitharalogodarktheme.svg" alt="Zithara.ai"></span></a></li>
-                <li><a href="case-study.html?cs=3"><h3>Increase leads generation</h3><p>By designing a dashboard that provides customized insights beyond data.</p><span class="cs-logos"><img class="lg-light" src="logos/Zitharalogolighttheme.svg" alt="Zithara.ai"><img class="lg-dark" src="logos/Zitharalogodarktheme.svg" alt="Zithara.ai"></span></a></li>
-                <li><a href="case-study.html?cs=4"><h3>Saved 40 min on fee management tasks</h3><p>By optimizing the task flow and reducing user effort.</p><span class="cs-logos"><img class="lg-light excel" src="logos/Exceledgelogolighttheme.svg" alt="Excel Edge"><img class="lg-dark excel" src="logos/Exceledgelogodarktheme.svg" alt="Excel Edge"></span></a></li>
-                <li><a href="case-study.html?cs=5"><h3>Made error tracking easy</h3><p>By designing navigation to find and move between 100s of resources.</p><span class="cs-logos"><img class="lg-light" src="logos/Nokialogolighttheme.svg" alt="Nokia"><img class="lg-dark" src="logos/Nokialogolighttheme.svg" alt="Nokia"></span></a></li>
+                <li><a href="#case-study-1" data-cs="1"><h3>Saved million dollar taxes</h3><p>By reducing errors in business processes and designing a system that helps users stick to process deadlines that cost heavy taxes.</p><span class="cs-logos pair"><img class="lg-light" src="logos/Lasallelogolighttheme.svg" alt="LaSalle"><img class="lg-dark" src="logos/Lasallelogodarktheme.svg" alt="LaSalle"><span class="sep" aria-hidden="true"></span><img class="lg-light" src="logos/Jlllogolighttheme.svg" alt="JLL Technologies"><img class="lg-dark" src="logos/Jlllogodarktheme.svg" alt="JLL Technologies"></span></a></li>
+                <li><a href="#case-study-2" data-cs="2"><h3>Reduce support calls</h3><p>By making the task of creating a new automation easy.</p><span class="cs-logos"><img class="lg-light" src="logos/Zitharalogolighttheme.svg" alt="Zithara.ai"><img class="lg-dark" src="logos/Zitharalogodarktheme.svg" alt="Zithara.ai"></span></a></li>
+                <li><a href="#case-study-3" data-cs="3"><h3>Increase leads generation</h3><p>By designing a dashboard that provides customized insights beyond data.</p><span class="cs-logos"><img class="lg-light" src="logos/Zitharalogolighttheme.svg" alt="Zithara.ai"><img class="lg-dark" src="logos/Zitharalogodarktheme.svg" alt="Zithara.ai"></span></a></li>
+                <li><a href="#case-study-4" data-cs="4"><h3>Saved 40 min on fee management tasks</h3><p>By optimizing the task flow and reducing user effort.</p><span class="cs-logos"><img class="lg-light excel" src="logos/Exceledgelogolighttheme.svg" alt="Excel Edge"><img class="lg-dark excel" src="logos/Exceledgelogodarktheme.svg" alt="Excel Edge"></span></a></li>
+                <li><a href="#case-study-5" data-cs="5"><h3>Made error tracking easy</h3><p>By designing navigation to find and move between 100s of resources.</p><span class="cs-logos"><img class="lg-light" src="logos/Nokialogolighttheme.svg" alt="Nokia"><img class="lg-dark" src="logos/Nokialogolighttheme.svg" alt="Nokia"></span></a></li>
               </ul></div>
               <button class="more" type="button" tabindex="-1"><svg viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M4 0h2v6h2v1H7v1H6v1H4V8H3V7H2V6h2z"/></svg><span></span></button>
             </div>
@@ -613,13 +653,32 @@
         </div>
       </div>
 
-      <a class="scroll-hint" href="#contact">
+      <a class="scroll-hint" href="#case-study">
         <svg viewBox="0 0 22 34" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
           <rect x=".75" y=".75" width="20.5" height="32.5" rx="10.25"/>
           <path class="wheel" d="M11 8v6" stroke-linecap="round"/>
         </svg>
         Scroll to see work
       </a>
+    </section>
+
+    <!-- ================= CASE STUDY ================= -->
+    <!-- the case study picked in the Work menu; its sections are empty containers for now -->
+    <section class="case" id="case-study" aria-labelledby="case-title">
+      <h2 class="sr-only" id="case-title">Saved million dollar taxes</h2>
+      <div class="cs-index"><span>Index:</span><div class="cs-tabs" id="cs-tabs" role="tablist" aria-label="Sections"></div></div>
+      <div class="cs-stage">
+        <div class="cs-track" id="cs-track">
+          <section data-id="about" aria-label="About"></section>
+          <section data-id="problem-statement" aria-label="Problem Statement"></section>
+          <section data-id="project-challenges" aria-label="Project Challenges"></section>
+          <section data-id="process" aria-label="Process"></section>
+          <section data-id="discovered-problems" aria-label="Discovered Problems"></section>
+          <section data-id="solution-1" aria-label="Solution 1"></section>
+          <section data-id="solution-2" aria-label="Solution 2"></section>
+        </div>
+      </div>
+      <button class="cs-next" id="cs-next" type="button" aria-label="Next section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M4 12h15M12.5 5.5 19 12l-6.5 6.5"/></svg></button>
     </section>
 
     <!-- ================= CONTACT ================= -->
@@ -716,7 +775,7 @@
         var animating = false, quietUntil = 0;
         function stops() {
           var bottom = document.documentElement.scrollHeight - innerHeight, list = [];
-          document.querySelectorAll('#hero, #contact').forEach(function (sec) {
+          document.querySelectorAll('#hero, #case-study, #contact').forEach(function (sec) {
             var y = Math.min(Math.round(sec.getBoundingClientRect().top + scrollY), bottom);
             if (!list.length || y - list[list.length - 1] > 2) list.push(y);
           });
@@ -739,6 +798,7 @@
           if (dir > 0) { for (i = 0; i < list.length; i++) if (list[i] > y + 2) return glide(list[i]); }
           else { for (i = list.length - 1; i >= 0; i--) if (list[i] < y - 2) return glide(list[i]); }
         }
+        window.glideTo = glide;   // used by the Work menu to scroll to the case study section
         window.addEventListener('wheel', function (e) {
           if (e.ctrlKey) return;                                                       // pinch-zoom
           var sc = e.target.closest && e.target.closest('.cases-scroll');
@@ -759,9 +819,52 @@
         });
       })();
 
+      /* Case study section: picking a case study (Work menu or its thumbnail) shows it here and scrolls down to it;
+         the index, the arrow or the ←/→ keys move between its sections */
+      (function () {
+        var sec = document.getElementById('case-study'), track = document.getElementById('cs-track'), tabs = document.getElementById('cs-tabs'), next = document.getElementById('cs-next');
+        var parts = [].slice.call(track.children), titles = [].map.call(document.querySelectorAll('.cases h3'), function (h) { return h.textContent; });
+        var at = 0, cs = 1;
+        parts.forEach(function (p, i) {
+          var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = p.getAttribute('aria-label');
+          b.addEventListener('click', function () { go(i); }); tabs.appendChild(b);
+        });
+        function slide() { track.style.translate = -(parts[at].offsetLeft) + 'px 0'; }
+        function go(i) {
+          at = Math.max(0, Math.min(parts.length - 1, i)); slide();
+          [].forEach.call(tabs.children, function (t, k) { t.classList.toggle('on', k === at); t.setAttribute('aria-selected', k === at); });
+          parts.forEach(function (p, k) { p.classList.toggle('on', k === at); p.inert = k !== at; });
+          next.hidden = at === parts.length - 1;
+        }
+        function show(n, scroll) {
+          cs = Math.min(Math.max(n, 1), titles.length);
+          document.getElementById('case-title').textContent = titles[cs - 1];
+          document.querySelectorAll('.dots li').forEach(function (d, i) { d.classList.toggle('on', i + 1 === cs); });   // the square for this case study
+          document.querySelectorAll('.cases a').forEach(function (a, i) { if (i + 1 === cs) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+          track.style.transition = 'none'; go(0); track.offsetWidth; track.style.transition = '';   // a new case study starts at About
+          history.replaceState(null, '', '#case-study-' + cs);
+          if (!scroll) return;
+          var y = Math.round(sec.getBoundingClientRect().top + scrollY);
+          if (window.glideTo) window.glideTo(y); else sec.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        }
+        window.showCase = show;
+        next.addEventListener('click', function () { go(at + 1); });
+        window.addEventListener('keydown', function (e) {
+          if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+          var r = sec.getBoundingClientRect(); if (r.top > innerHeight * .4 || r.bottom < innerHeight * .6) return;   // only while the section is in view
+          if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
+          go(at + (e.key === 'ArrowRight' ? 1 : -1));
+        });
+        window.addEventListener('resize', slide);
+        var m = /^#case-study-(\d)$/.exec(location.hash);
+        show(m ? +m[1] : 1, false);
+        if (!m) history.replaceState(null, '', location.pathname + location.search);
+        else requestAnimationFrame(function () { scrollTo(0, Math.round(sec.getBoundingClientRect().top + scrollY)); });
+      })();
+
       /* Side navigation: the section in view is highlighted; on phones the menu button slides it in */
       (function () {
-        var links = [].slice.call(document.querySelectorAll('.menu a[data-spy]'));
+        var links = [].slice.call(document.querySelectorAll('.menu [data-spy]'));
         var side = document.getElementById('side'), btn = document.getElementById('menuBtn');
         function spy() {
           var mid = window.innerHeight * .45, current = links[0];
@@ -848,6 +951,15 @@
         });
         preview.addEventListener('click', function () { var a = caseLinks[sets.findIndex(function (s) { return s.classList.contains('on'); })]; if (a) a.click(); });
         preview.addEventListener('wheel', function () { setWork(false); }, { passive: true });   // scrolling the page drops the preview
+        // picking a case study shows it in the case study section and scrolls there (no page change)
+        [].forEach.call(caseLinks, function (a) {
+          a.addEventListener('click', function (e) {
+            e.preventDefault();
+            hidePreview(); setWork(false);
+            if (document.activeElement) document.activeElement.blur();
+            window.showCase(+a.dataset.cs, true);
+          });
+        });
         function setWork(open) {
           clearTimeout(shut);
           if (!open) hidePreview();
