@@ -919,7 +919,6 @@
         function layout(sh) {
           var W = sh.box.clientWidth; if (!W) return;
           var mainW = Math.max(.58 * W, Math.min(.85 * W, 560)), sideW = .82 * mainW, mainX = (W - mainW) / 2, hgt = 0;
-          if (sh.layers.length === 2) mainX = Math.max(0, (W - (.5 * mainW + sideW)) / 2);   // one screen behind: centre the pair
           sh.layers.forEach(function (L) {
             var b = L.bez, bw = L.front ? mainW : sideW, sc = bw / (b[1] - b[0]);
             var x = L.front ? mainX : L.side === 'left' ? mainX + .5 * mainW - sideW : mainX + .5 * mainW;
