@@ -990,11 +990,11 @@
         // after a case study is picked, Work stays closed even with the pointer still over it; it opens again once the
         // pointer hovers back onto it
         var hold = false;
-        // (moving onto the "Work" label or its squares counts as hovering back, so it opens straight away)
-        var dotsFold = work.querySelector('.dots-fold');
+        // (moving onto the "Work" word itself or one of its squares counts as hovering back, so it opens straight away;
+        // the empty space around them, where the card was, doesn't)
         document.addEventListener('pointermove', function (e) {
           if (!hold || e.pointerType !== 'mouse') return;
-          if (workBtn.contains(e.target) || dotsFold.contains(e.target)) { hold = false; setWork(true); }
+          if (workBtn.contains(e.target) || (e.target.closest && e.target.closest('.dots li'))) { hold = false; setWork(true); }
           else if (!work.contains(e.target) && !preview.contains(e.target)) hold = false;
         }, { passive: true });
         work.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse' && !hold) setWork(true); });
