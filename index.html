@@ -416,8 +416,6 @@
     .cs-next:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); translate: calc(50% + 3px) -50%; }
     .cs-next svg { width: 30px; height: 30px; }
     .cs-next[hidden] { display: grid; opacity: 0; pointer-events: none; }
-    .dots li.on { background: var(--accent); }
-    .menu .work-btn.on { color: var(--text); font-weight: 600; text-transform: uppercase; letter-spacing: .02em; }   /* the case study section in view */
     @media (max-width: 1100px) {
       .case { --cs-left: var(--pad-x); --cs-gutter: var(--pad-x); padding-top: 88px; }
       .cs-index { flex-direction: column; gap: 8px; }
@@ -839,7 +837,6 @@
         function show(n, scroll) {
           cs = Math.min(Math.max(n, 1), titles.length);
           document.getElementById('case-title').textContent = titles[cs - 1];
-          document.querySelectorAll('.dots li').forEach(function (d, i) { d.classList.toggle('on', i + 1 === cs); });   // the square for this case study
           document.querySelectorAll('.cases a').forEach(function (a, i) { if (i + 1 === cs) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
           track.style.transition = 'none'; go(0); track.offsetWidth; track.style.transition = '';   // a new case study starts at About
           history.replaceState(null, '', '#case-study-' + cs);
