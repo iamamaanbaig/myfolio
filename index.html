@@ -987,10 +987,16 @@
           scroller.scrollBy({ top: next.getBoundingClientRect().top - scroller.getBoundingClientRect().top, behavior: 'smooth' });
         });
         setWork(false);
-        // after a case study is picked, Work stays closed even with the pointer still over it; it opens again only once the
-        // pointer has moved off Work and hovers back onto it
+        // after a case study is picked, Work stays closed even with the pointer still over it; it opens again once the
+        // pointer hovers back onto it
         var hold = false;
-        document.addEventListener('pointermove', function (e) { if (hold && !work.contains(e.target) && !preview.contains(e.target)) hold = false; }, { passive: true });
+        // (moving onto the "Work" label or its squares counts as hovering back, so it opens straight away)
+        var dotsFold = work.querySelector('.dots-fold');
+        document.addEventListener('pointermove', function (e) {
+          if (!hold || e.pointerType !== 'mouse') return;
+          if (workBtn.contains(e.target) || dotsFold.contains(e.target)) { hold = false; setWork(true); }
+          else if (!work.contains(e.target) && !preview.contains(e.target)) hold = false;
+        }, { passive: true });
         work.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse' && !hold) setWork(true); });
         work.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse' && !preview.contains(e.relatedTarget)) shut = setTimeout(function () { setWork(false); }, 250); });
         workBtn.addEventListener('click', function () { setWork(!work.classList.contains('open')); });
