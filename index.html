@@ -893,13 +893,13 @@
           5: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Made error tracking easy</span> → By designing navigation to find and move between 100s of resources.</p>', shot: 5 }
         };
         /* each case study's own screens, from "Case Study Images/CSn images/": [file, natural width, screen bezel
-           [left, right, top] in the image's pixels]; back screens first, the front screen last */
+           [left, right, top, bottom of the device] in the image's pixels]; back screens first, the front screen last */
         var SCREENS = {
-          1: { dir: 'Case Study Images/CS1 images/', devs: [['CS1image2', 889, [109, 780, 45]], ['CS1image3', 889, [109, 780, 45]], ['CS1image1', 1218, [8, 1210, 8]]] },
-          2: { dir: 'Case Study Images/CS2images/', devs: [['CS2image1', 1297, [10, 1210, 43]]] },
-          3: { dir: 'Case Study Images/CS3images/', devs: [['CS3image2', 1216, [7, 1207, 3]], ['CS3image1', 1222, [12, 1212, 3]]] },
-          4: { dir: 'Case Study Images/CS4images/', devs: [['CS4image2', 1217, [9, 1208, 3]], ['CS4image1', 1287, [10, 1200, 42]]] },
-          5: { dir: 'Case Study Images/CS5images/', devs: [['CS5image1', 1300, [11, 1211, 39]]] }
+          1: { dir: 'Case Study Images/CS1 images/', devs: [['CS1image2', 889, [109, 780, 45, 409]], ['CS1image3', 889, [109, 780, 45, 409]], ['CS1image1', 1218, [8, 1210, 8, 772]]] },
+          2: { dir: 'Case Study Images/CS2images/', devs: [['CS2image1', 1297, [10, 1210, 43, 810]]] },
+          3: { dir: 'Case Study Images/CS3images/', devs: [['CS3image2', 1216, [7, 1207, 3, 770]], ['CS3image1', 1222, [12, 1212, 3, 770]]] },
+          4: { dir: 'Case Study Images/CS4images/', devs: [['CS4image2', 1217, [9, 1208, 3, 784]], ['CS4image1', 1287, [10, 1200, 42, 813]]] },
+          5: { dir: 'Case Study Images/CS5images/', devs: [['CS5image1', 1300, [11, 1211, 39, 809]]] }
         };
         var shots = [];   // the screenshot in each filled part: { box, stage, imgs }
         /* the screenshot: the case study's screens as separate layers. The front screen stays large (about 58% of the
@@ -925,7 +925,7 @@
             var y = L.front ? 0 : .286 * mainW;   // the back screens sit a little lower
             L.im.style.width = (L.nat * sc).toFixed(1) + 'px';
             L.im.style.left = (x - b[0] * sc).toFixed(1) + 'px'; L.im.style.top = (y - b[2] * sc).toFixed(1) + 'px';
-            if (L.front) hgt = (L.im.naturalHeight ? L.im.naturalHeight * sc : L.nat * .63 * sc) - b[2] * sc;
+            if (L.front) hgt = (b[3] - b[2]) * sc;   // screen top to the image's last opaque row (the shadow below doesn't count)
           });
           // desktop: the container's height comes from the layout; the screens sit on its bottom edge. Small screens: the
           // container is as tall as the front screen
