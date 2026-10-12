@@ -394,7 +394,7 @@
     :root[data-theme="light"] { --accent: var(--text); }   /* light: highlights use the text colour, no green */
     /* the index sits level with "Home" in the menu, on the content column's left edge, on one line at laptop widths;
        a narrower gutter on the right holds the arrow */
-    .case { --cs-left: var(--pad-x); --cs-gutter: 176px; position: relative; height: calc(100svh - 2 * var(--frame)); padding: 112px var(--cs-gutter) 32px var(--cs-left);
+    .case { --cs-left: 120px; --cs-gutter: 240px; position: relative; height: calc(100svh - 2 * var(--frame)); padding: 112px var(--cs-gutter) 32px var(--cs-left);
       display: flex; flex-direction: column; overflow: hidden; }
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     .cs-index { display: flex; gap: 16px; align-items: flex-start; }
@@ -407,7 +407,7 @@
       background: color-mix(in srgb, var(--accent) 12%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent); }
     :root[data-theme="light"] .cs-tabs button.on { background: color-mix(in srgb, var(--accent) 6%, transparent); box-shadow: inset 0 0 0 1px var(--accent); }
     .cs-stage { flex: 1 1 auto; min-height: 0; margin-top: 24px; }
-    .cs-track { display: flex; gap: 120px; height: 100%; transition: translate .7s var(--ease); }
+    .cs-track { display: flex; gap: 160px; height: 100%; transition: translate .7s var(--ease); }
     .cs-track > section { flex: 0 0 calc(100vw - 2 * var(--frame) - var(--cs-left) - var(--cs-gutter)); height: 100%; transition: opacity .5s var(--ease); }
     .cs-track > section:not(.on) { opacity: .25; }
     .cs-next { position: absolute; right: calc(var(--cs-gutter) / 2); top: 50%; translate: 50% -50%; display: grid; place-items: center; width: 44px; height: 44px;
@@ -422,6 +422,39 @@
       .cs-tabs button { padding: 0 14px; font-size: 15px; }
       .cs-next { top: auto; bottom: 20px; right: var(--pad-x); translate: none; background: color-mix(in srgb, var(--accent) 12%, transparent); }
       .cs-next:hover { translate: 3px 0; }
+    }
+
+
+    /* ---------- Icon menu: while the case study section is in view (desktop) ----------
+       Home becomes a house icon, Work's label folds away and its squares become one bar per case study (this one
+       highlighted), Contact becomes a mail icon and the theme switch drops its label. Hovering the icons brings the
+       full menu back in place (Work's bars open the case-study card); the section behind fades back meanwhile. */
+    .menu .mi { display: none; width: 22px; height: 22px; }
+    @media (min-width: 1101px) {
+      .menu a .mi, .menu a .mw { transition: opacity .3s var(--ease), translate .4s var(--ease), scale .4s var(--ease); }
+      .side.icons .menu > li > a { display: inline-grid; align-items: center; justify-items: start; height: 24px; }
+      .side.icons .menu > li > a > * { grid-area: 1 / 1; }
+      .side.icons .menu .mi { display: block; }
+      .side.icons:not(.expand) .menu .mw { opacity: 0; translate: -6px 0; pointer-events: none; }
+      .side.icons.expand .menu .mi { opacity: 0; scale: .6; }
+      .side.icons:not(.expand) .menu a.on { font-weight: inherit; text-transform: none; letter-spacing: inherit; }
+      .side.icons:not(.expand) .work-btn { height: 0; opacity: 0; overflow: hidden; pointer-events: none; }
+      .work-btn { transition: height .4s var(--ease), opacity .3s var(--ease); height: 24px; }
+      .side.icons:not(.expand) .dots-fold { margin-top: 0; }
+      .side.icons:not(.expand) .dots { gap: 10px; }
+      .dots li { transition: width .4s var(--ease), height .4s var(--ease), background-color .3s var(--ease); }
+      .side.icons:not(.expand) .dots li { width: 3px; height: 18px; margin-left: 10px; border-radius: 1px; }
+      .side.icons:not(.expand) .dots li.on { background: var(--accent); }
+      .side.icons:not(.expand) .menu > li + li { margin-top: 22px; }
+      .side.icons:not(.expand) .theme-label { opacity: 0; pointer-events: none; }
+      /* the sidebar's empty column mustn't block the case study index beside the icons */
+      .side.icons, .side.icons nav, .side.icons .menu, .side.icons .menu > li, .side.icons .fold, .side.icons .fold > div { pointer-events: none; }
+      .side.icons .brand, .side.icons .menu a, .side.icons .work-btn, .side.icons .dots li, .side.icons .cases, .side.icons .theme-row { pointer-events: auto; }
+      .side.icons:not(.expand) .work-btn { pointer-events: none; }
+      .theme-label { transition: opacity .3s var(--ease); }
+      .case > * { transition: opacity .35s var(--ease); }
+      body.menu-expand .case > * { opacity: .08; }
+      body.menu-expand .case > .cs-index { opacity: 0; }   /* it sits right beside "Home", so it goes completely */
     }
 
     /* full-page sections: the contact section and the footer together fill one screen */
@@ -541,7 +574,7 @@
     <a class="brand" href="#top" aria-label="Amaan Baig, back to top">AMAAN BAIG<span>.</span></a>
     <nav aria-label="Main">
       <ul class="menu">
-        <li><a href="#top" class="on" data-spy="hero">Home</a></li>
+        <li><a href="#top" class="on" data-spy="hero"><svg class="mi" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 11 12 3l9 8v10h-6.5v-6h-5v6H3z"/></svg><span class="mw">Home</span></a></li>
         <li class="work" id="work-menu">
           <button class="label work-btn" data-spy="case-study" type="button" aria-expanded="false" aria-controls="work-cases">Work</button>
           <div class="fold dots-fold"><div><ul class="dots" aria-hidden="true"><li></li><li></li><li></li><li></li><li></li></ul></div></div>
@@ -559,7 +592,7 @@
             </div>
           </div></div>
         </li>
-        <li><a href="#contact" data-spy="contact">Contact</a></li>
+        <li><a href="#contact" data-spy="contact"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5h20v14H2z" fill="currentColor"/><path d="m2.5 5.5 9.5 7 9.5-7" fill="none" stroke="var(--bg)" stroke-width="1.8"/></svg><span class="mw">Contact</span></a></li>
       </ul>
     </nav>
     <button class="theme-row" id="theme2" type="button">
@@ -837,6 +870,7 @@
         function show(n, scroll) {
           cs = Math.min(Math.max(n, 1), titles.length);
           document.getElementById('case-title').textContent = titles[cs - 1];
+          document.querySelectorAll('.dots li').forEach(function (d, i) { d.classList.toggle('on', i + 1 === cs); });   // this case study's bar in the icon menu
           document.querySelectorAll('.cases a').forEach(function (a, i) { if (i + 1 === cs) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
           track.style.transition = 'none'; go(0); track.offsetWidth; track.style.transition = '';   // a new case study starts at About
           history.replaceState(null, '', '#case-study-' + cs);
@@ -867,7 +901,23 @@
           var mid = window.innerHeight * .45, current = links[0];
           links.forEach(function (a) { var sec = document.getElementById(a.dataset.spy); if (sec && sec.getBoundingClientRect().top <= mid) current = a; });
           links.forEach(function (a) { a.classList.toggle('on', a === current); if (a === current) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+          var icons = current.dataset.spy === 'case-study';   // on the case study section the menu turns into icons
+          if (icons !== side.classList.contains('icons')) { side.classList.toggle('icons', icons); if (!icons) expand(false, true); }
         }
+        // icon menu: hovering an icon (or tabbing into the menu) shows the full menu again, in place
+        var expT;
+        function expand(on, now) {
+          clearTimeout(expT);
+          if (!on && !now) { expT = setTimeout(function () { expand(false, true); }, 250); return; }
+          side.classList.toggle('expand', on); document.body.classList.toggle('menu-expand', on && side.classList.contains('icons'));
+        }
+        side.querySelectorAll('.menu > li > a, .work-btn, .dots li').forEach(function (el) {
+          el.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse' && side.classList.contains('icons') && !(el.closest('.work') && hold)) expand(true); });
+        });
+        side.querySelector('nav').addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') expand(false); });
+        side.querySelector('nav').addEventListener('pointerenter', function () { clearTimeout(expT); });
+        side.addEventListener('focusin', function (e) { if (side.classList.contains('icons') && e.target.closest('nav')) expand(true); });
+        side.addEventListener('focusout', function (e) { if (!side.contains(e.relatedTarget)) expand(false, true); });
         window.addEventListener('scroll', spy, { passive: true }); spy();
 
         // Work: hovering (or focusing, or tapping "Work") opens the case-study card; leaving closes it
@@ -955,6 +1005,7 @@
             hidePreview(); setWork(false);
             if (document.activeElement) document.activeElement.blur();
             hold = true;   // keep Work closed until the pointer has left it and comes back
+            expand(false, true);
             window.showCase(+a.dataset.cs, true);
           });
         });
@@ -994,7 +1045,7 @@
         // the empty space around them, where the card was, doesn't)
         document.addEventListener('pointermove', function (e) {
           if (!hold || e.pointerType !== 'mouse') return;
-          if (workBtn.contains(e.target) || (e.target.closest && e.target.closest('.dots li'))) { hold = false; setWork(true); }
+          if (workBtn.contains(e.target) || (e.target.closest && e.target.closest('.dots li'))) { hold = false; if (side.classList.contains('icons')) expand(true); setWork(true); }
           else if (!work.contains(e.target) && !preview.contains(e.target)) hold = false;
         }, { passive: true });
         work.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse' && !hold) setWork(true); });
