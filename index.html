@@ -446,7 +446,7 @@
       .side.icons:not(.expand) .dots li { width: 3px; height: 18px; margin-left: 10px; border-radius: 1px; }
       .side.icons:not(.expand) .dots li.on { background: var(--accent); }
       .side.icons:not(.expand) .menu > li + li { margin-top: 22px; }
-      .side.icons:not(.expand) .theme-label { opacity: 0; pointer-events: none; }
+      .side.icons:not(.expand) .theme-row:not(:hover):not(:focus-visible) .theme-label { opacity: 0; pointer-events: none; }   /* the label shows on its own hover */
       /* the sidebar's empty column mustn't block the case study index beside the icons */
       .side.icons, .side.icons nav, .side.icons .menu, .side.icons .menu > li, .side.icons .fold, .side.icons .fold > div { pointer-events: none; }
       .side.icons .brand, .side.icons .menu a, .side.icons .work-btn, .side.icons .dots li, .side.icons .cases, .side.icons .theme-row { pointer-events: auto; }
