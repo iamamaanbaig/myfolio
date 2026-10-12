@@ -410,6 +410,19 @@
     .cs-track { display: flex; gap: 160px; height: 100%; transition: translate .7s var(--ease); }
     .cs-track > section { flex: 0 0 calc(100vw - 2 * var(--frame) - var(--cs-left) - var(--cs-gutter)); height: 100%; transition: opacity .5s var(--ease); }
     .cs-track > section:not(.on) { opacity: .25; }
+    /* section content: scrolls inside its container; the screenshot below the text animates from its resting layout to
+       its open layout as you scroll down (the same animation as the thumbnail) */
+    .cs-scroll { height: 100%; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+    .cs-scroll::-webkit-scrollbar { display: none; }
+    .cs-about { padding: 52px 0 32vh; }   /* the extra room below lets the screenshot travel up while it animates */
+    .cs-label { margin: 0 0 22px; font-size: 20px; line-height: 1.2; color: var(--muted); }
+    .cs-lead { margin: 0; max-width: 1060px; font-size: clamp(24px, 2.4vw, 36px); line-height: 1.2; letter-spacing: -.02em; text-wrap: pretty; color: var(--text); }
+    .cs-lead .hl { color: var(--accent); }
+    :root[data-theme="light"] .cs-lead .hl { font-weight: 600; }
+    .cs-lead .dim { color: var(--muted); }
+    .cs-shot { position: relative; margin-top: 56px; overflow: hidden; }
+    .cs-shot .stage { position: absolute; left: 0; top: 0; width: 1440px; height: 800px; transform-origin: 0 0; }
+    .cs-shot img { position: absolute; max-width: none; will-change: transform; }
     .cs-next { position: absolute; right: calc(var(--cs-gutter) / 2); top: 50%; translate: 50% -50%; display: grid; place-items: center; width: 44px; height: 44px;
       padding: 0; border: 0; border-radius: 50%; background: none; color: var(--accent); cursor: pointer;
       transition: background-color .2s var(--ease), opacity .3s var(--ease), translate .3s var(--ease); }
@@ -836,6 +849,13 @@
           if (sc && sc.scrollHeight > sc.clientHeight + 1) return;                       // the case-study list scrolls itself
           var dir = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0; if (!dir) return;
           e.preventDefault();
+          // on the case study section, its content scrolls first; the page moves on once it reaches the end
+          var inner = !animating && window.caseScroller && window.caseScroller();
+          if (inner && (dir > 0 ? inner.scrollTop < inner.scrollHeight - inner.clientHeight - 1 : inner.scrollTop > 0)) {
+            inner.scrollTop += e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+            quietUntil = performance.now() + 200;   // reaching the end needs a fresh gesture to move the page
+            return;
+          }
           var now = performance.now(), busy = animating || now < quietUntil;
           quietUntil = Math.max(quietUntil, now + 200);                                  // a gesture ends after 200ms without wheel events
           if (!busy) go(dir);                                                           // so a trackpad's coasting doesn't skip a section
@@ -860,7 +880,56 @@
           var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = p.getAttribute('aria-label');
           b.addEventListener('click', function () { go(i); }); tabs.appendChild(b);
         });
-        function slide() { track.style.translate = -(parts[at].offsetLeft) + 'px 0'; }
+        function slide() { track.style.translate = -(parts[at].offsetLeft - parts[0].offsetLeft) + 'px 0'; }
+        // content per case study (only case study 1's About so far)
+        var CONTENT = {
+          1: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Saved million dollar taxes</span> → By improving stakeholder action visibility to reduce errors in the GIFA business process, <span class="dim">which helps close the process on time; otherwise it cost heavy taxes.</span></p>', shot: 0 }
+        };
+        var shots = [];   // the screenshot in each filled part: { box, stage, imgs }
+        function buildShot(n) {
+          var box = document.createElement('div'), stage = document.createElement('div'), imgs = [];
+          box.className = 'cs-shot'; stage.className = 'stage'; box.appendChild(stage);
+          (window.CS_DEVICES[n] || []).forEach(function (d) {
+            var b = d[2], h = d[3], r = d[4], tr = r[4] === 'tr', k = h[2] / (b[1] - b[0]);
+            var im = new Image(); im.src = 'Thumbnailimages/' + d[0] + '.png'; im.alt = ''; im.decoding = 'async';
+            im.style.width = (d[1] * k).toFixed(1) + 'px';
+            im.style.left = (h[0] - b[0] * k).toFixed(1) + 'px'; im.style.top = (h[1] - b[2] * k).toFixed(1) + 'px';
+            im.style.transformOrigin = ((tr ? b[1] : b[0]) * k).toFixed(1) + 'px ' + (b[2] * k).toFixed(1) + 'px';
+            imgs.push({ im: im, dx: tr ? r[0] + r[2] - h[0] - h[2] : r[0] - h[0], dy: r[1] - h[1], rot: r[3], s: r[2] / h[2] });
+            stage.appendChild(im);
+          });
+          return { box: box, stage: stage, imgs: imgs };
+        }
+        function ease(t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+        function play(sc) {   // scroll progress 0 -> 1 moves the screenshot from its resting to its open layout
+          var shot = sc && sc._shot; if (!shot) return;
+          var max = sc.scrollHeight - sc.clientHeight, q = 1 - ease(max > 0 ? Math.min(1, sc.scrollTop / max) : 1);
+          shot.imgs.forEach(function (o) {
+            o.im.style.transform = 'translate(' + (o.dx * q).toFixed(1) + 'px, ' + (o.dy * q).toFixed(1) + 'px) rotate(' + (o.rot * q).toFixed(2) + 'deg) scale(' + (1 + (o.s - 1) * q).toFixed(4) + ')';
+          });
+        }
+        function fitShots() {
+          shots.forEach(function (sh) { var w = sh.box.clientWidth, k = w / 1440; sh.stage.style.scale = k; sh.box.style.height = (800 * k) + 'px'; });
+          parts.forEach(function (p) { var sc = p.querySelector('.cs-scroll'); if (sc) play(sc); });
+        }
+        function fill() {
+          var c = CONTENT[cs] || {}; shots = [];
+          parts.forEach(function (p) {
+            var html = c[p.dataset.id]; p.innerHTML = '';
+            if (!html) return;
+            var sc = document.createElement('div'); sc.className = 'cs-scroll';
+            sc.innerHTML = '<div class="cs-' + p.dataset.id + '">' + html + '</div>';
+            if (p.dataset.id === 'about' && c.shot != null && window.CS_DEVICES) { var sh = buildShot(c.shot); sc.firstChild.appendChild(sh.box); sc._shot = sh; shots.push(sh); }
+            sc.addEventListener('scroll', function () { play(sc); }, { passive: true });
+            p.appendChild(sc);
+          });
+          fitShots();
+        }
+        // the active part's scroller, while the section fills the screen (the page's wheel handler scrolls it first)
+        window.caseScroller = function () {
+          var r = sec.getBoundingClientRect(); if (Math.abs(r.top) > 4) return null;
+          return parts[at].querySelector('.cs-scroll');
+        };
         function go(i) {
           at = Math.max(0, Math.min(parts.length - 1, i)); slide();
           [].forEach.call(tabs.children, function (t, k) { t.classList.toggle('on', k === at); t.setAttribute('aria-selected', k === at); });
@@ -873,6 +942,7 @@
           document.querySelectorAll('.dots li').forEach(function (d, i) { d.classList.toggle('on', i + 1 === cs); });   // this case study's bar in the icon menu
           document.querySelectorAll('.cases a').forEach(function (a, i) { if (i + 1 === cs) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
           track.style.transition = 'none'; go(0); track.offsetWidth; track.style.transition = '';   // a new case study starts at About
+          if (window.CS_DEVICES) fill(); else setTimeout(fill);   // (the device layouts are defined further down the script)
           history.replaceState(null, '', '#case-study-' + cs);
           if (!scroll) return;
           var y = Math.round(sec.getBoundingClientRect().top + scrollY);
@@ -886,7 +956,7 @@
           if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
           go(at + (e.key === 'ArrowRight' ? 1 : -1));
         });
-        window.addEventListener('resize', slide);
+        window.addEventListener('resize', function () { slide(); fitShots(); });
         var m = /^#case-study-(\d)$/.exec(location.hash);
         show(m ? +m[1] : 1, false);
         if (!m) history.replaceState(null, '', location.pathname + location.search);
@@ -946,6 +1016,7 @@
           // 5 · Made error tracking easy: thumbnail 2
           [['CS2image1', 1523, [124, 1320, 39], [28, 251, 1385], [24, 271, 1262, -9.2]]]
         ];
+        window.CS_DEVICES = DEVICES;   // the case study section reuses these layouts
         DEVICES.forEach(function (devs, i) {
           devs.forEach(function (d) {
             var b = d[2], h = d[3], r = d[4], tr = r[4] === 'tr', k = h[2] / (b[1] - b[0]);
