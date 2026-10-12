@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Case study — Amaan Baig</title>
+  <meta name="theme-color" content="#0A0A0A">
+  <script>
+    // Theme before first paint: same choice as the home page (saved, else the system setting)
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preload" href="assets/fonts/ppmondwest-regular.otf" as="font" type="font/otf" crossorigin>
+  <style>
+    @font-face { font-family: "PP Mondwest"; src: url("assets/fonts/ppmondwest-regular.otf") format("opentype"); font-weight: 400; font-display: swap; }
+    /* colours and fonts: the home page's tokens */
+    :root {
+      --bg: #0A0A0A; --line: #232323; --text: #F4F4F0; --muted: #8B8B85; --dim: #4A4A47;
+      --green: #AAFF66; --green-ink: #AAFF66;
+      --sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --display: "PP Mondwest", Georgia, serif;
+      --ease: cubic-bezier(.2, .8, .2, 1);
+      /* layout: left rail column, then the content column; the next section peeks in past a gutter that holds the arrow */
+      --left: 120px; --gutter: 240px;
+      color-scheme: dark;
+    }
+    :root[data-theme="light"] {
+      --bg: #F8F9FA; --line: #E2E5E9; --text: #121316; --muted: #6B7079; --dim: #C3C7CD; --green-ink: #2F7D12;
+      color-scheme: light;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--green-ink); outline-offset: 3px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    .brand { position: fixed; left: 40px; top: 40px; font-weight: 600; font-size: 18px; letter-spacing: .02em; white-space: nowrap; }
+    .brand span { color: var(--green-ink); }
+
+    /* ---------- Left menu: home, one bar per section (green = current, grey = seen, faint = ahead), contact ---------- */
+    .rail { position: fixed; left: 40px; top: 118px; width: 24px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+    .rail .ico { display: grid; place-items: center; width: 24px; height: 24px; color: var(--muted); transition: color .2s var(--ease); }
+    .rail .ico:hover { color: var(--text); }
+    .rail svg { width: 22px; height: 22px; }
+    .ticks { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .ticks button { display: grid; place-items: center; width: 24px; height: 28px; }
+    .ticks button::before { content: ""; width: 3px; height: 18px; border-radius: 1px; background: var(--dim); transition: background-color .3s var(--ease); }
+    .ticks button.seen::before { background: var(--muted); }
+    .ticks button.on::before { background: var(--green-ink); }
+    :root:not([data-theme="light"]) .ticks button.on::before { background: var(--green); }
+
+    /* ---------- Index: "Index:" then a row of boxed sections; it wraps to a new line only when out of space ---------- */
+    .index { position: fixed; left: var(--left); right: var(--gutter); top: 116px; display: flex; gap: 16px; align-items: flex-start; }
+    .index > span { font-family: var(--display); font-size: 16px; line-height: 34px; color: var(--muted); }
+    .tabs { flex: 1; display: flex; flex-wrap: wrap; padding: 1px 0 0 1px; }
+    .tabs button { flex: 0 0 auto; height: 34px; padding: 0 22px; margin: -1px 0 0 -1px; border: 1px solid var(--line);
+      font-family: var(--display); font-size: 16px; color: var(--muted); white-space: nowrap; transition: color .2s var(--ease), background-color .2s var(--ease); }
+    .tabs button:hover { color: var(--text); }
+    .tabs button.on { position: relative; z-index: 1; color: var(--green-ink);
+      background: color-mix(in srgb, var(--green) 12%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--green) 55%, transparent); }
+    :root[data-theme="light"] .tabs button.on { background: color-mix(in srgb, var(--green-ink) 9%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--green-ink) 45%, transparent); }
+
+    /* ---------- Sections: plain containers (no background) side by side; the track slides to the current one ---------- */
+    .stage { position: fixed; left: var(--left); right: 0; top: var(--stage-top, 196px); bottom: 32px; overflow: hidden; }
+    .track { display: flex; gap: 160px; height: 100%; transition: translate .7s var(--ease); }
+    .track section { flex: 0 0 calc(100vw - var(--left) - var(--gutter)); height: 100%; padding-top: 56px; transition: opacity .5s var(--ease); }
+    .track section:not(.on) { opacity: .25; }   /* the next section peeks in past the arrow, faded */
+    .next { position: fixed; right: calc(var(--gutter) / 2); top: calc(var(--stage-top, 196px) + (100vh - var(--stage-top, 196px) - 32px) / 2);
+      translate: 50% -50%; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--green-ink);
+      transition: background-color .2s var(--ease), opacity .3s var(--ease), translate .3s var(--ease); }
+    :root:not([data-theme="light"]) .next { color: var(--green); }
+    .next:hover { background: color-mix(in srgb, var(--green) 14%, transparent); translate: calc(50% + 3px) -50%; }
+    .next svg { width: 30px; height: 30px; }
+    .next[hidden] { display: grid; opacity: 0; pointer-events: none; }
+
+    /* ---------- Phones and narrow windows: no rail; the arrow moves to the bottom right ---------- */
+    @media (max-width: 820px) {
+      :root { --left: 20px; --gutter: 20px; }
+      .brand { left: 20px; top: 24px; }
+      .rail { display: none; }
+      .index { top: 72px; flex-direction: column; gap: 8px; }
+      .tabs button { padding: 0 14px; font-size: 15px; }
+      .next { top: auto; bottom: 20px; right: 20px; translate: none; background: color-mix(in srgb, var(--green) 14%, transparent); }
+      .next:hover { translate: 3px 0; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <a class="brand" href="index.html" aria-label="Amaan Baig, home">AMAAN BAIG<span>.</span></a>
+  <h1 class="sr-only" id="title">Case study</h1>
+
+  <nav class="rail" aria-label="Case study">
+    <a class="ico" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 11 12 3l9 8v10h-6.5v-6h-5v6H3z"/></svg></a>
+    <div class="ticks" id="ticks"></div>
+    <a class="ico" href="index.html#contact" aria-label="Contact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5h20v14H2z" fill="currentColor"/><path d="m2.5 5.5 9.5 7 9.5-7" fill="none" stroke="var(--bg)" stroke-width="1.8"/></svg></a>
+  </nav>
+
+  <div class="index"><span>Index:</span><div class="tabs" id="tabs" role="tablist" aria-label="Sections"></div></div>
+
+  <main class="stage" id="stage">
+    <div class="track" id="track">
+      <!-- one empty container per section; content goes in later -->
+      <section id="about" aria-label="About"></section>
+      <section id="problem-statement" aria-label="Problem Statement"></section>
+      <section id="project-challenges" aria-label="Project Challenges"></section>
+      <section id="process" aria-label="Process"></section>
+      <section id="discovered-problems" aria-label="Discovered Problems"></section>
+      <section id="solution-1" aria-label="Solution 1"></section>
+      <section id="solution-2" aria-label="Solution 2"></section>
+    </div>
+  </main>
+
+  <button class="next" id="next" type="button" aria-label="Next section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M4 12h15M12.5 5.5 19 12l-6.5 6.5"/></svg></button>
+
+  <script>
+    (function () {
+      var TITLES = ['Saved million dollar taxes', 'Reduce support calls', 'Increase leads generation', 'Saved 40 min on fee management tasks', 'Made error tracking easy'];
+      var cs = Math.min(Math.max(parseInt(new URLSearchParams(location.search).get('cs'), 10) || 1, 1), TITLES.length);
+      document.title = TITLES[cs - 1] + ' — Amaan Baig';
+      document.getElementById('title').textContent = 'Case study ' + cs + ': ' + TITLES[cs - 1];
+
+      var sections = [].slice.call(document.querySelectorAll('#track section')), track = document.getElementById('track');
+      var tabs = document.getElementById('tabs'), ticks = document.getElementById('ticks'), next = document.getElementById('next');
+      var index = document.querySelector('.index'), root = document.documentElement, at = 0;
+
+      sections.forEach(function (s, i) {
+        var name = s.getAttribute('aria-label');
+        var t = document.createElement('button'); t.type = 'button'; t.role = 'tab'; t.textContent = name;
+        t.addEventListener('click', function () { go(i); }); tabs.appendChild(t);
+        var k = document.createElement('button'); k.type = 'button'; k.setAttribute('aria-label', name);
+        k.addEventListener('click', function () { go(i); }); ticks.appendChild(k);
+      });
+
+      // the sections start below the index, however many lines it takes
+      function place() { root.style.setProperty('--stage-top', (index.getBoundingClientRect().bottom + 24) + 'px'); slide(); }
+      function slide() { track.style.translate = -(sections[at].offsetLeft) + 'px 0'; }
+
+      function go(i, quiet) {
+        at = Math.max(0, Math.min(sections.length - 1, i));
+        slide();
+        [].forEach.call(tabs.children, function (t, k) { t.classList.toggle('on', k === at); t.setAttribute('aria-selected', k === at); });
+        [].forEach.call(ticks.children, function (t, k) { t.classList.toggle('on', k === at); t.classList.toggle('seen', k < at); if (k === at) t.setAttribute('aria-current', 'step'); else t.removeAttribute('aria-current'); });
+        sections.forEach(function (s, k) { s.classList.toggle('on', k === at); s.inert = k !== at; });
+        next.hidden = at === sections.length - 1;
+        if (!quiet) history.replaceState(null, '', '#' + sections[at].id);
+      }
+
+      next.addEventListener('click', function () { go(at + 1); });
+      addEventListener('keydown', function (e) {
+        if (e.target.closest && e.target.closest('input, textarea')) return;
+        if (e.key === 'ArrowRight') go(at + 1);
+        else if (e.key === 'ArrowLeft') go(at - 1);
+      });
+      addEventListener('resize', place);
+      document.fonts && document.fonts.ready.then(place);
+
+      var start = sections.findIndex(function (s) { return '#' + s.id === location.hash; });
+      track.style.transition = 'none';   // open straight on the linked section, without sliding to it
+      go(start < 0 ? 0 : start, true);
+      place();
+      requestAnimationFrame(function () { requestAnimationFrame(function () { track.style.transition = ''; }); });
+    })();
+  </script>
+</body>
+</html>
