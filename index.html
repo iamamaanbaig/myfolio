@@ -886,12 +886,20 @@
         function slide() { track.style.translate = -(parts[at].offsetLeft - parts[0].offsetLeft) + 'px 0'; }
         // content per case study (only case study 1's About so far)
         var CONTENT = {
-          1: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Saved million dollar taxes</span> → By improving stakeholder action visibility to reduce errors in the GIFA business process, <span class="dim">which helps close the process on time; otherwise it cost heavy taxes.</span></p>', shot: 1 }
+          1: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Saved million dollar taxes</span> → By improving stakeholder action visibility to reduce errors in the GIFA business process, <span class="dim">which helps close the process on time; otherwise it cost heavy taxes.</span></p>', shot: 1 },
+          2: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Reduce support calls</span> → By making the task of creating a new automation easy.</p>', shot: 2 },
+          3: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Increase leads generation</span> → By designing a dashboard that provides customized insights beyond data.</p>', shot: 3 },
+          4: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Saved 40 min on fee management tasks</span> → By optimizing the task flow and reducing user effort.</p>', shot: 4 },
+          5: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Made error tracking easy</span> → By designing navigation to find and move between 100s of resources.</p>', shot: 5 }
         };
         /* each case study's own screens, from "Case Study Images/CSn images/": [file, natural width, screen bezel
            [left, right, top] in the image's pixels]; back screens first, the front screen last */
         var SCREENS = {
-          1: { dir: 'Case Study Images/CS1 images/', devs: [['CS1image2', 889, [109, 780, 45]], ['CS1image3', 889, [109, 780, 45]], ['CS1image1', 1218, [8, 1210, 8]]] }
+          1: { dir: 'Case Study Images/CS1 images/', devs: [['CS1image2', 889, [109, 780, 45]], ['CS1image3', 889, [109, 780, 45]], ['CS1image1', 1218, [8, 1210, 8]]] },
+          2: { dir: 'Case Study Images/CS2images/', devs: [['CS2image1', 1297, [10, 1210, 43]]] },
+          3: { dir: 'Case Study Images/CS3images/', devs: [['CS3image2', 1216, [7, 1207, 3]], ['CS3image1', 1222, [12, 1212, 3]]] },
+          4: { dir: 'Case Study Images/CS4images/', devs: [['CS4image2', 1217, [9, 1208, 3]], ['CS4image1', 1287, [10, 1200, 42]]] },
+          5: { dir: 'Case Study Images/CS5images/', devs: [['CS5image1', 1300, [11, 1211, 39]]] }
         };
         var shots = [];   // the screenshot in each filled part: { box, stage, imgs }
         /* the screenshot: the case study's screens as separate layers. The front screen stays large (about 58% of the
@@ -903,7 +911,7 @@
           devs.forEach(function (d, i) {
             var im = new Image(); im.src = encodeURI(set.dir + d[0] + '.png'); im.alt = ''; im.decoding = 'async';
             im.addEventListener('load', fitShots);
-            layers.push({ im: im, nat: d[1], bez: d[2], front: i === devs.length - 1, side: i % 2 ? 'right' : 'left' });
+            layers.push({ im: im, nat: d[1], bez: d[2], front: i === devs.length - 1, side: devs.length === 2 || i % 2 ? 'right' : 'left' });   // with one screen behind, it sits on the right
             box.appendChild(im);   // front screen last, so it sits on top
           });
           return { box: box, layers: layers };
@@ -911,6 +919,7 @@
         function layout(sh) {
           var W = sh.box.clientWidth; if (!W) return;
           var mainW = Math.max(.58 * W, Math.min(.85 * W, 560)), sideW = .82 * mainW, mainX = (W - mainW) / 2, hgt = 0;
+          if (sh.layers.length === 2) mainX = Math.max(0, (W - (.5 * mainW + sideW)) / 2);   // one screen behind: centre the pair
           sh.layers.forEach(function (L) {
             var b = L.bez, bw = L.front ? mainW : sideW, sc = bw / (b[1] - b[0]);
             var x = L.front ? mainX : L.side === 'left' ? mainX + .5 * mainW - sideW : mainX + .5 * mainW;
