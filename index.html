@@ -420,12 +420,11 @@
     .cs-lead .dim { color: var(--muted); }
     .cs-shot { position: relative; margin-top: 72px; clip-path: inset(-60px -100vw 0 -100vw); }   /* 72px from the text to the top of the front screen; the screens behind end with the front one */
     .cs-about { position: relative; z-index: 0; }
-    /* desktop: the screens sit on the section's bottom edge and rise from there; a screen that would reach into the text
-       is hidden (only that screen) */
+    /* desktop: the screens sit on the section's bottom edge and rise from there; when the window is too short for them,
+       they stay 32px below the text and the bottom edge crops them */
     @media (min-width: 1101px) {
       .cs-about { height: 100%; }
       .cs-shot { position: absolute; left: 0; right: 0; bottom: 0; margin-top: 0; }
-      .cs-shot img.off { visibility: hidden; }
     }
     .cs-track > section { overflow: hidden; }
     .cs-shot img { position: absolute; max-width: none; }
@@ -920,13 +919,14 @@
             if (L.front) hgt = (L.im.naturalHeight ? L.im.naturalHeight * sc : L.nat * .63 * sc) - b[2] * sc;
           });
           sh.box.style.height = hgt.toFixed(1) + 'px';
-          // bottom-aligned (desktop): hide any screen whose top would come within 32px of the text
+          // bottom-aligned (desktop): if the screens would come within 32px of the text, they move down instead and the
+          // section's bottom edge crops them
+          sh.box.style.translate = '';
           var lead = sh.box.parentNode.querySelector('.cs-lead'), bottomUp = getComputedStyle(sh.box).position === 'absolute';
-          var limit = lead ? lead.getBoundingClientRect().bottom + 32 : -Infinity, boxTop = sh.box.getBoundingClientRect().top;
-          sh.layers.forEach(function (L) {
-            var b = L.bez, bw = L.front ? mainW : sideW, top = boxTop + (L.front ? 0 : .286 * mainW);
-            L.im.classList.toggle('off', bottomUp && top < limit);
-          });
+          if (bottomUp && lead) {
+            var push = lead.getBoundingClientRect().bottom + 32 - sh.box.getBoundingClientRect().top;
+            if (push > 0) sh.box.style.translate = '0 ' + push.toFixed(1) + 'px';
+          }
         }
         function fitShots() { shots.forEach(layout); }
         function fill() {
