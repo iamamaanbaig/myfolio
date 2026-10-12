@@ -418,10 +418,10 @@
     .cs-lead .hl { color: var(--accent); }
     :root[data-theme="light"] .cs-lead .hl { font-weight: 600; }
     .cs-lead .dim { color: var(--muted); }
-    .cs-shot { position: relative; margin-top: 72px; clip-path: inset(-60px -100vw 0 -100vw); }   /* 72px from the text to the top of the front screen; the screens behind end with the front one */
+    .cs-shot { position: relative; margin-top: 72px; clip-path: inset(-100vh -100vw 0 -100vw); }   /* 72px from the text to the top of the front screen; the screens behind end with the front one */
     .cs-about { position: relative; z-index: 0; }
-    /* desktop: the screens sit on the section's bottom edge and rise from there; when the window is too short for them,
-       they stay 32px below the text and the bottom edge crops them */
+    /* desktop: the screens sit on the section's bottom edge and rise from there; when the window is too short, a screen
+       that would reach the text stays 32px below it and the bottom edge crops it (the others stay put) */
     @media (min-width: 1101px) {
       .cs-about { height: 100%; }
       .cs-shot { position: absolute; left: 0; right: 0; bottom: 0; margin-top: 0; }
@@ -919,14 +919,14 @@
             if (L.front) hgt = (L.im.naturalHeight ? L.im.naturalHeight * sc : L.nat * .63 * sc) - b[2] * sc;
           });
           sh.box.style.height = hgt.toFixed(1) + 'px';
-          // bottom-aligned (desktop): if the screens would come within 32px of the text, they move down instead and the
-          // section's bottom edge crops them
-          sh.box.style.translate = '';
+          // bottom-aligned (desktop): if a screen would come within 32px of the text, only that screen moves down and the
+          // section's bottom edge crops it; the others stay where they are
           var lead = sh.box.parentNode.querySelector('.cs-lead'), bottomUp = getComputedStyle(sh.box).position === 'absolute';
-          if (bottomUp && lead) {
-            var push = lead.getBoundingClientRect().bottom + 32 - sh.box.getBoundingClientRect().top;
-            if (push > 0) sh.box.style.translate = '0 ' + push.toFixed(1) + 'px';
-          }
+          var limit = lead ? lead.getBoundingClientRect().bottom + 32 : -Infinity, boxTop = sh.box.getBoundingClientRect().top;
+          sh.layers.forEach(function (L) {
+            var top = boxTop + (L.front ? 0 : .286 * mainW), push = bottomUp ? limit - top : 0;
+            L.im.style.translate = push > 0 ? '0 ' + push.toFixed(1) + 'px' : '';
+          });
         }
         function fitShots() { shots.forEach(layout); }
         function fill() {
