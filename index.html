@@ -430,10 +430,14 @@
     .cs-next svg { width: 30px; height: 30px; }
     .cs-next[hidden] { display: grid; opacity: 0; pointer-events: none; }
     @media (max-width: 1100px) {
-      .case { --cs-left: var(--pad-x); --cs-gutter: var(--pad-x); padding-top: 88px; }
+      /* small screens: the section grows to fit its content (nothing is cut off or stacked over the text) */
+      .case { --cs-left: var(--pad-x); --cs-gutter: var(--pad-x); padding-top: 88px; height: auto; min-height: calc(100svh - 2 * var(--frame)); }
+      .cs-stage { flex: none; }
+      .cs-track { height: auto; align-items: flex-start; }
+      .cs-track > section, .cs-scroll { height: auto; }
       .cs-index { flex-direction: column; gap: 8px; }
       .cs-tabs button { padding: 0 14px; font-size: 15px; }
-      .cs-next { top: auto; bottom: 20px; right: var(--pad-x); translate: none; background: color-mix(in srgb, var(--accent) 12%, transparent); }
+      .cs-next { position: static; align-self: flex-end; margin-top: 24px; translate: none; background: color-mix(in srgb, var(--accent) 12%, transparent); }   /* after the content, not over it */
       .cs-next:hover { translate: 3px 0; }
     }
 
