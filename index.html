@@ -599,7 +599,7 @@
       <ul class="menu">
         <li><a href="#top" class="on" data-spy="hero"><svg class="mi" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 11 12 3l9 8v10h-6.5v-6h-5v6H3z"/></svg><span class="mw">Home</span></a></li>
         <li class="work" id="work-menu">
-          <button class="label work-btn" data-spy="case-study" type="button" aria-expanded="false" aria-controls="work-cases">Work</button>
+          <button class="label work-btn" data-spy="case-study-1" type="button" aria-expanded="false" aria-controls="work-cases">Work</button>
           <div class="fold dots-fold"><div><ul class="dots" aria-hidden="true"><li></li><li></li><li></li><li></li><li></li></ul></div></div>
           <div class="fold card-fold"><div>
             <div class="cases" id="work-cases">
@@ -707,7 +707,7 @@
         </div>
       </div>
 
-      <a class="scroll-hint" href="#case-study">
+      <a class="scroll-hint" href="#case-study-1">
         <svg viewBox="0 0 22 34" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
           <rect x=".75" y=".75" width="20.5" height="32.5" rx="10.25"/>
           <path class="wheel" d="M11 8v6" stroke-linecap="round"/>
@@ -716,13 +716,12 @@
       </a>
     </section>
 
-    <!-- ================= CASE STUDY ================= -->
-    <!-- the case study picked in the Work menu; its sections are empty containers for now -->
-    <section class="case" id="case-study" aria-labelledby="case-title">
-      <h2 class="sr-only" id="case-title">Saved million dollar taxes</h2>
-      <div class="cs-index"><span>Index:</span><div class="cs-tabs" id="cs-tabs" role="tablist" aria-label="Sections"></div></div>
+    <!-- ================= CASE STUDIES (one section each) ================= -->
+    <section class="case" id="case-study-1" data-cs="1" aria-labelledby="case-title-1">
+      <h2 class="sr-only" id="case-title-1">Saved million dollar taxes</h2>
+      <div class="cs-index"><span>Index:</span><div class="cs-tabs" role="tablist" aria-label="Sections"></div></div>
       <div class="cs-stage">
-        <div class="cs-track" id="cs-track">
+        <div class="cs-track">
           <section data-id="about" aria-label="About"></section>
           <section data-id="problem-statement" aria-label="Problem Statement"></section>
           <section data-id="project-challenges" aria-label="Project Challenges"></section>
@@ -732,7 +731,75 @@
           <section data-id="solution-2" aria-label="Solution 2"></section>
         </div>
       </div>
-      <button class="cs-next" id="cs-next" type="button" aria-label="Next section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M4 12h15M12.5 5.5 19 12l-6.5 6.5"/></svg></button>
+      <button class="cs-next" type="button" aria-label="Next section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M4 12h15M12.5 5.5 19 12l-6.5 6.5"/></svg></button>
+    </section>
+
+    <section class="case" id="case-study-2" data-cs="2" aria-labelledby="case-title-2">
+      <h2 class="sr-only" id="case-title-2">Reduce support calls</h2>
+      <div class="cs-index"><span>Index:</span><div class="cs-tabs" role="tablist" aria-label="Sections"></div></div>
+      <div class="cs-stage">
+        <div class="cs-track">
+          <section data-id="about" aria-label="About"></section>
+          <section data-id="problem-statement" aria-label="Problem Statement"></section>
+          <section data-id="project-challenges" aria-label="Project Challenges"></section>
+          <section data-id="process" aria-label="Process"></section>
+          <section data-id="discovered-problems" aria-label="Discovered Problems"></section>
+          <section data-id="solution-1" aria-label="Solution 1"></section>
+          <section data-id="solution-2" aria-label="Solution 2"></section>
+        </div>
+      </div>
+      <button class="cs-next" type="button" aria-label="Next section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M4 12h15M12.5 5.5 19 12l-6.5 6.5"/></svg></button>
+    </section>
+
+    <section class="case" id="case-study-3" data-cs="3" aria-labelledby="case-title-3">
+      <h2 class="sr-only" id="case-title-3">Increase leads generation</h2>
+      <div class="cs-index"><span>Index:</span><div class="cs-tabs" role="tablist" aria-label="Sections"></div></div>
+      <div class="cs-stage">
+        <div class="cs-track">
+          <section data-id="about" aria-label="About"></section>
+          <section data-id="problem-statement" aria-label="Problem Statement"></section>
+          <section data-id="project-challenges" aria-label="Project Challenges"></section>
+          <section data-id="process" aria-label="Process"></section>
+          <section data-id="discovered-problems" aria-label="Discovered Problems"></section>
+          <section data-id="solution-1" aria-label="Solution 1"></section>
+          <section data-id="solution-2" aria-label="Solution 2"></section>
+        </div>
+      </div>
+      <button class="cs-next" type="button" aria-label="Next section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M4 12h15M12.5 5.5 19 12l-6.5 6.5"/></svg></button>
+    </section>
+
+    <section class="case" id="case-study-4" data-cs="4" aria-labelledby="case-title-4">
+      <h2 class="sr-only" id="case-title-4">Saved 40 min on fee management tasks</h2>
+      <div class="cs-index"><span>Index:</span><div class="cs-tabs" role="tablist" aria-label="Sections"></div></div>
+      <div class="cs-stage">
+        <div class="cs-track">
+          <section data-id="about" aria-label="About"></section>
+          <section data-id="problem-statement" aria-label="Problem Statement"></section>
+          <section data-id="project-challenges" aria-label="Project Challenges"></section>
+          <section data-id="process" aria-label="Process"></section>
+          <section data-id="discovered-problems" aria-label="Discovered Problems"></section>
+          <section data-id="solution-1" aria-label="Solution 1"></section>
+          <section data-id="solution-2" aria-label="Solution 2"></section>
+        </div>
+      </div>
+      <button class="cs-next" type="button" aria-label="Next section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M4 12h15M12.5 5.5 19 12l-6.5 6.5"/></svg></button>
+    </section>
+
+    <section class="case" id="case-study-5" data-cs="5" aria-labelledby="case-title-5">
+      <h2 class="sr-only" id="case-title-5">Made error tracking easy</h2>
+      <div class="cs-index"><span>Index:</span><div class="cs-tabs" role="tablist" aria-label="Sections"></div></div>
+      <div class="cs-stage">
+        <div class="cs-track">
+          <section data-id="about" aria-label="About"></section>
+          <section data-id="problem-statement" aria-label="Problem Statement"></section>
+          <section data-id="project-challenges" aria-label="Project Challenges"></section>
+          <section data-id="process" aria-label="Process"></section>
+          <section data-id="discovered-problems" aria-label="Discovered Problems"></section>
+          <section data-id="solution-1" aria-label="Solution 1"></section>
+          <section data-id="solution-2" aria-label="Solution 2"></section>
+        </div>
+      </div>
+      <button class="cs-next" type="button" aria-label="Next section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M4 12h15M12.5 5.5 19 12l-6.5 6.5"/></svg></button>
     </section>
 
     <!-- ================= CONTACT ================= -->
@@ -829,7 +896,7 @@
         var animating = false, quietUntil = 0;
         function stops() {
           var bottom = document.documentElement.scrollHeight - innerHeight, list = [];
-          document.querySelectorAll('#hero, #case-study, #contact').forEach(function (sec) {
+          document.querySelectorAll('#hero, .case, #contact').forEach(function (sec) {
             var y = Math.min(Math.round(sec.getBoundingClientRect().top + scrollY), bottom);
             if (!list.length || y - list[list.length - 1] > 2) list.push(y);
           });
@@ -873,17 +940,10 @@
         });
       })();
 
-      /* Case study section: picking a case study (Work menu or its thumbnail) shows it here and scrolls down to it;
-         the index, the arrow or the ←/→ keys move between its sections */
+      /* Case study sections: one per case study, between the hero and contact. Picking a case study (Work menu or its
+         thumbnail) glides to its section; in each, the index, the arrow or the ←/→ keys move between its parts */
       (function () {
-        var sec = document.getElementById('case-study'), track = document.getElementById('cs-track'), tabs = document.getElementById('cs-tabs'), next = document.getElementById('cs-next');
-        var parts = [].slice.call(track.children), titles = [].map.call(document.querySelectorAll('.cases h3'), function (h) { return h.textContent; });
-        var at = 0, cs = 1;
-        parts.forEach(function (p, i) {
-          var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = p.getAttribute('aria-label');
-          b.addEventListener('click', function () { go(i); }); tabs.appendChild(b);
-        });
-        function slide() { track.style.translate = -(parts[at].offsetLeft - parts[0].offsetLeft) + 'px 0'; }
+        var cases = [].slice.call(document.querySelectorAll('.case'));
         // content per case study (only case study 1's About so far)
         var CONTENT = {
           1: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Saved million dollar taxes</span> → By improving stakeholder action visibility to reduce errors in the GIFA business process, <span class="dim">which helps close the process on time; otherwise it cost heavy taxes.</span></p>', shot: 1 },
@@ -939,8 +999,8 @@
           });
         }
         function fitShots() { shots.forEach(layout); }
-        function fill() {
-          var c = CONTENT[cs] || {}; shots = [];
+        function fill(cs, parts) {
+          var c = CONTENT[cs] || {};
           parts.forEach(function (p) {
             var html = c[p.dataset.id]; p.innerHTML = '';
             if (!html) return;
@@ -949,41 +1009,56 @@
             if (p.dataset.id === 'about' && c.shot) { var sh = buildShot(c.shot); sc.firstChild.appendChild(sh.box); sc._shot = sh; shots.push(sh); }
             p.appendChild(sc);
           });
-          fitShots();
         }
 
-        function go(i) {
-          at = Math.max(0, Math.min(parts.length - 1, i)); slide();
-          [].forEach.call(tabs.children, function (t, k) { t.classList.toggle('on', k === at); t.setAttribute('aria-selected', k === at); });
-          parts.forEach(function (p, k) { p.classList.toggle('on', k === at); p.inert = k !== at; });
-          next.hidden = at === parts.length - 1;
+        // set up each section: its index, its parts, its arrow
+        cases.forEach(function (sec) {
+          var cs = +sec.dataset.cs, track = sec.querySelector('.cs-track'), tabs = sec.querySelector('.cs-tabs'), next = sec.querySelector('.cs-next');
+          var parts = [].slice.call(track.children), at = 0;
+          parts.forEach(function (p, i) {
+            var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = p.getAttribute('aria-label');
+            b.addEventListener('click', function () { go(i); }); tabs.appendChild(b);
+          });
+          function slide() { track.style.translate = -(parts[at].offsetLeft - parts[0].offsetLeft) + 'px 0'; }
+          function go(i) {
+            at = Math.max(0, Math.min(parts.length - 1, i)); slide();
+            [].forEach.call(tabs.children, function (t, k) { t.classList.toggle('on', k === at); t.setAttribute('aria-selected', k === at); });
+            parts.forEach(function (p, k) { p.classList.toggle('on', k === at); p.inert = k !== at; });
+            next.hidden = at === parts.length - 1;
+          }
+          sec._go = function (d) { go(at + d); }; sec._slide = slide;
+          next.addEventListener('click', function () { go(at + 1); });
+          fill(cs, parts); go(0);
+        });
+        fitShots();
+        function inView() {   // the case study section filling the screen, if any
+          return cases.filter(function (c) { var r = c.getBoundingClientRect(); return r.top < innerHeight * .4 && r.bottom > innerHeight * .6; })[0];
         }
+        // the current case study: its square in the icon menu and its entry in the card
+        function mark() {
+          var c = inView(), n = c ? +c.dataset.cs : 0;
+          document.querySelectorAll('.dots li').forEach(function (d, i) { d.classList.toggle('on', i + 1 === n); });
+          document.querySelectorAll('.cases a').forEach(function (a, i) { if (i + 1 === n) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+        }
+        window.addEventListener('scroll', mark, { passive: true });
         function show(n, scroll) {
-          cs = Math.min(Math.max(n, 1), titles.length);
-          document.getElementById('case-title').textContent = titles[cs - 1];
-          document.querySelectorAll('.dots li').forEach(function (d, i) { d.classList.toggle('on', i + 1 === cs); });   // this case study's bar in the icon menu
-          document.querySelectorAll('.cases a').forEach(function (a, i) { if (i + 1 === cs) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
-          track.style.transition = 'none'; go(0); track.offsetWidth; track.style.transition = '';   // a new case study starts at About
-          fill();
-          history.replaceState(null, '', '#case-study-' + cs);
+          var sec = document.getElementById('case-study-' + Math.min(Math.max(n, 1), cases.length));
+          history.replaceState(null, '', '#' + sec.id);
           if (!scroll) return;
           var y = Math.round(sec.getBoundingClientRect().top + scrollY);
           if (window.glideTo) window.glideTo(y); else sec.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
         }
         window.showCase = show;
-        next.addEventListener('click', function () { go(at + 1); });
         window.addEventListener('keydown', function (e) {
           if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-          var r = sec.getBoundingClientRect(); if (r.top > innerHeight * .4 || r.bottom < innerHeight * .6) return;   // only while the section is in view
           if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
-          go(at + (e.key === 'ArrowRight' ? 1 : -1));
+          var c = inView(); if (c) c._go(e.key === 'ArrowRight' ? 1 : -1);   // only while a case study section is in view
         });
-        window.addEventListener('resize', function () { slide(); fitShots(); });
+        window.addEventListener('resize', function () { cases.forEach(function (c) { c._slide(); }); fitShots(); });
         if (document.fonts) document.fonts.ready.then(fitShots);   // the text's height settles once its font loads
         var m = /^#case-study-(\d)$/.exec(location.hash);
-        show(m ? +m[1] : 1, false);
-        if (!m) history.replaceState(null, '', location.pathname + location.search);
-        else requestAnimationFrame(function () { scrollTo(0, Math.round(sec.getBoundingClientRect().top + scrollY)); });
+        if (m) requestAnimationFrame(function () { var sec = document.getElementById(m[0].slice(1)); if (sec) scrollTo(0, Math.round(sec.getBoundingClientRect().top + scrollY)); mark(); });
+        else mark();
       })();
 
       /* Side navigation: the section in view is highlighted; on phones the menu button slides it in */
@@ -994,7 +1069,7 @@
           var mid = window.innerHeight * .45, current = links[0];
           links.forEach(function (a) { var sec = document.getElementById(a.dataset.spy); if (sec && sec.getBoundingClientRect().top <= mid) current = a; });
           links.forEach(function (a) { a.classList.toggle('on', a === current); if (a === current) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
-          var icons = current.dataset.spy === 'case-study';   // on the case study section the menu turns into icons
+          var icons = current.dataset.spy === 'case-study-1';   // on the case study sections the menu turns into icons
           if (icons !== side.classList.contains('icons')) { side.classList.toggle('icons', icons); if (!icons) expand(false, true); }
         }
         // icon menu: hovering an icon (or tabbing into the menu) shows the full menu again, in place
