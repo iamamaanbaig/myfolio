@@ -22,7 +22,7 @@
     @font-face { font-family: "PP Mondwest"; src: url("assets/fonts/ppmondwest-regular.otf") format("opentype"); font-weight: 400; font-display: swap; }
     /* colours and fonts: the home page's tokens */
     :root {
-      --bg: #0A0A0A; --line: #232323; --text: #F4F4F0; --muted: #8B8B85; --dim: #4A4A47;
+      --bg: #0A0A0A; --card: #141414; --card-shadow: 0 1px 0 rgba(255, 255, 255, .04) inset, 0 12px 32px -8px rgba(0, 0, 0, .7); --line: #232323; --text: #F4F4F0; --muted: #8B8B85; --dim: #4A4A47;
       --green: #AAFF66; --green-ink: #AAFF66;
       --sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
       --display: "PP Mondwest", Georgia, serif;
@@ -32,7 +32,7 @@
       color-scheme: dark;
     }
     :root[data-theme="light"] {
-      --bg: #F8F9FA; --line: #E2E5E9; --text: #121316; --muted: #6B7079; --dim: #C3C7CD; --green-ink: #2F7D12;
+      --bg: #F8F9FA; --card: #FFFFFF; --card-shadow: 0 1px 2px rgba(16, 24, 40, .03), 0 12px 32px -16px rgba(16, 24, 40, .07), 0 32px 72px -32px rgba(16, 24, 40, .08); --line: #E2E5E9; --text: #121316; --muted: #6B7079; --dim: #C3C7CD; --green-ink: #2F7D12;
       color-scheme: light;
     }
     *, *::before, *::after { box-sizing: border-box; }
@@ -46,17 +46,30 @@
     .brand { position: fixed; left: 40px; top: 40px; font-weight: 600; font-size: 18px; letter-spacing: .02em; white-space: nowrap; }
     .brand span { color: var(--green-ink); }
 
-    /* ---------- Left menu: home, one bar per section (green = current, grey = seen, faint = ahead), contact ---------- */
-    .rail { position: fixed; left: 40px; top: 118px; width: 24px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
-    .rail .ico { display: grid; place-items: center; width: 24px; height: 24px; color: var(--muted); transition: color .2s var(--ease); }
-    .rail .ico:hover { color: var(--text); }
+    /* ---------- Left menu: home, one bar per case study (green = this one), contact.
+       On hover (or keyboard focus) it opens into the full menu: a panel slides out and each icon/bar gets its label. ---------- */
+    .rail { position: fixed; z-index: 20; left: 24px; top: 102px; padding: 16px; margin: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;
+      width: 56px; overflow: hidden; background: transparent; box-shadow: none;
+      transition: width .45s var(--ease), background-color .3s var(--ease), box-shadow .3s var(--ease); }
+    .rail.open { width: 380px; background: var(--card); box-shadow: var(--card-shadow); }
+    .rail a { display: flex; align-items: center; gap: 18px; min-height: 28px; color: var(--muted); white-space: nowrap; transition: color .2s var(--ease); }
+    .rail a:hover, .rail a:focus-visible { color: var(--text); }
+    .rail .mark { flex: none; display: grid; place-items: center; width: 24px; height: 24px; }
     .rail svg { width: 22px; height: 22px; }
-    .ticks { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .ticks button { display: grid; place-items: center; width: 24px; height: 28px; }
-    .ticks button::before { content: ""; width: 3px; height: 18px; border-radius: 1px; background: var(--dim); transition: background-color .3s var(--ease); }
-    .ticks button.seen::before { background: var(--muted); }
-    .ticks button.on::before { background: var(--green-ink); }
-    :root:not([data-theme="light"]) .ticks button.on::before { background: var(--green); }
+    .rail .bar::before { content: ""; width: 3px; height: 18px; border-radius: 1px; background: var(--dim); transition: background-color .3s var(--ease); }
+    .rail a.on .bar::before { background: var(--green-ink); }
+    :root:not([data-theme="light"]) .rail a.on .bar::before { background: var(--green); }
+    .rail a.on { color: var(--text); }
+    .rail .text { opacity: 0; translate: -8px 0; transition: opacity .25s var(--ease), translate .35s var(--ease); }
+    .rail .big { font-size: 20px; line-height: 1.2; }
+    .rail .small { font-size: 15px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; }
+    .rail a.on .small { font-weight: 500; }
+    .rail.open .text { opacity: 1; translate: 0 0; }
+    .rail.open li:nth-child(2) .text { transition-delay: .04s; } .rail.open li:nth-child(3) .text { transition-delay: .08s; }
+    .rail.open li:nth-child(4) .text { transition-delay: .12s; } .rail.open li:nth-child(5) .text { transition-delay: .16s; }
+    .rail.open li:nth-child(6) .text { transition-delay: .2s; } .rail.open li:nth-child(7) .text { transition-delay: .24s; }
+    .rail .kicker { display: block; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: -10px 0 0 42px; height: 0; opacity: 0; overflow: hidden; transition: height .35s var(--ease), margin .35s var(--ease), opacity .25s var(--ease); }
+    .rail.open .kicker { height: 14px; margin-top: 6px; opacity: 1; }
 
     /* ---------- Index: "Index:" then a row of boxed sections; it wraps to a new line only when out of space ---------- */
     .index { position: fixed; left: var(--left); right: var(--gutter); top: 116px; display: flex; gap: 16px; align-items: flex-start; }
@@ -99,10 +112,13 @@
   <a class="brand" href="index.html" aria-label="Amaan Baig, home">AMAAN BAIG<span>.</span></a>
   <h1 class="sr-only" id="title">Case study</h1>
 
-  <nav class="rail" aria-label="Case study">
-    <a class="ico" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 11 12 3l9 8v10h-6.5v-6h-5v6H3z"/></svg></a>
-    <div class="ticks" id="ticks"></div>
-    <a class="ico" href="index.html#contact" aria-label="Contact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5h20v14H2z" fill="currentColor"/><path d="m2.5 5.5 9.5 7 9.5-7" fill="none" stroke="var(--bg)" stroke-width="1.8"/></svg></a>
+  <nav aria-label="Site">
+    <ul class="rail" id="rail">
+      <li><a href="index.html"><span class="mark"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 11 12 3l9 8v10h-6.5v-6h-5v6H3z"/></svg></span><span class="text big">Home</span></a></li>
+      <li class="kicker" aria-hidden="true">Work</li>
+      <!-- one bar per case study, built by the script -->
+      <li id="contactItem"><a href="index.html#contact"><span class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5h20v14H2z" fill="currentColor"/><path d="m2.5 5.5 9.5 7 9.5-7" fill="none" stroke="var(--bg)" stroke-width="1.8"/></svg></span><span class="text big">Contact</span></a></li>
+    </ul>
   </nav>
 
   <div class="index"><span>Index:</span><div class="tabs" id="tabs" role="tablist" aria-label="Sections"></div></div>
@@ -129,16 +145,31 @@
       document.title = TITLES[cs - 1] + ' — Amaan Baig';
       document.getElementById('title').textContent = 'Case study ' + cs + ': ' + TITLES[cs - 1];
 
+      // left menu: one bar per case study, labelled with its title when the menu opens; this case study is green
+      var rail = document.getElementById('rail'), contactItem = document.getElementById('contactItem');
+      TITLES.forEach(function (t, i) {
+        var li = document.createElement('li'), a = document.createElement('a');
+        a.href = 'case-study.html?cs=' + (i + 1);
+        a.innerHTML = '<span class="mark bar" aria-hidden="true"></span><span class="text small"></span>';
+        a.querySelector('.text').textContent = t;
+        if (i + 1 === cs) { a.className = 'on'; a.setAttribute('aria-current', 'page'); }
+        li.appendChild(a); rail.insertBefore(li, contactItem);
+      });
+      var shut;
+      function openRail(on) { clearTimeout(shut); if (on) rail.classList.add('open'); else shut = setTimeout(function () { rail.classList.remove('open'); }, 150); }
+      rail.addEventListener('pointerenter', function () { openRail(true); });
+      rail.addEventListener('pointerleave', function () { openRail(false); });
+      rail.addEventListener('focusin', function () { openRail(true); });
+      rail.addEventListener('focusout', function (e) { if (!rail.contains(e.relatedTarget)) openRail(false); });
+
       var sections = [].slice.call(document.querySelectorAll('#track section')), track = document.getElementById('track');
-      var tabs = document.getElementById('tabs'), ticks = document.getElementById('ticks'), next = document.getElementById('next');
+      var tabs = document.getElementById('tabs'), next = document.getElementById('next');
       var index = document.querySelector('.index'), root = document.documentElement, at = 0;
 
       sections.forEach(function (s, i) {
         var name = s.getAttribute('aria-label');
         var t = document.createElement('button'); t.type = 'button'; t.role = 'tab'; t.textContent = name;
         t.addEventListener('click', function () { go(i); }); tabs.appendChild(t);
-        var k = document.createElement('button'); k.type = 'button'; k.setAttribute('aria-label', name);
-        k.addEventListener('click', function () { go(i); }); ticks.appendChild(k);
       });
 
       // the sections start below the index, however many lines it takes
@@ -149,7 +180,6 @@
         at = Math.max(0, Math.min(sections.length - 1, i));
         slide();
         [].forEach.call(tabs.children, function (t, k) { t.classList.toggle('on', k === at); t.setAttribute('aria-selected', k === at); });
-        [].forEach.call(ticks.children, function (t, k) { t.classList.toggle('on', k === at); t.classList.toggle('seen', k < at); if (k === at) t.setAttribute('aria-current', 'step'); else t.removeAttribute('aria-current'); });
         sections.forEach(function (s, k) { s.classList.toggle('on', k === at); s.inert = k !== at; });
         next.hidden = at === sections.length - 1;
         if (!quiet) history.replaceState(null, '', '#' + sections[at].id);
