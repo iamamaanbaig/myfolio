@@ -410,17 +410,18 @@
     .cs-track { display: flex; gap: 160px; height: 100%; transition: translate .7s var(--ease); }
     .cs-track > section { flex: 0 0 calc(100vw - 2 * var(--frame) - var(--cs-left) - var(--cs-gutter)); height: 100%; transition: opacity .5s var(--ease); }
     .cs-track > section:not(.on) { opacity: .25; }
-    /* section content: scrolls inside its container; the screenshot below the text animates from its resting layout to
-       its open layout as you scroll down (the same animation as the thumbnail) */
-    .cs-scroll { height: 100%; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
-    .cs-scroll::-webkit-scrollbar { display: none; }
-    .cs-about { padding: 52px 0 32vh; }   /* the extra room below lets the screenshot travel up while it animates */
+    /* section content: fits the screen; the screenshot sits at the bottom, cropped by the section's edge. While the page
+       scrolls to the case study, it travels down from higher up and plays the thumbnail's animation (resting -> open) */
+    .cs-scroll { height: 100%; overflow: hidden; }
+    .cs-about { padding-top: 52px; }
     .cs-label { margin: 0 0 22px; font-size: 20px; line-height: 1.2; color: var(--muted); }
     .cs-lead { margin: 0; max-width: 1060px; font-size: clamp(24px, 2.4vw, 36px); line-height: 1.2; letter-spacing: -.02em; text-wrap: pretty; color: var(--text); }
     .cs-lead .hl { color: var(--accent); }
     :root[data-theme="light"] .cs-lead .hl { font-weight: 600; }
     .cs-lead .dim { color: var(--muted); }
-    .cs-shot { position: relative; margin-top: 56px; overflow: hidden; }
+    .cs-shot { position: relative; z-index: -1; margin-top: -190px; }   /* the stage's empty top tucks under the text, so the laptops start just below it */
+    .cs-about { position: relative; z-index: 0; }
+    .cs-track > section { overflow: hidden; }
     .cs-shot .stage { position: absolute; left: 0; top: 0; width: 1440px; height: 800px; transform-origin: 0 0; }
     .cs-shot img { position: absolute; max-width: none; will-change: transform; }
     .cs-next { position: absolute; right: calc(var(--cs-gutter) / 2); top: 50%; translate: 50% -50%; display: grid; place-items: center; width: 44px; height: 44px;
@@ -849,13 +850,6 @@
           if (sc && sc.scrollHeight > sc.clientHeight + 1) return;                       // the case-study list scrolls itself
           var dir = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0; if (!dir) return;
           e.preventDefault();
-          // on the case study section, its content scrolls first; the page moves on once it reaches the end
-          var inner = !animating && window.caseScroller && window.caseScroller();
-          if (inner && (dir > 0 ? inner.scrollTop < inner.scrollHeight - inner.clientHeight - 1 : inner.scrollTop > 0)) {
-            inner.scrollTop += e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
-            quietUntil = performance.now() + 200;   // reaching the end needs a fresh gesture to move the page
-            return;
-          }
           var now = performance.now(), busy = animating || now < quietUntil;
           quietUntil = Math.max(quietUntil, now + 200);                                  // a gesture ends after 200ms without wheel events
           if (!busy) go(dir);                                                           // so a trackpad's coasting doesn't skip a section
@@ -901,9 +895,11 @@
           return { box: box, stage: stage, imgs: imgs };
         }
         function ease(t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
-        function play(sc) {   // scroll progress 0 -> 1 moves the screenshot from its resting to its open layout
+        function play(sc) {   // as the section scrolls into view (0 -> 1) the screenshot travels down and opens up
           var shot = sc && sc._shot; if (!shot) return;
-          var max = sc.scrollHeight - sc.clientHeight, q = 1 - ease(max > 0 ? Math.min(1, sc.scrollTop / max) : 1);
+          var r = sec.getBoundingClientRect(), t = Math.max(0, Math.min(1, 1 - r.top / innerHeight)), q = 1 - ease(t);
+          shot.box.style.translate = '0 ' + (-q * innerHeight * .35).toFixed(1) + 'px';
+          shot.box.style.opacity = Math.pow(t, 1.6).toFixed(3);   // fades in on the way, so it doesn't sit over the text
           shot.imgs.forEach(function (o) {
             o.im.style.transform = 'translate(' + (o.dx * q).toFixed(1) + 'px, ' + (o.dy * q).toFixed(1) + 'px) rotate(' + (o.rot * q).toFixed(2) + 'deg) scale(' + (1 + (o.s - 1) * q).toFixed(4) + ')';
           });
@@ -920,16 +916,15 @@
             var sc = document.createElement('div'); sc.className = 'cs-scroll';
             sc.innerHTML = '<div class="cs-' + p.dataset.id + '">' + html + '</div>';
             if (p.dataset.id === 'about' && c.shot != null && window.CS_DEVICES) { var sh = buildShot(c.shot); sc.firstChild.appendChild(sh.box); sc._shot = sh; shots.push(sh); }
-            sc.addEventListener('scroll', function () { play(sc); }, { passive: true });
             p.appendChild(sc);
           });
           fitShots();
         }
-        // the active part's scroller, while the section fills the screen (the page's wheel handler scrolls it first)
-        window.caseScroller = function () {
-          var r = sec.getBoundingClientRect(); if (Math.abs(r.top) > 4) return null;
-          return parts[at].querySelector('.cs-scroll');
-        };
+        var raf;
+        window.addEventListener('scroll', function () {
+          cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(function () { parts.forEach(function (p) { var sc = p.querySelector('.cs-scroll'); if (sc) play(sc); }); });
+        }, { passive: true });
         function go(i) {
           at = Math.max(0, Math.min(parts.length - 1, i)); slide();
           [].forEach.call(tabs.children, function (t, k) { t.classList.toggle('on', k === at); t.setAttribute('aria-selected', k === at); });
