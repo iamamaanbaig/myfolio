@@ -392,9 +392,11 @@
        containers (no background, empty for now); the next one peeks in past the arrow on the right. */
     :root { --accent: var(--green); }
     :root[data-theme="light"] { --accent: var(--text); }   /* light: highlights use the text colour, no green */
-    .case { position: relative; height: calc(100svh - 2 * var(--frame)); padding: 56px var(--pad-x) 32px; display: flex; flex-direction: column; overflow: hidden; }
-    .case-kicker { margin: 0 0 16px; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-    .case-kicker b { font-weight: 600; color: var(--text); }
+    /* the index sits level with "Home" in the menu, on the content column's left edge, on one line at laptop widths;
+       a narrower gutter on the right holds the arrow */
+    .case { --cs-left: var(--pad-x); --cs-gutter: 176px; position: relative; height: calc(100svh - 2 * var(--frame)); padding: 112px var(--cs-gutter) 32px var(--cs-left);
+      display: flex; flex-direction: column; overflow: hidden; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     .cs-index { display: flex; gap: 16px; align-items: flex-start; }
     .cs-index > span { font-family: var(--display); font-size: 16px; line-height: 34px; color: var(--muted); }
     .cs-tabs { flex: 1; display: flex; flex-wrap: wrap; padding: 1px 0 0 1px; }   /* wraps to a new line only when out of space */
@@ -405,10 +407,10 @@
       background: color-mix(in srgb, var(--accent) 12%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent); }
     :root[data-theme="light"] .cs-tabs button.on { background: color-mix(in srgb, var(--accent) 6%, transparent); box-shadow: inset 0 0 0 1px var(--accent); }
     .cs-stage { flex: 1 1 auto; min-height: 0; margin-top: 24px; }
-    .cs-track { display: flex; gap: 160px; height: 100%; transition: translate .7s var(--ease); }
-    .cs-track > section { flex: 0 0 var(--w); height: 100%; transition: opacity .5s var(--ease); }
+    .cs-track { display: flex; gap: 120px; height: 100%; transition: translate .7s var(--ease); }
+    .cs-track > section { flex: 0 0 calc(100vw - 2 * var(--frame) - var(--cs-left) - var(--cs-gutter)); height: 100%; transition: opacity .5s var(--ease); }
     .cs-track > section:not(.on) { opacity: .25; }
-    .cs-next { position: absolute; right: calc(var(--pad-x) / 2); top: 50%; translate: 50% -50%; display: grid; place-items: center; width: 44px; height: 44px;
+    .cs-next { position: absolute; right: calc(var(--cs-gutter) / 2); top: 50%; translate: 50% -50%; display: grid; place-items: center; width: 44px; height: 44px;
       padding: 0; border: 0; border-radius: 50%; background: none; color: var(--accent); cursor: pointer;
       transition: background-color .2s var(--ease), opacity .3s var(--ease), translate .3s var(--ease); }
     .cs-next:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); translate: calc(50% + 3px) -50%; }
@@ -417,7 +419,7 @@
     .dots li.on { background: var(--accent); }
     .menu .work-btn.on { color: var(--text); font-weight: 600; text-transform: uppercase; letter-spacing: .02em; }   /* the case study section in view */
     @media (max-width: 1100px) {
-      .case { padding-top: 88px; }
+      .case { --cs-left: var(--pad-x); --cs-gutter: var(--pad-x); padding-top: 88px; }
       .cs-index { flex-direction: column; gap: 8px; }
       .cs-tabs button { padding: 0 14px; font-size: 15px; }
       .cs-next { top: auto; bottom: 20px; right: var(--pad-x); translate: none; background: color-mix(in srgb, var(--accent) 12%, transparent); }
@@ -663,7 +665,7 @@
     <!-- ================= CASE STUDY ================= -->
     <!-- the case study picked in the Work menu; its sections are empty containers for now -->
     <section class="case" id="case-study" aria-labelledby="case-title">
-      <p class="case-kicker"><span id="case-num">Case study 01</span> · <b id="case-title">Saved million dollar taxes</b></p>
+      <h2 class="sr-only" id="case-title">Saved million dollar taxes</h2>
       <div class="cs-index"><span>Index:</span><div class="cs-tabs" id="cs-tabs" role="tablist" aria-label="Sections"></div></div>
       <div class="cs-stage">
         <div class="cs-track" id="cs-track">
@@ -836,7 +838,6 @@
         }
         function show(n, scroll) {
           cs = Math.min(Math.max(n, 1), titles.length);
-          document.getElementById('case-num').textContent = 'Case study 0' + cs;
           document.getElementById('case-title').textContent = titles[cs - 1];
           document.querySelectorAll('.dots li').forEach(function (d, i) { d.classList.toggle('on', i + 1 === cs); });   // the square for this case study
           document.querySelectorAll('.cases a').forEach(function (a, i) { if (i + 1 === cs) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
