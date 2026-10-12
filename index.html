@@ -418,7 +418,7 @@
     .cs-lead .hl { color: var(--accent); }
     :root[data-theme="light"] .cs-lead .hl { font-weight: 600; }
     .cs-lead .dim { color: var(--muted); }
-    .cs-shot { position: relative; margin-top: 72px; }   /* 72px from the text to the top of the front screen */
+    .cs-shot { position: relative; margin-top: 72px; clip-path: inset(-60px -100vw 0 -100vw); }   /* 72px from the text to the top of the front screen; the screens behind end with the front one */
     .cs-about { position: relative; z-index: 0; }
     .cs-track > section { overflow: hidden; }
     .cs-shot img { position: absolute; max-width: none; }
@@ -879,17 +879,22 @@
         function slide() { track.style.translate = -(parts[at].offsetLeft - parts[0].offsetLeft) + 'px 0'; }
         // content per case study (only case study 1's About so far)
         var CONTENT = {
-          1: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Saved million dollar taxes</span> → By improving stakeholder action visibility to reduce errors in the GIFA business process, <span class="dim">which helps close the process on time; otherwise it cost heavy taxes.</span></p>', shot: 0 }
+          1: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Saved million dollar taxes</span> → By improving stakeholder action visibility to reduce errors in the GIFA business process, <span class="dim">which helps close the process on time; otherwise it cost heavy taxes.</span></p>', shot: 1 }
+        };
+        /* each case study's own screens, from "Case Study Images/CSn images/": [file, natural width, screen bezel
+           [left, right, top] in the image's pixels]; back screens first, the front screen last */
+        var SCREENS = {
+          1: { dir: 'Case Study Images/CS1 images/', devs: [['CS1image2', 889, [109, 780, 45]], ['CS1image3', 889, [109, 780, 45]], ['CS1image1', 1218, [8, 1210, 8]]] }
         };
         var shots = [];   // the screenshot in each filled part: { box, stage, imgs }
         /* the screenshot: the case study's screens as separate layers. The front screen stays large (about 58% of the
            width on desktop, up to 85% on small screens); the others sit behind it on the left and right, peeking out further
            as the space narrows, so small screens still show plenty of each screen */
         function buildShot(n) {
-          var box = document.createElement('div'), layers = [], devs = window.CS_DEVICES[n] || [];
+          var box = document.createElement('div'), layers = [], set = SCREENS[n] || { devs: [] }, devs = set.devs;
           box.className = 'cs-shot';
           devs.forEach(function (d, i) {
-            var im = new Image(); im.src = 'Thumbnailimages/' + d[0] + '.png'; im.alt = ''; im.decoding = 'async';
+            var im = new Image(); im.src = encodeURI(set.dir + d[0] + '.png'); im.alt = ''; im.decoding = 'async';
             im.addEventListener('load', fitShots);
             layers.push({ im: im, nat: d[1], bez: d[2], front: i === devs.length - 1, side: i % 2 ? 'right' : 'left' });
             box.appendChild(im);   // front screen last, so it sits on top
@@ -917,7 +922,7 @@
             if (!html) return;
             var sc = document.createElement('div'); sc.className = 'cs-scroll';
             sc.innerHTML = '<div class="cs-' + p.dataset.id + '">' + html + '</div>';
-            if (p.dataset.id === 'about' && c.shot != null && window.CS_DEVICES) { var sh = buildShot(c.shot); sc.firstChild.appendChild(sh.box); sc._shot = sh; shots.push(sh); }
+            if (p.dataset.id === 'about' && c.shot) { var sh = buildShot(c.shot); sc.firstChild.appendChild(sh.box); sc._shot = sh; shots.push(sh); }
             p.appendChild(sc);
           });
           fitShots();
@@ -935,7 +940,7 @@
           document.querySelectorAll('.dots li').forEach(function (d, i) { d.classList.toggle('on', i + 1 === cs); });   // this case study's bar in the icon menu
           document.querySelectorAll('.cases a').forEach(function (a, i) { if (i + 1 === cs) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
           track.style.transition = 'none'; go(0); track.offsetWidth; track.style.transition = '';   // a new case study starts at About
-          if (window.CS_DEVICES) fill(); else setTimeout(fill);   // (the device layouts are defined further down the script)
+          fill();
           history.replaceState(null, '', '#case-study-' + cs);
           if (!scroll) return;
           var y = Math.round(sec.getBoundingClientRect().top + scrollY);
@@ -1009,7 +1014,6 @@
           // 5 · Made error tracking easy: thumbnail 2
           [['CS2image1', 1523, [124, 1320, 39], [28, 251, 1385], [24, 271, 1262, -9.2]]]
         ];
-        window.CS_DEVICES = DEVICES;   // the case study section reuses these layouts
         DEVICES.forEach(function (devs, i) {
           devs.forEach(function (d) {
             var b = d[2], h = d[3], r = d[4], tr = r[4] === 'tr', k = h[2] / (b[1] - b[0]);
