@@ -957,7 +957,7 @@
         var SCREENS = {
           1: { dir: 'Case Study Images/CS1 images/', devs: [['CS1image2', 889, [109, 780, 45, 409]], ['CS1image3', 889, [109, 780, 45, 409]], ['CS1image1', 1218, [8, 1210, 8, 772]]] },
           2: { dir: 'Case Study Images/CS2images/', devs: [['CS2image1', 1297, [10, 1210, 43, 810]]] },
-          // 3 and 4 are arranged like their thumbnails' open layout: [left, top, width] of each screen on a 1440-wide stage
+          // 3 and 4 use their thumbnails' open layout: [left, top, width] of each screen on a 1440-wide stage (top unused; screens sit on the bottom)
           3: { dir: 'Case Study Images/CS3images/', devs: [['CS3image2', 1216, [7, 1207, 3, 770]], ['CS3image1', 1222, [12, 1212, 3, 770]]], place: [[638, 331, 769], [36, 234, 881]] },
           4: { dir: 'Case Study Images/CS4images/', devs: [['CS4image2', 1217, [9, 1208, 3, 784]], ['CS4image1', 1287, [10, 1200, 42, 813]]], place: [[454, 318, 948], [46, 254, 1028]] },
           5: { dir: 'Case Study Images/CS5images/', devs: [['CS5image1', 1300, [11, 1211, 39, 809]]] }
@@ -979,43 +979,26 @@
         }
         function layout(sh) {
           var W = sh.box.clientWidth; if (!W) return;
-          if (sh.place) return layoutPlaced(sh, W);
-          var mainW = Math.max(.58 * W, Math.min(.85 * W, 560)), sideW = .82 * mainW, mainX = (W - mainW) / 2, hgt = 0;
-          sh.layers.forEach(function (L) {
-            var b = L.bez, bw = L.front ? mainW : sideW, sc = bw / (b[1] - b[0]);
-            var x = L.front ? mainX : L.side === 'left' ? mainX + .5 * mainW - sideW : mainX + .5 * mainW;
-            var y = L.front ? 0 : .286 * mainW;   // the back screens sit a little lower
-            L.im.style.width = (L.nat * sc).toFixed(1) + 'px';
-            L.im.style.left = (x - b[0] * sc).toFixed(1) + 'px'; L.im.style.top = (y - b[2] * sc).toFixed(1) + 'px';
-            if (L.front) hgt = (b[3] - b[2]) * sc;   // screen top to the image's last opaque row (the shadow below doesn't count)
-          });
-          // desktop: the container's height comes from the layout; the screens sit on its bottom edge. Small screens: the
-          // container is as tall as the front screen
-          var fill = getComputedStyle(sh.box).flexGrow === '1';
-          sh.box.style.height = fill ? '' : hgt.toFixed(1) + 'px';
-          var H = fill ? sh.box.clientHeight : hgt, off = H - hgt;
-          sh.layers.forEach(function (L) {
-            var top = (L.front ? 0 : .286 * mainW) + off;   // where this screen's top would be
-            var push = L.front && top < 0 ? -top : 0;        // the front screen never starts above the container's top
-            L.im.style.translate = '0 ' + (off + push).toFixed(1) + 'px';
-          });
-        }
-        // screens at fixed spots (as in the thumbnail), scaled to the container's width; the group sits on the bottom edge
-        function layoutPlaced(sh, W) {
-          var k = W / 1440, top = Infinity, bottom = -Infinity;
+          var mainW = Math.max(.58 * W, Math.min(.85 * W, 560)), sideW = .82 * mainW, mainX = (W - mainW) / 2, k = W / 1440;
           sh.layers.forEach(function (L, i) {
-            var b = L.bez, P = sh.place[i], sc = P[2] * k / (b[1] - b[0]);
-            L.y = P[1] * k; L.h = (b[3] - b[2]) * sc;
+            // CS3 and CS4 keep their thumbnail's left and width ([left, top, width] on a 1440-wide stage)
+            var b = L.bez, P = sh.place && sh.place[i];
+            var bw = P ? P[2] * k : L.front ? mainW : sideW, sc = bw / (b[1] - b[0]);
+            var x = P ? P[0] * k : L.front ? mainX : L.side === 'left' ? mainX + .5 * mainW - sideW : mainX + .5 * mainW;
+            L.h = (b[3] - b[2]) * sc;   // screen top to the image's last opaque row (the shadow below doesn't count)
             L.im.style.width = (L.nat * sc).toFixed(1) + 'px';
-            L.im.style.left = (P[0] * k - b[0] * sc).toFixed(1) + 'px'; L.im.style.top = (L.y - b[2] * sc).toFixed(1) + 'px';
-            top = Math.min(top, L.y); bottom = Math.max(bottom, L.y + L.h);
+            L.im.style.left = (x - b[0] * sc).toFixed(1) + 'px'; L.im.style.top = (-b[2] * sc).toFixed(1) + 'px';
           });
-          var gh = bottom - top, fill = getComputedStyle(sh.box).flexGrow === '1';
-          sh.box.style.height = fill ? '' : gh.toFixed(1) + 'px';
-          var H = fill ? sh.box.clientHeight : gh, off = H - bottom;   // the lowest screen's bottom meets the container's bottom
+          // every screen's bottom sits on the container's bottom edge. Desktop: the container's height comes from the
+          // layout. Small screens: the container is as tall as the tallest screen
+          var fill = getComputedStyle(sh.box).flexGrow === '1';
+          var hgt = Math.max.apply(null, sh.layers.map(function (L) { return L.h; }));
+          sh.box.style.height = fill ? '' : hgt.toFixed(1) + 'px';
+          var H = fill ? sh.box.clientHeight : hgt;
           sh.layers.forEach(function (L) {
-            var push = L.front && L.y + off < 0 ? -(L.y + off) : 0;   // the front screen never starts above the container's top
-            L.im.style.translate = '0 ' + (off + push).toFixed(1) + 'px';
+            var top = H - L.h;
+            if (L.front && top < 0) top = 0;   // the front screen never starts above the container's top; it is cropped at the bottom
+            L.im.style.translate = '0 ' + top.toFixed(1) + 'px';
           });
         }
         function fitShots() { shots.forEach(layout); }
