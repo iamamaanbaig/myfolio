@@ -410,8 +410,7 @@
     .cs-track { display: flex; gap: 160px; height: 100%; transition: translate .7s var(--ease); }
     .cs-track > section { flex: 0 0 calc(100vw - 2 * var(--frame) - var(--cs-left) - var(--cs-gutter)); height: 100%; transition: opacity .5s var(--ease); }
     .cs-track > section:not(.on) { opacity: .25; }
-    /* section content: fits the screen; the screenshot sits at the bottom, cropped by the section's edge. While the page
-       scrolls to the case study, it travels down from higher up and plays the thumbnail's animation (resting -> open) */
+    /* section content: fits the screen; the screenshot (the thumbnail's open layout) sits at the bottom, cropped by the section's edge */
     .cs-scroll { height: 100%; overflow: hidden; }
     .cs-about { padding-top: 52px; }
     .cs-label { margin: 0 0 22px; font-size: 20px; line-height: 1.2; color: var(--muted); }
@@ -423,7 +422,7 @@
     .cs-about { position: relative; z-index: 0; }
     .cs-track > section { overflow: hidden; }
     .cs-shot .stage { position: absolute; left: 0; top: 0; width: 1440px; height: 800px; transform-origin: 0 0; }
-    .cs-shot img { position: absolute; max-width: none; will-change: transform; }
+    .cs-shot img { position: absolute; max-width: none; }
     .cs-next { position: absolute; right: calc(var(--cs-gutter) / 2); top: 50%; translate: 50% -50%; display: grid; place-items: center; width: 44px; height: 44px;
       padding: 0; border: 0; border-radius: 50%; background: none; color: var(--accent); cursor: pointer;
       transition: background-color .2s var(--ease), opacity .3s var(--ease), translate .3s var(--ease); }
@@ -881,32 +880,21 @@
         };
         var shots = [];   // the screenshot in each filled part: { box, stage, imgs }
         function buildShot(n) {
-          var box = document.createElement('div'), stage = document.createElement('div'), imgs = [];
+          var box = document.createElement('div'), stage = document.createElement('div');
           box.className = 'cs-shot'; stage.className = 'stage'; box.appendChild(stage);
           (window.CS_DEVICES[n] || []).forEach(function (d) {
-            var b = d[2], h = d[3], r = d[4], tr = r[4] === 'tr', k = h[2] / (b[1] - b[0]);
+            var b = d[2], h = d[3], tr = d[4][4] === 'tr', k = h[2] / (b[1] - b[0]);
             var im = new Image(); im.src = 'Thumbnailimages/' + d[0] + '.png'; im.alt = ''; im.decoding = 'async';
             im.style.width = (d[1] * k).toFixed(1) + 'px';
             im.style.left = (h[0] - b[0] * k).toFixed(1) + 'px'; im.style.top = (h[1] - b[2] * k).toFixed(1) + 'px';
             im.style.transformOrigin = ((tr ? b[1] : b[0]) * k).toFixed(1) + 'px ' + (b[2] * k).toFixed(1) + 'px';
-            imgs.push({ im: im, dx: tr ? r[0] + r[2] - h[0] - h[2] : r[0] - h[0], dy: r[1] - h[1], rot: r[3], s: r[2] / h[2] });
             stage.appendChild(im);
           });
-          return { box: box, stage: stage, imgs: imgs };
+          return { box: box, stage: stage };
         }
-        function ease(t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
-        function play(sc) {   // as the section scrolls into view (0 -> 1) the screenshot travels down and opens up
-          var shot = sc && sc._shot; if (!shot) return;
-          var r = sec.getBoundingClientRect(), t = Math.max(0, Math.min(1, 1 - r.top / innerHeight)), q = 1 - ease(t);
-          shot.box.style.translate = '0 ' + (-q * innerHeight * .35).toFixed(1) + 'px';
-          shot.box.style.opacity = Math.pow(t, 1.6).toFixed(3);   // fades in on the way, so it doesn't sit over the text
-          shot.imgs.forEach(function (o) {
-            o.im.style.transform = 'translate(' + (o.dx * q).toFixed(1) + 'px, ' + (o.dy * q).toFixed(1) + 'px) rotate(' + (o.rot * q).toFixed(2) + 'deg) scale(' + (1 + (o.s - 1) * q).toFixed(4) + ')';
-          });
-        }
+
         function fitShots() {
           shots.forEach(function (sh) { var w = sh.box.clientWidth, k = w / 1440; sh.stage.style.scale = k; sh.box.style.height = (800 * k) + 'px'; });
-          parts.forEach(function (p) { var sc = p.querySelector('.cs-scroll'); if (sc) play(sc); });
         }
         function fill() {
           var c = CONTENT[cs] || {}; shots = [];
@@ -920,11 +908,7 @@
           });
           fitShots();
         }
-        var raf;
-        window.addEventListener('scroll', function () {
-          cancelAnimationFrame(raf);
-          raf = requestAnimationFrame(function () { parts.forEach(function (p) { var sc = p.querySelector('.cs-scroll'); if (sc) play(sc); }); });
-        }, { passive: true });
+
         function go(i) {
           at = Math.max(0, Math.min(parts.length - 1, i)); slide();
           [].forEach.call(tabs.children, function (t, k) { t.classList.toggle('on', k === at); t.setAttribute('aria-selected', k === at); });
