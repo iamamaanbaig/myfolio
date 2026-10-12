@@ -126,7 +126,7 @@
     :root[data-theme="light"] .theme .sun { opacity: 0; transform: rotate(90deg) scale(.6); }
     :root[data-theme="light"] .theme .moon { opacity: 1; transform: none; }
     .theme-label { opacity: 0; translate: -6px 0; transition: opacity .3s var(--ease), translate .4s var(--ease); }
-    .side.open .theme-label, .theme-row:focus-visible .theme-label { opacity: 1; translate: 0 0; transition-delay: .1s; }
+    .side.open .theme-label, .theme-row:hover .theme-label, .theme-row:focus-visible .theme-label { opacity: 1; translate: 0 0; transition-delay: .1s; }
 
     /* the page behind fades back while the menu is open */
     .index, .stage, .next { transition: opacity .35s var(--ease); }
@@ -262,10 +262,18 @@
         if (on) shown = setTimeout(function () { side.classList.add('shown'); }, 560);
         cardLinks.forEach(function (a) { a.tabIndex = on ? 0 : -1; });
       };
-      side.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse' || e.pointerType === 'pen') openMenu(true); });
-      side.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse' || e.pointerType === 'pen') openMenu(false); });
-      side.addEventListener('focusin', function () { openMenu(true); });
-      side.addEventListener('focusout', function (e) { if (!side.contains(e.relatedTarget)) openMenu(false); });
+      // only the menu itself opens it (not the theme switch below); once open, it stays open anywhere in the left column
+      var menuList = side.querySelector('.menu'), themeBtn = document.getElementById('themeBtn');
+      function isMouse(e) { return e.pointerType === 'mouse' || e.pointerType === 'pen'; }
+      // the triggers are the icons and bars themselves, so the empty column around them (and the theme switch) don't open it
+      [].forEach.call(side.querySelectorAll('.menu .swap, .bars'), function (el) {
+        el.addEventListener('pointerenter', function (e) { if (isMouse(e)) openMenu(true); });
+      });
+      side.addEventListener('pointerleave', function (e) { if (isMouse(e)) openMenu(false); });
+      side.addEventListener('pointerover', function (e) { if (isMouse(e) && side.classList.contains('open')) clearTimeout(shut); });
+      themeBtn.addEventListener('pointerenter', function (e) { if (isMouse(e) && side.classList.contains('open')) clearTimeout(shut); });
+      menuList.addEventListener('focusin', function () { openMenu(true); });
+      side.addEventListener('focusout', function (e) { if (!menuList.contains(e.relatedTarget)) openMenu(false); });
       addEventListener('keydown', function (e) { if (e.key === 'Escape') openMenu.now(false); });
 
       var sections = [].slice.call(document.querySelectorAll('#track section')), track = document.getElementById('track');
