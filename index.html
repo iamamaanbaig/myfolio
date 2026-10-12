@@ -954,6 +954,7 @@
             e.preventDefault();
             hidePreview(); setWork(false);
             if (document.activeElement) document.activeElement.blur();
+            hold = true;   // keep Work closed until the pointer has left it and comes back
             window.showCase(+a.dataset.cs, true);
           });
         });
@@ -986,7 +987,11 @@
           scroller.scrollBy({ top: next.getBoundingClientRect().top - scroller.getBoundingClientRect().top, behavior: 'smooth' });
         });
         setWork(false);
-        work.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') setWork(true); });
+        // after a case study is picked, Work stays closed even with the pointer still over it; it opens again only once the
+        // pointer has moved off Work and hovers back onto it
+        var hold = false;
+        document.addEventListener('pointermove', function (e) { if (hold && !work.contains(e.target) && !preview.contains(e.target)) hold = false; }, { passive: true });
+        work.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse' && !hold) setWork(true); });
         work.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse' && !preview.contains(e.relatedTarget)) shut = setTimeout(function () { setWork(false); }, 250); });
         workBtn.addEventListener('click', function () { setWork(!work.classList.contains('open')); });
         work.addEventListener('focusout', function (e) { if (!work.contains(e.relatedTarget)) setWork(false); });
