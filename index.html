@@ -421,7 +421,7 @@
     /* two containers: the text (as tall as its text) and, 72px below it, the image container. On desktop the image
        container takes the rest of the section's height (shrinking as the text grows); the screens sit on its bottom
        edge, and when it's too short, the front screen starts at its top and is cropped at the bottom */
-    .cs-shot { position: relative; margin-top: 72px; overflow: hidden; }
+    .cs-shot { position: relative; margin-top: 72px; padding-top: 4px; overflow: hidden; }
     .cs-about { position: relative; z-index: 0; }
     @media (min-width: 1101px) {
       .cs-about { height: 100%; display: flex; flex-direction: column; }
@@ -997,13 +997,13 @@
           sh.layers.forEach(function (L) { L.im.style.left = (L.x + shift - L.bez[0] * L.sc).toFixed(1) + 'px'; });
           // every screen's bottom sits on the container's bottom edge. Desktop: the container's height comes from the
           // layout. Small screens: the container is as tall as the tallest screen
-          var fill = getComputedStyle(sh.box).flexGrow === '1';
-          var hgt = Math.max.apply(null, sh.layers.map(function (L) { return L.h; }));
+          var cs = getComputedStyle(sh.box), fill = cs.flexGrow === '1', pad = parseFloat(cs.paddingTop) || 0;
+          var hgt = Math.max.apply(null, sh.layers.map(function (L) { return L.h; })) + pad;
           sh.box.style.height = fill ? '' : hgt.toFixed(1) + 'px';
           var H = fill ? sh.box.clientHeight : hgt;
           sh.layers.forEach(function (L) {
             var top = H - L.h;
-            if (L.front && top < 0) top = 0;   // the front screen never starts above the container's top; it is cropped at the bottom
+            if (L.front && top < pad) top = pad;   // the front screen never starts above the container's top padding; it is cropped at the bottom
             L.im.style.translate = '0 ' + top.toFixed(1) + 'px';
           });
         }
