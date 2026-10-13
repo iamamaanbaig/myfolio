@@ -452,6 +452,7 @@
     .cs-zoom svg { width: 22px; height: 22px; }
     .cs-ph { position: relative; min-height: 120px; border: 1px solid var(--line); background: var(--cs-ph); overflow: hidden; }
     .cs-ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    .cs-view .cs-ph img { cursor: zoom-in; }
     /* headings: a square bullet, or a green bar */
     .cs-sq { display: flex; gap: 16px; align-items: baseline; margin: 0; font-size: clamp(24px, 2.1vw, 30px); font-weight: 500; letter-spacing: -.02em; line-height: 1.25; color: var(--accent); }
     .cs-sq::before { content: ""; flex: none; width: 12px; height: 12px; background: var(--text); transform: translateY(-.18em); }
@@ -1102,16 +1103,17 @@
         var TROPHY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 3h10v5.5a5 5 0 0 1-10 0z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M7 5H4.5v1.2A3.3 3.3 0 0 0 7.6 9.5M17 5h2.5v1.2a3.3 3.3 0 0 1-3.1 3.3M12 13.5V17"/><path fill="currentColor" d="M8.5 21a3.5 3.5 0 0 1 7 0z"/></svg>';
         // opt: causeLabel (instead of "Cause"), award (a note beside the title), win (a trophy line under the impact)
         function pain(n, problem, cause, solution, impact, imgs, opt) {
-          var what = 'solution ' + n + ' screen'; opt = opt || {};
+          opt = opt || {};
+          var src = imgs.map(function (im) { return im[0]; }), alt = imgs.map(function (im) { return im[1]; }), what = alt[0] || 'solution ' + n + ' screen';
           var label = '<p class="cs-label">Recognized Pain Point and Design Solution ' + n + '</p>';
           if (opt.award) label = '<div class="cs-award-row">' + label + '<span class="cs-award"><i>' + TROPHY + '</i>' + opt.award + '</span></div>';
           return label + '<div class="cs-sol"><div>' +
             [['Problem', problem], [opt.causeLabel || 'Cause', cause], ['Designed Solution', solution], ['Impact', impact]].map(function (r, i) {
               return '<div class="blk"><p class="cs-bar">' + r[0] + '</p><p>' + r[1] + '</p>' + (i === 3 && opt.win ? '<p class="cs-win">' + TROPHY + '<span>' + opt.win + '</span></p>' : '') + '</div>'; }).join('') +
-            '</div><div class="cs-view" data-imgs="' + imgs.join('|') + '"><div class="cs-ph">' + zoom(imgs[0], what) + (imgs[0] ? '<img src="' + imgs[0] + '" alt="' + what + '">' : '') + '</div>' +
-            '<div class="cs-thumbs">' + imgs.map(function (src, i) {
-              return '<button type="button" class="' + (i ? '' : 'on') + '" aria-label="Show image ' + (i + 1) + '" aria-pressed="' + !i + '"' + (src ? ' style="background-image: url(\'' + src + '\')"' : '') + '></button>'; }).join('') +
-            '</div></div></div>';
+            '</div><div class="cs-view" data-imgs="' + src.join('|') + '" data-alts="' + alt.join('|') + '"><div class="cs-ph">' + zoom(src[0], what) + (src[0] ? '<img src="' + src[0] + '" alt="' + what + '">' : '') + '</div>' +
+            (imgs.length > 1 ? '<div class="cs-thumbs">' + imgs.map(function (im, i) {
+              return '<button type="button" class="' + (i ? '' : 'on') + '" aria-label="Show ' + im[1] + '" aria-pressed="' + !i + '" style="background-image: url(\'' + im[0] + '\')"></button>'; }).join('') + '</div>' : '') +
+            '</div></div>';
         }
         var CS1 = 'Case Study Images/CS1 images/';   // GIFAworkflowimage-web.png: a 5000px-wide copy of GIFAworkflowimage.png (31752px is too big for browsers)
         var CONTENT = {
@@ -1128,11 +1130,14 @@
                  ['GIFAcoreconceptsimage.png', 'the core concepts'], ['GIFAcoreconceptsrelationsimage.png', 'how the core concepts relate']].map(function (im) { return tile(CS1 + im[0], im[1]); }).join('') + '</div></div>' +
               '<div class="r2 c2"><p class="txt"><span class="dim">First, we learned the end-to-end business process, workflow, and stakeholders involved, and then → after considerable effort to secure their time,</span> we made the most of each conversation by asking focused questions about their workflows, responsibilities, and pain points.</p></div></div>',
             'solution-1': pain(1, 'Errors and roadblocks went unnoticed', role('Editors', 'Persona responsible for opening, closing, and managing the process') + ' only worked on GIFA when they had time, so errors and roadblocks were not caught in time',
-              'An automatic email alert system and a streamlined process', 'Earlier awareness and faster corrective action', ['', '', '']),
+              'An automatic email alert system and a streamlined process', 'Earlier awareness and faster corrective action',
+              [[CS1 + 'GIFAprocessstreamlineimage.png', 'the process streamline sending email alerts'], [CS1 + 'GIFAfundpageimage.png', 'the fund page with the process streamline']]),
             'solution-2': pain(2, 'Overlapping tasks led to data discrepancies', 'Stakeholders worked on overlapping tasks with limited visibility into one another’s decisions and progress',
-              'An activity log that records all changes and decisions, so everyone is on the same page', 'Fewer discrepancies and better-informed decisions', ['', '', '']),
+              'An activity log that records all changes and decisions, so everyone is on the same page', 'Fewer discrepancies and better-informed decisions',
+              [[CS1 + 'GIFAactivitylogimage.png', 'the award activity log beside the fund page'], [CS1 + 'GIFAactivitylogpanelimage.png', 'the realization and award activity logs']]),
             'solution-3': pain(3, role('Approvers', 'Persona responsible for final review and approval') + ' had to review hundreds of awards manually', 'Approvers review awards with specific criteria in mind',
-              'Advanced filters that users can define and save, which flag awards matching their criteria', 'Less manual review and more focus on relevant awards', ['', '', ''],
+              'Advanced filters that users can define and save, which flag awards matching their criteria', 'Less manual review and more focus on relevant awards',
+              [[CS1 + 'Approverdashboardimage.png', 'the approver dashboard with saved criteria']],
               { causeLabel: 'User Behavior', award: 'Recognized with an award for the impact created', win: 'Filtered awards with more precision' }),
             shot: 1
           },
@@ -1272,29 +1277,32 @@
           '<button type="button" class="x" aria-label="Close">' + ico('M6 6l12 12M18 6 6 18') + '</button></div>';
         document.body.appendChild(lb);
         var lbCard = lb.firstChild, lbImg = lbCard.firstChild, lbL = lbCard.querySelector('.l'), lbR = lbCard.querySelector('.r'), lbX = lbCard.querySelector('.x'), lbSet = [], lbAt = 0;
-        // the images of a group of tiles (Project Challenges) are browsed with the arrows; anything else opens alone
+        // the images of a group of tiles (Project Challenges) or of a solution's viewer are browsed with the arrows
         function lbShow(i) {
-          lbAt = i; var z = lbSet[i], what = z.getAttribute('aria-label').replace('Enlarge ', '');
-          lbImg.src = z.dataset.src; lbImg.alt = what; lbCard.setAttribute('aria-label', what);
+          lbAt = i; var it = lbSet[i];
+          lbImg.src = it.src; lbImg.alt = it.what; lbCard.setAttribute('aria-label', it.what);
           lbL.hidden = i === 0; lbR.hidden = i === lbSet.length - 1;
           if (lbCard.contains(document.activeElement) && document.activeElement.hidden) lbX.focus({ preventScroll: true });
         }
         function lbOpen(z) {
-          var group = z.closest('.cs-tiles');
-          lbSet = group ? [].slice.call(group.querySelectorAll('.cs-zoom[data-src]')) : [z];
-          lbFrom = z; lbShow(lbSet.indexOf(z)); lb.classList.add('open'); pop.classList.remove('on');
+          var group = z.closest('.cs-tiles'), view = z.closest('.cs-view'), at = 0;
+          if (group) lbSet = [].map.call(group.querySelectorAll('.cs-zoom[data-src]'), function (b, i) { if (b === z) at = i; return { src: b.dataset.src, what: b.getAttribute('aria-label').replace('Enlarge ', '') }; });
+          else if (view) { var alts = view.dataset.alts.split('|'); lbSet = view.dataset.imgs.split('|').map(function (src, i) { if (src === z.dataset.src) at = i; return { src: src, what: alts[i] }; }); }
+          else lbSet = [{ src: z.dataset.src, what: z.getAttribute('aria-label').replace('Enlarge ', '') }];
+          lbFrom = z; lbShow(at); lb.classList.add('open'); pop.classList.remove('on');
           lbX.focus({ preventScroll: true, focusVisible: z.matches(':focus-visible') });
         }
         function lbClose() { if (!lb.classList.contains('open')) return; lb.classList.remove('open'); if (lbFrom) lbFrom.focus({ preventScroll: true }); }
         document.addEventListener('click', function (e) {
-          var t = e.target.closest && e.target.closest('.cs-thumbs button, .cs-zoom, .cs-tile .t');
+          var t = e.target.closest && e.target.closest('.cs-thumbs button, .cs-zoom, .cs-tile .t, .cs-view .cs-ph img');
           if (!t) return;
           if (t.classList.contains('t')) t = t.nextElementSibling;   // a tile's picture: same as its zoom button
+          if (t.tagName === 'IMG') t = t.parentNode.querySelector('.cs-zoom');   // so is a viewer's image
           if (t.classList.contains('cs-zoom')) return lbOpen(t);
-          var view = t.closest('.cs-view'), i = [].indexOf.call(t.parentNode.children, t), src = view.dataset.imgs.split('|')[i], ph = view.querySelector('.cs-ph'), z = ph.querySelector('.cs-zoom');
+          var view = t.closest('.cs-view'), i = [].indexOf.call(t.parentNode.children, t), src = view.dataset.imgs.split('|')[i], alt = view.dataset.alts.split('|')[i], ph = view.querySelector('.cs-ph'), z = ph.querySelector('.cs-zoom');
           [].forEach.call(t.parentNode.children, function (b) { b.classList.toggle('on', b === t); b.setAttribute('aria-pressed', b === t); });
           var im = ph.querySelector('img'); if (im) im.remove();
-          if (src) { im = document.createElement('img'); im.src = src; im.alt = z.getAttribute('aria-label').replace('Enlarge ', ''); ph.appendChild(im); z.dataset.src = src; z.disabled = false; }
+          if (src) { im = document.createElement('img'); im.src = src; im.alt = alt; ph.appendChild(im); z.dataset.src = src; z.setAttribute('aria-label', 'Enlarge ' + alt); z.disabled = false; }
           else { delete z.dataset.src; z.disabled = true; }
         });
         lb.addEventListener('click', function (e) {
