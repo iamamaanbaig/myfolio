@@ -1131,7 +1131,7 @@
               'An automatic email alert system and a streamlined process', 'Earlier awareness and faster corrective action', ['', '', '']),
             'solution-2': pain(2, 'Overlapping tasks led to data discrepancies', 'Stakeholders worked on overlapping tasks with limited visibility into one another’s decisions and progress',
               'An activity log that records all changes and decisions, so everyone is on the same page', 'Fewer discrepancies and better-informed decisions', ['', '', '']),
-            'solution-3': pain(3, role('Approvers') + ' had to review hundreds of awards manually', 'Approvers review awards with specific criteria in mind',
+            'solution-3': pain(3, role('Approvers', 'Persona responsible for final review and approval') + ' had to review hundreds of awards manually', 'Approvers review awards with specific criteria in mind',
               'Advanced filters that users can define and save, which flag awards matching their criteria', 'Less manual review and more focus on relevant awards', ['', '', ''],
               { causeLabel: 'User Behavior', award: 'Recognized with an award for the impact created', win: 'Filtered awards with more precision' }),
             shot: 1
