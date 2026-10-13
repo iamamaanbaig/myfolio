@@ -430,6 +430,8 @@
     .cs-track > section { overflow: hidden; }
     /* case study 1's pages. No rounded corners on any of it */
     .case { --cs-grad: linear-gradient(90deg, #5EA9FF 0%, #8C7BFF 55%, #C46BF5 100%); --cs-ph: #141414; --cs-ph2: #1B1B1B; }
+    .cs-lb { --cs-ph2: #1B1B1B; }
+    :root[data-theme="light"] .cs-lb { --cs-ph2: #E5E8EC; }
     :root[data-theme="light"] .case { --cs-grad: linear-gradient(90deg, #2563EB 0%, #6D4AFF 55%, #A43BE0 100%); --cs-ph: #EEF0F3; --cs-ph2: #E5E8EC; }
     .cs-part { position: relative; padding-top: 24px; }
     @media (min-width: 1101px) { .cs-part { height: 100%; display: flex; flex-direction: column; } }
@@ -483,9 +485,20 @@
     .cs-thumbs button { width: 120px; height: 76px; padding: 0; border: 1px solid var(--line); background: var(--cs-ph) center / cover no-repeat; cursor: pointer; }
     .cs-thumbs button.on { border: 2px solid var(--accent); }
     /* enlarged image */
-    .cs-lb { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 4vh 4vw; background: rgba(0, 0, 0, .86); cursor: zoom-out; }
-    .cs-lb[hidden] { display: none; }
-    .cs-lb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    /* enlarged image: a card the size of the case study thumbnail card, centred over a dimmed page, with a close button */
+    .cs-lb { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; background: rgba(0, 0, 0, .6);
+      opacity: 0; visibility: hidden; transition: opacity .3s var(--ease), visibility 0s linear .3s; }
+    :root[data-theme="light"] .cs-lb { background: rgba(16, 24, 40, .35); }
+    .cs-lb.open { opacity: 1; visibility: visible; transition: opacity .3s var(--ease); }
+    .cs-lb .card { position: relative; width: min(calc(100vw - 2 * var(--frame) - 2 * var(--pad-x)), calc((100vh - 48px) * 1.8)); aspect-ratio: 1440 / 800;
+      background: var(--card); box-shadow: 0 0 0 1px var(--line), var(--card-shadow); scale: .97; transition: scale .4s var(--ease); }
+    :root:not([data-theme="light"]) .cs-lb .card { box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 32px 80px -24px rgba(0, 0, 0, .7); }
+    .cs-lb.open .card { scale: 1; }
+    .cs-lb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    .cs-lb .x { position: absolute; z-index: 1; top: 12px; right: 12px; display: grid; place-items: center; width: 44px; height: 44px; padding: 0;
+      border: 1px solid var(--line); background: var(--cs-ph2); color: var(--text); cursor: pointer; transition: background-color .2s var(--ease); }
+    .cs-lb .x:hover { background: color-mix(in srgb, var(--text) 12%, var(--cs-ph2)); }
+    .cs-lb .x svg { width: 20px; height: 20px; }
     @media (min-width: 1101px) and (max-width: 1400px) {
       .cs-tabs button { padding: 0 14px; }   /* the index stays on one line */
       .cs-ch { grid-template-columns: 210px minmax(0, 1fr) minmax(0, 1fr); }
@@ -1181,19 +1194,32 @@
           var c = inView(); if (c) c._go(e.key === 'ArrowRight' ? 1 : -1);   // only while a case study section is in view
         });
         // a viewer's thumbnails swap its image; zoom buttons open the image enlarged (click or Esc closes it)
-        var lb = document.createElement('div'); lb.className = 'cs-lb'; lb.hidden = true; lb.innerHTML = '<img alt="">'; document.body.appendChild(lb);
+        var lb = document.createElement('div'), lbFrom; lb.className = 'cs-lb';
+        lb.innerHTML = '<div class="card" role="dialog" aria-modal="true"><img alt=""><button type="button" class="x" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>';
+        document.body.appendChild(lb);
+        var lbCard = lb.firstChild, lbImg = lbCard.firstChild, lbX = lbCard.lastChild;
+        function lbOpen(src, what, from) { lbImg.src = src; lbImg.alt = what; lbCard.setAttribute('aria-label', what); lbFrom = from; lb.classList.add('open'); lbX.focus({ preventScroll: true, focusVisible: from.matches(':focus-visible') }); }
+        function lbClose() { if (!lb.classList.contains('open')) return; lb.classList.remove('open'); if (lbFrom) lbFrom.focus({ preventScroll: true }); }
         document.addEventListener('click', function (e) {
           var t = e.target.closest && e.target.closest('.cs-thumbs button, .cs-zoom');
           if (!t) return;
-          if (t.classList.contains('cs-zoom')) { lb.firstChild.src = t.dataset.src; lb.firstChild.alt = t.getAttribute('aria-label').replace('Enlarge ', ''); lb.hidden = false; return; }
+          if (t.classList.contains('cs-zoom')) return lbOpen(t.dataset.src, t.getAttribute('aria-label').replace('Enlarge ', ''), t);
           var view = t.closest('.cs-view'), i = [].indexOf.call(t.parentNode.children, t), src = view.dataset.imgs.split('|')[i], ph = view.querySelector('.cs-ph'), z = ph.querySelector('.cs-zoom');
           [].forEach.call(t.parentNode.children, function (b) { b.classList.toggle('on', b === t); b.setAttribute('aria-pressed', b === t); });
           var im = ph.querySelector('img'); if (im) im.remove();
           if (src) { im = document.createElement('img'); im.src = src; im.alt = z.getAttribute('aria-label').replace('Enlarge ', ''); ph.appendChild(im); z.dataset.src = src; z.disabled = false; }
           else { delete z.dataset.src; z.disabled = true; }
         });
-        lb.addEventListener('click', function () { lb.hidden = true; });
-        window.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) lb.hidden = true; });
+        lb.addEventListener('click', function (e) { if (e.target === lb || e.target.closest('.x')) lbClose(); });   // the close button or outside the card
+        // while it's open the page behind stays put: no wheel glide, no arrow keys; Esc closes, Tab stays on the close button
+        document.addEventListener('keydown', function (e) {
+          if (!lb.classList.contains('open')) return;
+          e.stopPropagation();
+          if (e.key === 'Escape') lbClose(); else if (e.key !== 'Enter' && e.key !== ' ') e.preventDefault();
+        }, true);
+        ['wheel', 'touchmove'].forEach(function (ev) {
+          document.addEventListener(ev, function (e) { if (lb.classList.contains('open')) { e.stopPropagation(); e.preventDefault(); } }, { capture: true, passive: false });
+        });
         window.addEventListener('resize', function () { cases.forEach(function (c) { c._slide(); }); fitShots(); });
         if (document.fonts) document.fonts.ready.then(fitShots);   // the text's height settles once its font loads
         var m = /^#case-study-(\d)$/.exec(location.hash);
