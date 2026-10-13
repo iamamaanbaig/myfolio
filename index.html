@@ -428,6 +428,36 @@
       .cs-shot { flex: 1 1 auto; min-height: 0; }
     }
     .cs-track > section { overflow: hidden; }
+    /* the other parts: a label, a lead, then cards / a problem-solution-impact row / a checklist; an image
+       container (.cs-ph, a placeholder until its image is added) takes the rest of the height */
+    .cs-part { position: relative; padding-top: 24px; }
+    @media (min-width: 1101px) { .cs-part { height: 100%; display: flex; flex-direction: column; } }
+    .cs-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; padding: 0; list-style: none; }
+    .cs-tags li { padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px; line-height: 1.2; color: var(--muted); }
+    .cs-grid { display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: 24px 40px; margin: 56px 0 0; padding: 0; list-style: none; max-width: 1180px; }
+    .cs-label + .cs-grid { margin-top: 8px; }
+    .cs-grid li { padding-top: 20px; border-top: 1px solid var(--line); }
+    .cs-grid .num { display: block; margin-bottom: 14px; font-family: var(--display); font-size: 16px; color: var(--accent); }
+    .cs-grid h3 { margin: 0 0 10px; font-size: 20px; font-weight: 600; line-height: 1.25; letter-spacing: -.01em; color: var(--text); }
+    .cs-grid.big h3 { font-size: clamp(22px, 2vw, 28px); font-weight: 500; letter-spacing: -.02em; }
+    .cs-grid p { margin: 0; font-size: 16px; line-height: 1.55; color: var(--muted); text-wrap: pretty; }
+    .cs-note { display: flex; gap: 16px; align-items: baseline; margin-top: 48px; max-width: 1180px; padding: 18px 24px; border-left: 2px solid var(--accent);
+      background: color-mix(in srgb, var(--accent) 7%, transparent); font-size: 18px; line-height: 1.4; color: var(--text); }
+    .cs-note b { flex: none; font-size: 14px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+    .cs-grid.psi li { padding-top: 16px; }
+    .cs-grid.psi .k { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .cs-grid.psi p { font-size: 18px; color: var(--text); }
+    .cs-grid.psi li:last-child .k { color: var(--accent); }
+    .cs-checks li { display: flex; gap: 14px; align-items: flex-start; }
+    .cs-checks svg { flex: none; width: 22px; height: 22px; margin-top: 2px; color: var(--accent); }
+    .cs-checks p { font-size: 20px; line-height: 1.4; color: var(--text); }
+    .cs-ph { flex: 1 1 auto; min-height: 120px; margin-top: 56px; display: grid; place-items: center; border: 1px dashed color-mix(in srgb, var(--muted) 45%, transparent);
+      border-radius: 16px; background: color-mix(in srgb, var(--text) 3%, transparent); font-size: 14px; color: var(--muted); }
+    @media (max-width: 1100px) {
+      .cs-grid { --n: 1 !important; margin-top: 40px; }
+      .cs-ph { min-height: 0; aspect-ratio: 16 / 10; margin-top: 40px; }
+      .cs-note { flex-direction: column; gap: 6px; }
+    }
     .cs-shot img { position: absolute; max-width: none; }
     .cs-next { position: absolute; right: calc(var(--cs-gutter) / 2); top: 50%; translate: 50% -50%; display: grid; place-items: center; width: 44px; height: 44px;
       padding: 0; border: 0; border-radius: 50%; background: none; color: var(--accent); cursor: pointer;
@@ -441,6 +471,7 @@
       .cs-stage { flex: none; }
       .cs-track { height: auto; align-items: flex-start; }
       .cs-track > section, .cs-scroll { height: auto; }
+      .cs-track > section:not(.on) { height: 0; }   /* the open part alone sets the section's height */
       .cs-index { flex-direction: column; gap: 8px; }
       .cs-tabs button { padding: 0 14px; font-size: 15px; }
       .cs-next { position: static; align-self: flex-end; margin-top: 24px; translate: none; background: color-mix(in srgb, var(--accent) 12%, transparent); }   /* after the content, not over it */
@@ -722,13 +753,14 @@
       <div class="cs-index"><span>Index:</span><div class="cs-tabs" role="tablist" aria-label="Sections"></div></div>
       <div class="cs-stage">
         <div class="cs-track">
-          <section data-id="about" aria-label="About"></section>
-          <section data-id="problem-statement" aria-label="Problem Statement"></section>
-          <section data-id="project-challenges" aria-label="Project Challenges"></section>
-          <section data-id="process" aria-label="Process"></section>
-          <section data-id="discovered-problems" aria-label="Discovered Problems"></section>
+          <section data-id="about" aria-label="Impact"></section>
+          <section data-id="problem" aria-label="Problem"></section>
+          <section data-id="project-challenges" aria-label="Challenges"></section>
+          <section data-id="discovered-problems" aria-label="Discoveries"></section>
           <section data-id="solution-1" aria-label="Solution 1"></section>
           <section data-id="solution-2" aria-label="Solution 2"></section>
+          <section data-id="solution-3" aria-label="Solution 3"></section>
+          <section data-id="overall-impact" aria-label="Outcome"></section>
         </div>
       </div>
       <button class="cs-next" type="button" aria-label="Next section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M4 12h15M12.5 5.5 19 12l-6.5 6.5"/></svg></button>
@@ -944,9 +976,38 @@
          thumbnail) glides to its section; in each, the index, the arrow or the ←/→ keys move between its parts */
       (function () {
         var cases = [].slice.call(document.querySelectorAll('.case'));
-        // content per case study (only case study 1's About so far)
+        // content per case study (case study 1 in full; the others' About so far). Helpers for the repeated blocks:
+        // numbered cards [[title, text], ...] and a solution's problem / solution / impact row with an image container
+        function grid(items, cls, n) {
+          return '<ul class="cs-grid' + (cls ? ' ' + cls : '') + '"' + (n ? ' style="--n: ' + n + '"' : '') + '>' + items.map(function (it, i) {
+            return '<li><span class="num">0' + (i + 1) + '</span><h3>' + it[0] + '</h3><p>' + it[1] + '</p></li>'; }).join('') + '</ul>';
+        }
+        function solution(num, title, problem, sol, impact) {
+          return '<p class="cs-label">05. The Designed Solutions</p><p class="cs-lead"><span class="hl">' + num + '. ' + title + '</span></p>' +
+            '<ul class="cs-grid psi">' + [['Problem', problem], ['Solution', sol], ['Impact', impact]].map(function (r) {
+              return '<li><span class="k">' + r[0] + '</span><p>' + r[1] + '</p></li>'; }).join('') + '</ul>' +
+            ph(title + ' screens');
+        }
+        function ph(what) { return '<div class="cs-ph" role="img" aria-label="' + what + ' (image to come)">Image container</div>'; }
         var CONTENT = {
-          1: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Saved million dollar taxes</span> → By improving stakeholder action visibility to reduce errors in the GIFA business process, <span class="dim">which helps close the process on time; otherwise it cost heavy taxes.</span></p>', shot: 1 },
+          1: {
+            about: '<p class="cs-label">01. The Impact</p><p class="cs-lead"><span class="hl">Improving stakeholder visibility to reduce process delays</span> → Improved stakeholder coordination to reduce errors <span class="dim">and prevent costly process delays.</span></p>' +
+              '<ul class="cs-tags"><li>UX Design</li><li>Enterprise Workflow</li><li>GIFA Portal</li></ul>',
+            problem: '<p class="cs-label">02. The Problem</p><p class="cs-lead">A complex, global business process relied on <span class="hl">manual coordination, fragmented data, and limited visibility.</span></p>' +
+              grid([['Fragmented data', 'Multiple versions of information caused discrepancies and rework.'], ['Limited visibility', 'Stakeholders lacked updates on others’ actions and decisions.'], ['Delayed issue detection', 'Errors and roadblocks went unnoticed, delaying corrective action.']]) +
+              '<p class="cs-note"><b>Business risk</b><span>Delays could result in millions of dollars in tax liabilities.</span></p>',
+            'project-challenges': '<p class="cs-label">03. Project Challenges</p>' + grid([['Solution-led requirements', 'The initial brief proposed solutions before the underlying user problems were fully understood.'],
+              ['Limited access to users', 'Stakeholders were occupied with critical business operations. After considerable effort to secure their time, we used focused conversations to uncover their workflows and pain points.']], 'big', 2),
+            'discovered-problems': '<p class="cs-label">04. Discovered Problems</p>' + grid([['Issues went unnoticed', 'Editors discovered errors and roadblocks only when they had time to check GIFA.'],
+              ['Changes lacked transparency', 'Limited visibility into stakeholder actions led to data discrepancies and time-consuming reconciliation.'], ['Reviews involved unnecessary effort', 'Approvers manually reviewed hundreds of awards to identify those matching their criteria.']], 'big') + ph('Research findings'),
+            'solution-1': solution('01', 'Automated alerts', 'Errors and roadblocks went unnoticed.', 'Automatically notify relevant stakeholders when issues occur.', 'Earlier awareness and faster corrective action.'),
+            'solution-2': solution('02', 'Stakeholder activity log', 'Changes and decisions lacked visibility.', 'Record data changes and the decisions behind them.', 'Greater transparency, less reconciliation, and better-informed decisions.'),
+            'solution-3': solution('03', 'Criteria-based award filtering', 'Approvers manually reviewed hundreds of awards.', 'Save predefined criteria and automatically flag matching awards.', 'Less unnecessary review and greater focus on relevant awards.'),
+            'overall-impact': '<p class="cs-label">06. Overall Impact</p><p class="cs-lead">A more transparent, <span class="hl">coordinated process.</span></p><ul class="cs-grid cs-checks" style="--n: 2">' +
+              ['Fewer opportunities for errors to go unnoticed.', 'Better visibility into changes and decisions.', 'Less unnecessary manual review.', 'Reduced risk of costly process delays.'].map(function (t) {
+                return '<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><p>' + t + '</p></li>'; }).join('') + '</ul>',
+            shot: 1
+          },
           2: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Reduce support calls</span> → By making the task of creating a new automation easy.</p>', shot: 2 },
           3: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Increase leads generation</span> → By designing a dashboard that provides customized insights beyond data.</p>', shot: 3 },
           4: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Saved 40 min on fee management tasks</span> → By optimizing the task flow and reducing user effort.</p>', shot: 4 },
@@ -1014,7 +1075,7 @@
             var html = c[p.dataset.id]; p.innerHTML = '';
             if (!html) return;
             var sc = document.createElement('div'); sc.className = 'cs-scroll';
-            sc.innerHTML = '<div class="cs-' + p.dataset.id + '">' + html + '</div>';
+            sc.innerHTML = '<div class="cs-part cs-' + p.dataset.id + '">' + html + '</div>';
             if (p.dataset.id === 'about' && c.shot) { var sh = buildShot(c.shot); sc.firstChild.appendChild(sh.box); sc._shot = sh; shots.push(sh); }
             p.appendChild(sc);
           });
