@@ -513,6 +513,14 @@
       transition: opacity .2s var(--ease), scale .25s var(--ease); }
     .cs-pop { --cs-ph2: #1B1B1B; } :root[data-theme="light"] .cs-pop { --cs-ph2: #FFFFFF; }
     .cs-pop.on { opacity: 1; scale: 1; }
+    /* tooltip for a gradient word that explains itself (GIFA, Editors): above the word, below it near the top of the screen */
+    .cs-g[data-tip] { cursor: help; }
+    .cs-g[data-tip]:focus-visible { outline-offset: 4px; }
+    .cs-tip { position: fixed; z-index: 950; left: 0; top: 0; max-width: 260px; padding: 9px 12px; pointer-events: none; opacity: 0; translate: 0 4px;
+      background: #F4F4F0; color: #0E100C; font-size: 14px; line-height: 1.4; box-shadow: 0 12px 32px -12px rgba(0, 0, 0, .5);
+      transition: opacity .15s var(--ease), translate .2s var(--ease); }
+    :root[data-theme="light"] .cs-tip { background: #121316; color: #F8F9FA; }
+    .cs-tip.on { opacity: 1; translate: 0 0; }
     .cs-tile .t { padding: 0; border: 0; }
     .cs-tile .t[data-src] { cursor: zoom-in; }
     @media (min-width: 1101px) and (max-width: 1400px) {
@@ -1071,7 +1079,8 @@
            (an image tile, a container, or a viewer's three images) and its zoom button turns on */
         var ZOOM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M10.5 7.5v6M7.5 10.5h6"/></svg>';
         var USER = '<span class="cs-user" aria-hidden="true"></span>';
-        function role(w) { return USER + '<span class="cs-g">' + w + '</span>'; }
+        function tipped(w, tip) { return '<span class="cs-g"' + (tip ? ' data-tip="' + tip + '" tabindex="0" aria-describedby="csTip"' : '') + '>' + w + '</span>'; }
+        function role(w, tip) { return USER + tipped(w, tip); }
         function zoom(src, what) { return '<button type="button" class="cs-zoom" aria-label="Enlarge ' + what + '"' + (src ? ' data-src="' + src + '"' : ' disabled') + '>' + ZOOM + '</button>'; }
         function tile(src, what) {   // the picture opens the image too (one tab stop: the zoom button)
           return '<span class="cs-tile"><button type="button" class="t" tabindex="-1" aria-hidden="true"' + (src ? ' data-src="' + src + '" style="background-image: url(\'' + src + '\')"' : ' disabled') + '></button>' + zoom(src, what) + '</span>';
@@ -1090,7 +1099,7 @@
         var CS1 = 'Case Study Images/CS1 images/';   // GIFAworkflowimage-web.png: a 5000px-wide copy of GIFAworkflowimage.png (31752px is too big for browsers)
         var CONTENT = {
           1: {
-            about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Saved millions of dollars in taxes</span> → By improving stakeholder visibility and coordination in a complex, multi-stakeholder business process (<span class="cs-small">Process name:</span><span class="cs-g">GIFA</span>), helping prevent the errors and delays that would otherwise have cost heavy taxes.</p>',
+            about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Saved millions of dollars in taxes</span> → By improving stakeholder visibility and coordination in a complex, multi-stakeholder business process (<span class="cs-small">Process name:</span>' + tipped('GIFA', 'Global Incentive Fee Awards') + '), helping prevent the errors and delays that would otherwise have cost heavy taxes.</p>',
             problem: '<p class="cs-label">The Problem</p><p class="cs-lead">Multiple stakeholders manually working on overlapping tasks ' + tile(CS1 + 'GIFAworkflowimage-web.png', 'the GIFA workflow map') + ' with limited visibility into one another’s decisions and progress caused errors like:</p>' +
               '<div class="cs-two"><div><p class="cs-sq">Data Discrepancy</p><p class="desc">Stakeholders maintained separate versions of information, creating inconsistencies and requiring time-consuming reconciliation.</p>' + box('', 'Data discrepancy') + '</div>' +
               '<div><p class="cs-sq">Limited Visibility</p><p class="desc">Stakeholders lacked clear updates on task progress and changes made by others, making it harder to coordinate work.</p>' + box('', 'Limited visibility') + '</div></div>',
@@ -1101,7 +1110,7 @@
                 [['GIFAprocessoverviewimage.png', 'the GIFA process overview'], ['GIFAusersandtaskimage.png', 'the users and their tasks'], ['GIFAworkflowimage-web.png', 'the GIFA workflow map'],
                  ['GIFAcoreconceptsimage.png', 'the core concepts'], ['GIFAcoreconceptsrelationsimage.png', 'how the core concepts relate']].map(function (im) { return tile(CS1 + im[0], im[1]); }).join('') + '</div></div>' +
               '<div class="r2 c2"><p class="txt"><span class="dim">First, we learned the end-to-end business process, workflow, and stakeholders involved, and then → after considerable effort to secure their time,</span> we made the most of each conversation by asking focused questions about their workflows, responsibilities, and pain points.</p></div></div>',
-            'solution-1': pain(1, 'Errors and roadblocks went unnoticed', role('Editors') + ' only worked on GIFA when they had time, so errors and roadblocks were not caught in time',
+            'solution-1': pain(1, 'Errors and roadblocks went unnoticed', role('Editors', 'Persona responsible for opening, closing, and managing the process') + ' only worked on GIFA when they had time, so errors and roadblocks were not caught in time',
               'An automatic email alert system and a streamlined process', 'Earlier awareness and faster corrective action', ['', '', '']),
             'solution-2': pain(2, 'Changes and decisions lacked visibility', role('Stakeholders') + ' couldn’t see one another’s changes or the reasons behind them, leading to data discrepancies and time-consuming reconciliation',
               'Stakeholder activity log that records data changes and the decisions behind them', 'Greater transparency, less reconciliation, and better-informed decisions', ['', '', '']),
@@ -1274,6 +1283,26 @@
           if (e.target.closest('.l')) lbShow(lbAt - 1); else if (e.target.closest('.r')) lbShow(lbAt + 1);
         });
         // hovering an image tile's picture shows a bigger copy of it (mouse only)
+        // tooltips on gradient words: hover or keyboard focus shows it, a tap toggles it
+        var tip = document.createElement('div'); tip.className = 'cs-tip'; tip.id = 'csTip'; tip.setAttribute('role', 'tooltip'); document.body.appendChild(tip);
+        var tipFor = null;
+        function tipShow(el) {
+          tipFor = el; tip.textContent = el.dataset.tip; tip.classList.add('on');
+          var r = el.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+          var x = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.top - h - 10 < 8 ? r.bottom + 10 : r.top - h - 10;
+          tip.style.left = Math.round(x) + 'px'; tip.style.top = Math.round(y) + 'px';
+        }
+        function tipHide() { tipFor = null; tip.classList.remove('on'); }
+        document.addEventListener('pointerover', function (e) { var el = e.pointerType === 'mouse' && e.target.closest && e.target.closest('.cs-g[data-tip]'); if (el) tipShow(el); });
+        document.addEventListener('pointerout', function (e) { if (e.pointerType === 'mouse' && e.target.closest && e.target.closest('.cs-g[data-tip]') && document.activeElement !== tipFor) tipHide(); });
+        document.addEventListener('focusin', function (e) { if (e.target.matches && e.target.matches('.cs-g[data-tip]:focus-visible')) tipShow(e.target); });   // keyboard focus only (a tap is handled below)
+        document.addEventListener('focusout', function (e) { if (e.target === tipFor) tipHide(); });
+        document.addEventListener('click', function (e) {
+          var el = e.target.closest && e.target.closest('.cs-g[data-tip]');
+          if (el && e.pointerType !== 'mouse') { if (tipFor === el) tipHide(); else tipShow(el); } else if (!el) tipHide();
+        });
+        window.addEventListener('scroll', tipHide, { passive: true });
+        window.addEventListener('keydown', function (e) { if (e.key === 'Escape') tipHide(); });
         var pop = document.createElement('div'); pop.className = 'cs-pop'; pop.setAttribute('aria-hidden', 'true'); document.body.appendChild(pop);
         document.addEventListener('pointerover', function (e) {
           var t = e.pointerType === 'mouse' && e.target.closest && e.target.closest('.cs-tile .t[data-src]');
