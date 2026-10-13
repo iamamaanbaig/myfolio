@@ -518,11 +518,14 @@
       .cs-tile .t { width: 64px; }
     }
     .cs-shot img { position: absolute; max-width: none; }
-    .cs-next { position: absolute; right: calc(var(--cs-gutter) / 2); top: 50%; translate: 50% -50%; display: grid; place-items: center; width: 44px; height: 44px;
+    .cs-next, .cs-prev { position: absolute; right: calc(var(--cs-gutter) / 2); top: 50%; translate: 50% -50%; display: grid; place-items: center; width: 44px; height: 44px;
       padding: 0; border: 0; border-radius: 50%; background: none; color: var(--accent); cursor: pointer;
       transition: background-color .2s var(--ease), opacity .3s var(--ease), translate .3s var(--ease); }
     .cs-next:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); translate: calc(50% + 3px) -50%; }
-    .cs-next svg { width: 30px; height: 30px; }
+    .cs-next svg, .cs-prev svg { width: 30px; height: 30px; }
+    /* the back arrow: in the left margin, between the menu and the content */
+    .cs-prev { right: auto; left: calc(var(--cs-left) - 44px); translate: -50% -50%; }
+    .cs-prev:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); translate: calc(-50% - 3px) -50%; }
     .cs-next[hidden] { display: grid; opacity: 0; pointer-events: none; }
     @media (max-width: 1100px) {
       /* small screens: the section grows to fit its content (nothing is cut off or stacked over the text) */
@@ -535,6 +538,9 @@
       .cs-tabs button { padding: 0 14px; font-size: 15px; }
       .cs-next { position: static; align-self: flex-end; margin-top: 24px; translate: none; background: color-mix(in srgb, var(--accent) 12%, transparent); }   /* after the content, not over it */
       .cs-next:hover { translate: 3px 0; }
+      .cs-prev { position: static; align-self: flex-start; margin-top: 24px; translate: none; background: color-mix(in srgb, var(--accent) 12%, transparent); }
+      .cs-prev + .cs-next { margin-top: -44px; }   /* the two arrows share one row after the content */
+      .cs-prev:hover { translate: -3px 0; }
     }
 
 
@@ -567,7 +573,7 @@
       .theme-label { transition: opacity .3s var(--ease); }
       .case > * { transition: opacity .35s var(--ease); }
       body.menu-expand .case > * { opacity: .08; }
-      body.menu-expand .case > .cs-index { opacity: 0; }   /* it sits right beside "Home", so it goes completely */
+      body.menu-expand .case > .cs-index, body.menu-expand .case > .cs-prev { opacity: 0; }   /* it sits right beside "Home", so it goes completely */
     }
 
     /* full-page sections: the contact section and the footer together fill one screen */
@@ -1147,6 +1153,7 @@
         // set up each section: its index, its parts, its arrow
         cases.forEach(function (sec) {
           var cs = +sec.dataset.cs, track = sec.querySelector('.cs-track'), tabs = sec.querySelector('.cs-tabs'), next = sec.querySelector('.cs-next');
+          var prev = next.cloneNode(true); prev.className = 'cs-prev'; prev.querySelector('path').setAttribute('d', 'M20 12H5M11.5 5.5 5 12l6.5 6.5'); sec.insertBefore(prev, next);
           var parts = [].slice.call(track.children), at = 0;
           parts.forEach(function (p, i) {
             var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = p.getAttribute('aria-label');
@@ -1159,6 +1166,8 @@
             parts.forEach(function (p, k) { p.classList.toggle('on', k === at); p.inert = k !== at; });
             // on the last page the arrow moves on to the next case study (after the last one, to Contact)
             next.setAttribute('aria-label', at < parts.length - 1 ? 'Next section' : cs < cases.length ? 'Next case study' : 'Contact');
+            // and on the first page the back arrow goes to the previous case study (before the first one, to Home)
+            prev.setAttribute('aria-label', at ? 'Previous section' : cs > 1 ? 'Previous case study' : 'Home');
           }
           sec._go = function (d) { go(at + d); }; sec._slide = slide;
           next.addEventListener('click', function () {
@@ -1166,6 +1175,12 @@
             if (cs < cases.length) return show(cs + 1, true);
             var c = document.getElementById('contact'), y = Math.round(c.getBoundingClientRect().top + scrollY);
             if (window.glideTo) window.glideTo(y); else c.scrollIntoView({ behavior: 'smooth' });
+          });
+          prev.addEventListener('click', function () {
+            if (at) return go(at - 1);
+            if (cs > 1) return show(cs - 1, true);
+            history.replaceState(null, '', location.pathname + location.search);
+            if (window.glideTo) window.glideTo(0); else scrollTo({ top: 0, behavior: 'smooth' });
           });
           fill(cs, parts); go(0);
         });
