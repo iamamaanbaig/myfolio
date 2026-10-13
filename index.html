@@ -1144,10 +1144,16 @@
             at = Math.max(0, Math.min(parts.length - 1, i)); slide();
             [].forEach.call(tabs.children, function (t, k) { t.classList.toggle('on', k === at); t.setAttribute('aria-selected', k === at); });
             parts.forEach(function (p, k) { p.classList.toggle('on', k === at); p.inert = k !== at; });
-            next.hidden = at === parts.length - 1;
+            // on the last page the arrow moves on to the next case study (after the last one, to Contact)
+            next.setAttribute('aria-label', at < parts.length - 1 ? 'Next section' : cs < cases.length ? 'Next case study' : 'Contact');
           }
           sec._go = function (d) { go(at + d); }; sec._slide = slide;
-          next.addEventListener('click', function () { go(at + 1); });
+          next.addEventListener('click', function () {
+            if (at < parts.length - 1) return go(at + 1);
+            if (cs < cases.length) return show(cs + 1, true);
+            var c = document.getElementById('contact'), y = Math.round(c.getBoundingClientRect().top + scrollY);
+            if (window.glideTo) window.glideTo(y); else c.scrollIntoView({ behavior: 'smooth' });
+          });
           fill(cs, parts); go(0);
         });
         fitShots();
