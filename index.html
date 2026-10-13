@@ -1085,19 +1085,19 @@
               return '<button type="button" class="' + (i ? '' : 'on') + '" aria-label="Show image ' + (i + 1) + '" aria-pressed="' + !i + '"' + (src ? ' style="background-image: url(\'' + src + '\')"' : '') + '></button>'; }).join('') +
             '</div></div></div>';
         }
+        var CS1 = 'Case Study Images/CS1 images/';   // GIFAworkflowimage-web.png: a 5000px-wide copy of GIFAworkflowimage.png (31752px is too big for browsers)
         var CONTENT = {
           1: {
             about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Saved millions of dollars in taxes</span> → By improving stakeholder visibility and coordination in a complex, multi-stakeholder business process (<span class="cs-small">Process name:</span><span class="cs-g">GIFA</span>), helping prevent the errors and delays that would otherwise have cost heavy taxes.</p>',
-            problem: '<p class="cs-label">The Problem</p><p class="cs-lead">Multiple stakeholders manually working on overlapping tasks ' + tile('', 'the overlapping tasks') + ' with limited visibility into one another’s decisions and progress caused errors like:</p>' +
+            problem: '<p class="cs-label">The Problem</p><p class="cs-lead">Multiple stakeholders manually working on overlapping tasks ' + tile(CS1 + 'GIFAworkflowimage-web.png', 'the GIFA workflow map') + ' with limited visibility into one another’s decisions and progress caused errors like:</p>' +
               '<div class="cs-two"><div><p class="cs-sq">Data Discrepancy</p><p class="desc">Stakeholders maintained separate versions of information, creating inconsistencies and requiring time-consuming reconciliation.</p>' + box('', 'Data discrepancy') + '</div>' +
               '<div><p class="cs-sq">Limited Visibility</p><p class="desc">Stakeholders lacked clear updates on task progress and changes made by others, making it harder to coordinate work.</p>' + box('', 'Limited visibility') + '</div></div>',
             'project-challenges': '<p class="cs-label">Project Challenges</p><div class="cs-ch">' +
               '<div class="lab"><p class="cs-bar">Challenges faced</p></div><div><p class="cs-sq">Requirements given as solutions to design</p></div><div class="c2"><p class="cs-sq">Limited access to users</p></div>' +
               '<div class="lab r2"><p class="cs-bar">How I overcame them</p></div>' +
               '<div class="r2"><p class="txt">Asked questions about the existing process, the stakeholders involved, their responsibilities, and the difficulties they faced.</p><div class="cs-tiles">' +
-                // stand-in images until the research images are added
-                ['Case Study Images/CS1 images/CS1image1.png', 'Case Study Images/CS2images/CS2image1.png', 'Case Study Images/CS3images/CS3image1.png',
-                 'Case Study Images/CS4images/CS4image1.png', 'Case Study Images/CS5images/CS5image1.png'].map(function (src, i) { return tile(src, 'research image ' + (i + 1)); }).join('') + '</div></div>' +
+                [['GIFAprocessoverviewimage.png', 'the GIFA process overview'], ['GIFAusersandtaskimage.png', 'the users and their tasks'], ['GIFAworkflowimage-web.png', 'the GIFA workflow map'],
+                 ['GIFAcoreconceptsimage.png', 'the core concepts'], ['GIFAcoreconceptsrelationsimage.png', 'how the core concepts relate']].map(function (im) { return tile(CS1 + im[0], im[1]); }).join('') + '</div></div>' +
               '<div class="r2 c2"><p class="txt"><span class="dim">First, we learned the end-to-end business process, workflow, and stakeholders involved, and then → after considerable effort to secure their time,</span> we made the most of each conversation by asking focused questions about their workflows, responsibilities, and pain points.</p></div></div>',
             'solution-1': pain(1, 'Errors and roadblocks went unnoticed', role('Editors') + ' only worked on GIFA when they had time, so errors and roadblocks were not caught in time',
               'An automatic email alert system and a streamlined process', 'Earlier awareness and faster corrective action', ['', '', '']),
