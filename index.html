@@ -527,6 +527,13 @@
     .cs-prev { right: auto; left: calc(var(--cs-left) - 44px); translate: -50% -50%; }
     .cs-prev:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); translate: calc(-50% - 3px) -50%; }
     .cs-next[hidden] { display: grid; opacity: 0; pointer-events: none; }
+    /* on the last page the next arrow gives way to a closing note, in the same spot */
+    .cs-end { position: absolute; right: calc(var(--cs-gutter) / 2); top: 50%; translate: 50% -50%; width: min(170px, calc(var(--cs-gutter) - 32px)); margin: 0;
+      font-size: 15px; line-height: 1.45; text-align: center; color: var(--muted); transition: opacity .3s var(--ease); }
+    .cs-end:not(.on) { opacity: 0; visibility: hidden; }
+    .cs-end span { display: block; }
+    .cs-end a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    .cs-end a:hover { text-decoration-thickness: 2px; }
     @media (max-width: 1100px) {
       /* small screens: the section grows to fit its content (nothing is cut off or stacked over the text) */
       .case { --cs-left: var(--pad-x); --cs-gutter: var(--pad-x); padding-top: 88px; height: auto; min-height: calc(100svh - 2 * var(--frame)); }
@@ -539,7 +546,11 @@
       .cs-next { position: static; align-self: flex-end; margin-top: 24px; translate: none; background: color-mix(in srgb, var(--accent) 12%, transparent); }   /* after the content, not over it */
       .cs-next:hover { translate: 3px 0; }
       .cs-prev { position: static; align-self: flex-start; margin-top: 24px; translate: none; background: color-mix(in srgb, var(--accent) 12%, transparent); }
-      .cs-prev + .cs-next { margin-top: -44px; }   /* the two arrows share one row after the content */
+      .cs-prev + .cs-end + .cs-next { margin-top: -44px; }   /* the two arrows share one row after the content */
+      .cs-next[hidden] { display: none; }
+      .cs-end { position: static; align-self: flex-end; width: auto; max-width: calc(100% - 64px); min-height: 44px; margin-top: -44px; translate: none;
+        display: flex; flex-direction: column; justify-content: center; text-align: right; }   /* in the next arrow's place */
+      .cs-end:not(.on) { display: none; }
       .cs-prev:hover { translate: -3px 0; }
     }
 
@@ -1154,6 +1165,12 @@
         cases.forEach(function (sec) {
           var cs = +sec.dataset.cs, track = sec.querySelector('.cs-track'), tabs = sec.querySelector('.cs-tabs'), next = sec.querySelector('.cs-next');
           var prev = next.cloneNode(true); prev.className = 'cs-prev'; prev.querySelector('path').setAttribute('d', 'M20 12H5M11.5 5.5 5 12l6.5 6.5'); sec.insertBefore(prev, next);
+          var end = document.createElement('p'); end.className = 'cs-end';
+          end.innerHTML = '<span>End of case study.</span> <span><a href="#contact">Connect</a> to discuss in detail</span>'; sec.insertBefore(end, next);
+          end.querySelector('a').addEventListener('click', function (e) {
+            e.preventDefault(); var c = document.getElementById('contact'), y = Math.round(c.getBoundingClientRect().top + scrollY);
+            if (window.glideTo) window.glideTo(y); else c.scrollIntoView({ behavior: 'smooth' });
+          });
           var parts = [].slice.call(track.children), at = 0;
           parts.forEach(function (p, i) {
             var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = p.getAttribute('aria-label');
@@ -1164,18 +1181,13 @@
             at = Math.max(0, Math.min(parts.length - 1, i)); slide();
             [].forEach.call(tabs.children, function (t, k) { t.classList.toggle('on', k === at); t.setAttribute('aria-selected', k === at); });
             parts.forEach(function (p, k) { p.classList.toggle('on', k === at); p.inert = k !== at; });
-            // on the last page the arrow moves on to the next case study (after the last one, to Contact)
-            next.setAttribute('aria-label', at < parts.length - 1 ? 'Next section' : cs < cases.length ? 'Next case study' : 'Contact');
+            // on the last page the arrow gives way to the closing note
+            var last = at === parts.length - 1; next.hidden = last; end.classList.toggle('on', last); end.inert = !last;
             // and on the first page the back arrow goes to the previous case study (before the first one, to Home)
             prev.setAttribute('aria-label', at ? 'Previous section' : cs > 1 ? 'Previous case study' : 'Home');
           }
           sec._go = function (d) { go(at + d); }; sec._slide = slide;
-          next.addEventListener('click', function () {
-            if (at < parts.length - 1) return go(at + 1);
-            if (cs < cases.length) return show(cs + 1, true);
-            var c = document.getElementById('contact'), y = Math.round(c.getBoundingClientRect().top + scrollY);
-            if (window.glideTo) window.glideTo(y); else c.scrollIntoView({ behavior: 'smooth' });
-          });
+          next.addEventListener('click', function () { go(at + 1); });
           prev.addEventListener('click', function () {
             if (at) return go(at - 1);
             if (cs > 1) return show(cs - 1, true);
