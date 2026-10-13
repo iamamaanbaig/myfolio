@@ -428,35 +428,81 @@
       .cs-shot { flex: 1 1 auto; min-height: 0; }
     }
     .cs-track > section { overflow: hidden; }
-    /* the other parts: a label, a lead, then cards / a problem-solution-impact row / a checklist; an image
-       container (.cs-ph, a placeholder until its image is added) takes the rest of the height */
+    /* case study 1's pages. No rounded corners on any of it */
+    .case { --cs-grad: linear-gradient(90deg, #5EA9FF 0%, #8C7BFF 55%, #C46BF5 100%); --cs-ph: #141414; --cs-ph2: #1B1B1B; }
+    :root[data-theme="light"] .case { --cs-grad: linear-gradient(90deg, #2563EB 0%, #6D4AFF 55%, #A43BE0 100%); --cs-ph: #EEF0F3; --cs-ph2: #E5E8EC; }
     .cs-part { position: relative; padding-top: 24px; }
     @media (min-width: 1101px) { .cs-part { height: 100%; display: flex; flex-direction: column; } }
-    .cs-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; padding: 0; list-style: none; }
-    .cs-tags li { padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px; line-height: 1.2; color: var(--muted); }
-    .cs-grid { display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: 24px 40px; margin: 56px 0 0; padding: 0; list-style: none; max-width: 1180px; }
-    .cs-label + .cs-grid { margin-top: 8px; }
-    .cs-grid li { padding-top: 20px; border-top: 1px solid var(--line); }
-    .cs-grid .num { display: block; margin-bottom: 14px; font-family: var(--display); font-size: 16px; color: var(--accent); }
-    .cs-grid h3 { margin: 0 0 10px; font-size: 20px; font-weight: 600; line-height: 1.25; letter-spacing: -.01em; color: var(--text); }
-    .cs-grid.big h3 { font-size: clamp(22px, 2vw, 28px); font-weight: 500; letter-spacing: -.02em; }
-    .cs-grid p { margin: 0; font-size: 16px; line-height: 1.55; color: var(--muted); text-wrap: pretty; }
-    .cs-note { display: flex; gap: 16px; align-items: baseline; margin-top: 48px; max-width: 1180px; padding: 18px 24px; border-left: 2px solid var(--accent);
-      background: color-mix(in srgb, var(--accent) 7%, transparent); font-size: 18px; line-height: 1.4; color: var(--text); }
-    .cs-note b { flex: none; font-size: 14px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
-    .cs-grid.psi li { padding-top: 16px; }
-    .cs-grid.psi .k { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-    .cs-grid.psi p { font-size: 18px; color: var(--text); }
-    .cs-grid.psi li:last-child .k { color: var(--accent); }
-    .cs-checks li { display: flex; gap: 14px; align-items: flex-start; }
-    .cs-checks svg { flex: none; width: 22px; height: 22px; margin-top: 2px; color: var(--accent); }
-    .cs-checks p { font-size: 20px; line-height: 1.4; color: var(--text); }
-    .cs-ph { flex: 1 1 auto; min-height: 120px; margin-top: 56px; display: grid; place-items: center; border: 1px dashed color-mix(in srgb, var(--muted) 45%, transparent);
-      border-radius: 16px; background: color-mix(in srgb, var(--text) 3%, transparent); font-size: 14px; color: var(--muted); }
+    /* a gradient word with a gradient underline; a small grey note inside the lead; a user icon before a role */
+    .cs-g { position: relative; white-space: nowrap; background: var(--cs-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .cs-g::after { content: ""; position: absolute; left: 0; right: 0; bottom: -.06em; height: 2px; background: var(--cs-grad); }
+    .cs-small { margin: 0 .35em 0 .1em; font-size: .42em; letter-spacing: 0; vertical-align: .25em; color: var(--muted); }
+    .cs-user { display: inline-grid; place-items: center; width: 1.25em; height: 1.25em; margin-right: .25em; border-radius: 50%; vertical-align: -.22em; background: var(--cs-grad); }
+    .cs-user svg { width: .8em; height: .8em; color: #fff; }
+    /* an image tile with its zoom button, image containers, the zoom button */
+    .cs-tile { display: inline-flex; vertical-align: middle; height: 48px; margin: 0 .2em; border: 1px solid var(--line); background: var(--cs-ph); }
+    .cs-tile .t { width: 84px; background: var(--cs-ph2) center / cover no-repeat; }
+    .cs-zoom { display: grid; place-items: center; width: 48px; padding: 0; border: 0; border-left: 1px solid var(--line); background: none; color: var(--text); cursor: zoom-in; transition: background-color .2s var(--ease); }
+    .cs-zoom:hover:not(:disabled) { background: color-mix(in srgb, var(--text) 8%, transparent); }
+    .cs-zoom:disabled { cursor: default; opacity: .55; }
+    .cs-zoom svg { width: 22px; height: 22px; }
+    .cs-ph { position: relative; min-height: 120px; border: 1px solid var(--line); background: var(--cs-ph); overflow: hidden; }
+    .cs-ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    /* headings: a square bullet, or a green bar */
+    .cs-sq { display: flex; gap: 16px; align-items: baseline; margin: 0; font-size: clamp(24px, 2.1vw, 30px); font-weight: 500; letter-spacing: -.02em; line-height: 1.25; color: var(--accent); }
+    .cs-sq::before { content: ""; flex: none; width: 12px; height: 12px; background: var(--text); transform: translateY(-.18em); }
+    .cs-bar { display: flex; gap: 12px; align-items: baseline; margin: 0; font-size: 24px; letter-spacing: -.01em; line-height: 1.25; color: var(--text); }
+    .cs-bar::before { content: ""; flex: none; width: 3px; height: .95em; background: var(--accent); transform: translateY(.12em); }
+    /* The Problem: two error types, each with an image container */
+    .cs-two { display: grid; grid-template-columns: 1fr 1fr; gap: 40px 48px; margin-top: clamp(24px, 5.5vh, 56px); flex: 1 1 auto; min-height: 0; }
+    .cs-two > div { display: flex; flex-direction: column; min-height: 0; }
+    .cs-two .desc { margin: clamp(8px, 1.5vh, 14px) 0 0 28px; max-width: 520px; font-size: 18px; line-height: 1.5; color: var(--muted); }
+    .cs-two .cs-ph { flex: 1 1 auto; min-height: 80px; margin-top: clamp(16px, 3.5vh, 32px); }
+    /* Project Challenges: row labels, two columns, dividers between them */
+    .cs-ch { display: grid; grid-template-columns: 260px minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto 1fr; margin-top: 8px; flex: 1 1 auto; min-height: 0; }
+    .cs-ch > div { padding: 0 40px clamp(16px, 3.5vh, 32px); }
+    .cs-ch > .lab { padding-left: 0; }
+    .cs-ch .c2 { border-left: 1px solid var(--line); }
+    .cs-ch .r2:not(.lab) { padding-top: clamp(16px, 3.5vh, 32px); border-top: 1px solid var(--line); }
+    .cs-ch .r2.lab { padding-top: clamp(16px, 3.5vh, 32px); }
+    .cs-ch .cs-sq { font-size: clamp(19px, 2.7vh, 24px); }
+    .cs-ch .cs-sq::before { width: 10px; height: 10px; }
+    .cs-ch .txt { margin: 0; font-size: clamp(17px, 2.45vh, 22px); line-height: 1.4; letter-spacing: -.01em; color: var(--text); text-wrap: pretty; }
+    .cs-ch .txt .dim { color: var(--muted); }
+    .cs-tiles { display: grid; grid-template-columns: repeat(2, max-content); gap: 10px; margin-top: clamp(14px, 2.7vh, 24px); }
+    .cs-tiles .cs-tile { margin: 0; }
+    /* Pain point and solution: four blocks beside an image viewer */
+    .cs-sol { display: grid; grid-template-columns: 420px minmax(0, 1fr); gap: 56px; flex: 1 1 auto; min-height: 0; }
+    .cs-sol .blk + .blk { margin-top: clamp(16px, 3.2vh, 28px); }
+    .cs-sol .cs-bar { font-size: 18px; color: var(--accent); }
+    .cs-sol .blk p:not(.cs-bar) { margin: 10px 0 0 15px; font-size: clamp(17px, 2.35vh, 21px); line-height: 1.4; letter-spacing: -.01em; color: var(--text); }
+    .cs-view { display: flex; flex-direction: column; min-height: 0; }
+    .cs-view .cs-ph { flex: 1 1 auto; }
+    .cs-view .cs-zoom { position: absolute; z-index: 1; top: 12px; right: 12px; width: 44px; height: 44px; border: 1px solid var(--line); background: var(--cs-ph2); }
+    .cs-thumbs { display: flex; gap: 12px; margin-top: 12px; }
+    .cs-thumbs button { width: 120px; height: 76px; padding: 0; border: 1px solid var(--line); background: var(--cs-ph) center / cover no-repeat; cursor: pointer; }
+    .cs-thumbs button.on { border: 2px solid var(--accent); }
+    /* enlarged image */
+    .cs-lb { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 4vh 4vw; background: rgba(0, 0, 0, .86); cursor: zoom-out; }
+    .cs-lb[hidden] { display: none; }
+    .cs-lb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    @media (min-width: 1101px) and (max-width: 1400px) {
+      .cs-tabs button { padding: 0 14px; }   /* the index stays on one line */
+      .cs-ch { grid-template-columns: 210px minmax(0, 1fr) minmax(0, 1fr); }
+      .cs-ch > div { padding-left: 28px; padding-right: 28px; }
+      .cs-sol { grid-template-columns: 360px minmax(0, 1fr); gap: 40px; }
+    }
+    @media (min-width: 1101px) and (max-height: 760px) { .cs-tile { height: 40px; } .cs-zoom { width: 40px; } .cs-tile .t { width: 70px; } }
     @media (max-width: 1100px) {
-      .cs-grid { --n: 1 !important; margin-top: 40px; }
-      .cs-ph { min-height: 0; aspect-ratio: 16 / 10; margin-top: 40px; }
-      .cs-note { flex-direction: column; gap: 6px; }
+      .cs-two, .cs-ch, .cs-sol { grid-template-columns: minmax(0, 1fr); gap: 40px; margin-top: 32px; }
+      .cs-ch { gap: 0; }
+      .cs-thumbs button { flex: 1 1 0; min-width: 0; max-width: 120px; height: auto; aspect-ratio: 120 / 76; }
+      .cs-two .cs-ph, .cs-view .cs-ph { flex: none; aspect-ratio: 16 / 10; min-height: 0; }
+      .cs-ch > div { padding: 0 0 20px; }
+      .cs-ch .c2 { border-left: 0; }
+      .cs-ch .r2:not(.lab), .cs-ch .r2.lab { padding-top: 24px; border-top: 1px solid var(--line); }
+      .cs-sol .cs-bar { font-size: 18px; }
+      .cs-tile .t { width: 64px; }
     }
     .cs-shot img { position: absolute; max-width: none; }
     .cs-next { position: absolute; right: calc(var(--cs-gutter) / 2); top: 50%; translate: 50% -50%; display: grid; place-items: center; width: 44px; height: 44px;
@@ -753,14 +799,12 @@
       <div class="cs-index"><span>Index:</span><div class="cs-tabs" role="tablist" aria-label="Sections"></div></div>
       <div class="cs-stage">
         <div class="cs-track">
-          <section data-id="about" aria-label="Impact"></section>
-          <section data-id="problem" aria-label="Problem"></section>
-          <section data-id="project-challenges" aria-label="Challenges"></section>
-          <section data-id="discovered-problems" aria-label="Discoveries"></section>
-          <section data-id="solution-1" aria-label="Solution 1"></section>
-          <section data-id="solution-2" aria-label="Solution 2"></section>
-          <section data-id="solution-3" aria-label="Solution 3"></section>
-          <section data-id="overall-impact" aria-label="Outcome"></section>
+          <section data-id="about" aria-label="About"></section>
+          <section data-id="problem" aria-label="The Problem"></section>
+          <section data-id="project-challenges" aria-label="Project Challenges"></section>
+          <section data-id="solution-1" aria-label="Pain Point &amp; Solution 1"></section>
+          <section data-id="solution-2" aria-label="Pain Point &amp; Solution 2"></section>
+          <section data-id="solution-3" aria-label="Pain Point &amp; Solution 3"></section>
         </div>
       </div>
       <button class="cs-next" type="button" aria-label="Next section"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M4 12h15M12.5 5.5 19 12l-6.5 6.5"/></svg></button>
@@ -976,36 +1020,42 @@
          thumbnail) glides to its section; in each, the index, the arrow or the ←/→ keys move between its parts */
       (function () {
         var cases = [].slice.call(document.querySelectorAll('.case'));
-        // content per case study (case study 1 in full; the others' About so far). Helpers for the repeated blocks:
-        // numbered cards [[title, text], ...] and a solution's problem / solution / impact row with an image container
-        function grid(items, cls, n) {
-          return '<ul class="cs-grid' + (cls ? ' ' + cls : '') + '"' + (n ? ' style="--n: ' + n + '"' : '') + '>' + items.map(function (it, i) {
-            return '<li><span class="num">0' + (i + 1) + '</span><h3>' + it[0] + '</h3><p>' + it[1] + '</p></li>'; }).join('') + '</ul>';
+        /* content per case study (case study 1 in full; the others' About so far). Images: put a path in the empty ''s
+           (an image tile, a container, or a viewer's three images) and its zoom button turns on */
+        var ZOOM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M10.5 7.5v6M7.5 10.5h6"/></svg>';
+        var USER = '<span class="cs-user" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4.2"/><path d="M3.5 21c.8-4.6 4.3-7 8.5-7s7.7 2.4 8.5 7z"/></svg></span>';
+        function role(w) { return USER + '<span class="cs-g">' + w + '</span>'; }
+        function zoom(src, what) { return '<button type="button" class="cs-zoom" aria-label="Enlarge ' + what + '"' + (src ? ' data-src="' + src + '"' : ' disabled') + '>' + ZOOM + '</button>'; }
+        function tile(src, what) { return '<span class="cs-tile"><span class="t"' + (src ? ' style="background-image: url(\'' + src + '\')"' : '') + '></span>' + zoom(src, what) + '</span>'; }
+        function box(src, what) { return '<div class="cs-ph">' + (src ? '<img src="' + src + '" alt="' + what + '">' : '') + '</div>'; }
+        function pain(n, problem, cause, solution, impact, imgs) {
+          var what = 'solution ' + n + ' screen';
+          return '<p class="cs-label">Recognized Pain Point and Design Solution ' + n + '</p><div class="cs-sol"><div>' +
+            [['Problem', problem], ['Cause', cause], ['Designed Solution', solution], ['Impact', impact]].map(function (r) {
+              return '<div class="blk"><p class="cs-bar">' + r[0] + '</p><p>' + r[1] + '</p></div>'; }).join('') +
+            '</div><div class="cs-view" data-imgs="' + imgs.join('|') + '"><div class="cs-ph">' + zoom(imgs[0], what) + (imgs[0] ? '<img src="' + imgs[0] + '" alt="' + what + '">' : '') + '</div>' +
+            '<div class="cs-thumbs">' + imgs.map(function (src, i) {
+              return '<button type="button" class="' + (i ? '' : 'on') + '" aria-label="Show image ' + (i + 1) + '" aria-pressed="' + !i + '"' + (src ? ' style="background-image: url(\'' + src + '\')"' : '') + '></button>'; }).join('') +
+            '</div></div></div>';
         }
-        function solution(num, title, problem, sol, impact) {
-          return '<p class="cs-label">05. The Designed Solutions</p><p class="cs-lead"><span class="hl">' + num + '. ' + title + '</span></p>' +
-            '<ul class="cs-grid psi">' + [['Problem', problem], ['Solution', sol], ['Impact', impact]].map(function (r) {
-              return '<li><span class="k">' + r[0] + '</span><p>' + r[1] + '</p></li>'; }).join('') + '</ul>' +
-            ph(title + ' screens');
-        }
-        function ph(what) { return '<div class="cs-ph" role="img" aria-label="' + what + ' (image to come)">Image container</div>'; }
         var CONTENT = {
           1: {
-            about: '<p class="cs-label">01. The Impact</p><p class="cs-lead"><span class="hl">Improving stakeholder visibility to reduce process delays</span> → Improved stakeholder coordination to reduce errors <span class="dim">and prevent costly process delays.</span></p>' +
-              '<ul class="cs-tags"><li>UX Design</li><li>Enterprise Workflow</li><li>GIFA Portal</li></ul>',
-            problem: '<p class="cs-label">02. The Problem</p><p class="cs-lead">A complex, global business process relied on <span class="hl">manual coordination, fragmented data, and limited visibility.</span></p>' +
-              grid([['Fragmented data', 'Multiple versions of information caused discrepancies and rework.'], ['Limited visibility', 'Stakeholders lacked updates on others’ actions and decisions.'], ['Delayed issue detection', 'Errors and roadblocks went unnoticed, delaying corrective action.']]) +
-              '<p class="cs-note"><b>Business risk</b><span>Delays could result in millions of dollars in tax liabilities.</span></p>',
-            'project-challenges': '<p class="cs-label">03. Project Challenges</p>' + grid([['Solution-led requirements', 'The initial brief proposed solutions before the underlying user problems were fully understood.'],
-              ['Limited access to users', 'Stakeholders were occupied with critical business operations. After considerable effort to secure their time, we used focused conversations to uncover their workflows and pain points.']], 'big', 2),
-            'discovered-problems': '<p class="cs-label">04. Discovered Problems</p>' + grid([['Issues went unnoticed', 'Editors discovered errors and roadblocks only when they had time to check GIFA.'],
-              ['Changes lacked transparency', 'Limited visibility into stakeholder actions led to data discrepancies and time-consuming reconciliation.'], ['Reviews involved unnecessary effort', 'Approvers manually reviewed hundreds of awards to identify those matching their criteria.']], 'big') + ph('Research findings'),
-            'solution-1': solution('01', 'Automated alerts', 'Errors and roadblocks went unnoticed.', 'Automatically notify relevant stakeholders when issues occur.', 'Earlier awareness and faster corrective action.'),
-            'solution-2': solution('02', 'Stakeholder activity log', 'Changes and decisions lacked visibility.', 'Record data changes and the decisions behind them.', 'Greater transparency, less reconciliation, and better-informed decisions.'),
-            'solution-3': solution('03', 'Criteria-based award filtering', 'Approvers manually reviewed hundreds of awards.', 'Save predefined criteria and automatically flag matching awards.', 'Less unnecessary review and greater focus on relevant awards.'),
-            'overall-impact': '<p class="cs-label">06. Overall Impact</p><p class="cs-lead">A more transparent, <span class="hl">coordinated process.</span></p><ul class="cs-grid cs-checks" style="--n: 2">' +
-              ['Fewer opportunities for errors to go unnoticed.', 'Better visibility into changes and decisions.', 'Less unnecessary manual review.', 'Reduced risk of costly process delays.'].map(function (t) {
-                return '<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><p>' + t + '</p></li>'; }).join('') + '</ul>',
+            about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Saved million dollar taxes</span> → By improving stakeholder visibility and coordination in a complex, multi-stakeholder business process (<span class="cs-small">Process name:</span><span class="cs-g">GIFA</span>), helping prevent errors that led to delays, costing heavy taxes otherwise.</p>',
+            problem: '<p class="cs-label">The Problem</p><p class="cs-lead">Multiple stakeholders manually working on overlapping tasks ' + tile('', 'the overlapping tasks') + ' with limited visibility into one another’s decisions and progress caused errors like:</p>' +
+              '<div class="cs-two"><div><p class="cs-sq">Data Discrepancy</p><p class="desc">Stakeholders maintained separate versions of information, creating inconsistencies and requiring time-consuming reconciliation.</p>' + box('', 'Data discrepancy') + '</div>' +
+              '<div><p class="cs-sq">Limited Visibility</p><p class="desc">Stakeholders lacked clear updates on task progress and changes made by others, making it harder to coordinate work.</p>' + box('', 'Limited visibility') + '</div></div>',
+            'project-challenges': '<p class="cs-label">Project Challenges</p><div class="cs-ch">' +
+              '<div class="lab"><p class="cs-bar">Challenges faced</p></div><div><p class="cs-sq">Requirements given as solutions to design</p></div><div class="c2"><p class="cs-sq">Limited access to users</p></div>' +
+              '<div class="lab r2"><p class="cs-bar">How I overcame them</p></div>' +
+              '<div class="r2"><p class="txt">Asked questions around the existing process, the stakeholders involved, their responsibilities and the difficulties they faced.</p><div class="cs-tiles">' +
+                ['', '', '', '', ''].map(function (src, i) { return tile(src, 'research image ' + (i + 1)); }).join('') + '</div></div>' +
+              '<div class="r2 c2"><p class="txt"><span class="dim">First we learned the end-to-end business process, workflow, and stakeholders involved, and then → After considerable effort to secure their time,</span> we made the most of each conversation by asking focused questions about their workflows, responsibilities, and pain points.</p></div></div>',
+            'solution-1': pain(1, 'Errors and roadblocks went unnoticed', role('Editor') + ' only worked on GIFA when they had time, missing errors and roadblocks in time',
+              'Automatic email alert system and clear process streamline', 'Earlier awareness and faster corrective action', ['', '', '']),
+            'solution-2': pain(2, 'Changes and decisions lacked visibility', role('Stakeholders') + ' couldn’t see one another’s changes or the reasons behind them, leading to data discrepancies and time-consuming reconciliation',
+              'Stakeholder activity log that records data changes and the decisions behind them', 'Greater transparency, less reconciliation, and better-informed decisions', ['', '', '']),
+            'solution-3': pain(3, 'Approvers manually reviewed hundreds of awards', role('Approvers') + ' went through every award by hand to find the ones matching their criteria',
+              'Saved, predefined criteria that automatically flag matching awards', 'Less unnecessary review and greater focus on relevant awards', ['', '', '']),
             shot: 1
           },
           2: { about: '<p class="cs-label">About</p><p class="cs-lead"><span class="hl">Reduce support calls</span> → By making the task of creating a new automation easy.</p>', shot: 2 },
@@ -1124,6 +1174,20 @@
           if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
           var c = inView(); if (c) c._go(e.key === 'ArrowRight' ? 1 : -1);   // only while a case study section is in view
         });
+        // a viewer's thumbnails swap its image; zoom buttons open the image enlarged (click or Esc closes it)
+        var lb = document.createElement('div'); lb.className = 'cs-lb'; lb.hidden = true; lb.innerHTML = '<img alt="">'; document.body.appendChild(lb);
+        document.addEventListener('click', function (e) {
+          var t = e.target.closest && e.target.closest('.cs-thumbs button, .cs-zoom');
+          if (!t) return;
+          if (t.classList.contains('cs-zoom')) { lb.firstChild.src = t.dataset.src; lb.firstChild.alt = t.getAttribute('aria-label').replace('Enlarge ', ''); lb.hidden = false; return; }
+          var view = t.closest('.cs-view'), i = [].indexOf.call(t.parentNode.children, t), src = view.dataset.imgs.split('|')[i], ph = view.querySelector('.cs-ph'), z = ph.querySelector('.cs-zoom');
+          [].forEach.call(t.parentNode.children, function (b) { b.classList.toggle('on', b === t); b.setAttribute('aria-pressed', b === t); });
+          var im = ph.querySelector('img'); if (im) im.remove();
+          if (src) { im = document.createElement('img'); im.src = src; im.alt = z.getAttribute('aria-label').replace('Enlarge ', ''); ph.appendChild(im); z.dataset.src = src; z.disabled = false; }
+          else { delete z.dataset.src; z.disabled = true; }
+        });
+        lb.addEventListener('click', function () { lb.hidden = true; });
+        window.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) lb.hidden = true; });
         window.addEventListener('resize', function () { cases.forEach(function (c) { c._slide(); }); fitShots(); });
         if (document.fonts) document.fonts.ready.then(fitShots);   // the text's height settles once its font loads
         var m = /^#case-study-(\d)$/.exec(location.hash);
