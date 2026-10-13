@@ -439,8 +439,10 @@
     .cs-g { position: relative; white-space: nowrap; background: var(--cs-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .cs-g::after { content: ""; position: absolute; left: 0; right: 0; bottom: -.06em; height: 2px; background: var(--cs-grad); }
     .cs-small { margin: 0 .35em 0 .1em; font-size: .42em; letter-spacing: 0; vertical-align: .25em; color: var(--muted); }
-    .cs-user { display: inline-grid; place-items: center; width: 1.25em; height: 1.25em; margin-right: .25em; border-radius: 50%; vertical-align: -.22em; background: var(--cs-grad); }
-    .cs-user svg { width: .8em; height: .8em; color: #fff; }
+    /* a person glyph as tall as the capital letters, sitting on the baseline, in the same gradient as the word */
+    .cs-user { display: inline-block; width: .6em; height: var(--cap, .72em); margin-right: .22em; vertical-align: baseline; background: var(--cs-grad);
+      -webkit-mask: var(--user-glyph) center / contain no-repeat; mask: var(--user-glyph) center / contain no-repeat;
+      --user-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 24'%3E%3Ccircle cx='10' cy='5.6' r='5.6'/%3E%3Cpath d='M0 21.2C0 16.6 4.5 13.6 10 13.6s10 3 10 7.6V22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z'/%3E%3C/svg%3E"); }
     /* an image tile with its zoom button, image containers, the zoom button */
     .cs-tile { display: inline-flex; vertical-align: middle; height: 48px; margin: 0 .2em; border: 1px solid var(--line); background: var(--cs-ph); }
     .cs-tile .t { width: 84px; background: var(--cs-ph2) center / cover no-repeat; }
@@ -1068,7 +1070,7 @@
         /* content per case study (case study 1 in full; the others' About so far). Images: put a path in the empty ''s
            (an image tile, a container, or a viewer's three images) and its zoom button turns on */
         var ZOOM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M10.5 7.5v6M7.5 10.5h6"/></svg>';
-        var USER = '<span class="cs-user" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4.2"/><path d="M3.5 21c.8-4.6 4.3-7 8.5-7s7.7 2.4 8.5 7z"/></svg></span>';
+        var USER = '<span class="cs-user" aria-hidden="true"></span>';
         function role(w) { return USER + '<span class="cs-g">' + w + '</span>'; }
         function zoom(src, what) { return '<button type="button" class="cs-zoom" aria-label="Enlarge ' + what + '"' + (src ? ' data-src="' + src + '"' : ' disabled') + '>' + ZOOM + '</button>'; }
         function tile(src, what) {   // the picture opens the image too (one tab stop: the zoom button)
