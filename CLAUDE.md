@@ -177,7 +177,7 @@ as needed, keeping the intent of the reference.
   image `assets/og-image.jpg` (the earlier hero, with the signature, as a 1200×630
   card; not yet redone for design-2).
 - Cache tags: every style sheet and script is loaded with one site-wide tag
-  (`?v=r45`); bump it on every release.
+  (`?v=r46`); bump it on every release.
 - "Global Incentive Fee Awards case study":
   `case-studies/global-incentive-fee-awards/index.html`. A case study page,
   not the home page. Its images live in `GIFAcasestudyimages/`.
