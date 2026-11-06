@@ -44,10 +44,9 @@ as needed, keeping the intent of the reference.
   Hero (design-2): on `--panel`, no signature and no glow image. "UX & Product
   Designer" in Inter's text cut (opsz 14, open tracking), sized so "UX &
   Product" ends on the frame's middle line; under it "I make complicated software feel obvious." in grey
-  sentence case (`.tagline`, one line on wide windows), then the focus line: "Designing
-  for" (`--text-2`), then "AI & agentic experiences", "Cloud networking",
-  "Cybersecurity" (`--text-body`) between thin rules (`.focus`; on phones a
-  short list); "↓ Selected work" centred just above the peeking phone (28px
+  sentence case (`.tagline`, one line on wide windows), then the focus areas as labels
+  (`.focus`: outlined pills, "AI & Agentic Experiences", "Cloud Networking",
+  "Cybersecurity", in `--text-body`; they wrap on phones); "↓ Selected work" centred just above the peeking phone (28px
   above its top, wide windows; it fades out once
   the case study is in view). Wide windows: the
   hero takes the window's top 70% (`--peek: 30vh`), so the first case study's

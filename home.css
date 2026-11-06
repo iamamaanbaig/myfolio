@@ -30,13 +30,12 @@
 /* the statement under the title, in grey sentence case; the focus line follows it */
 .tagline { position: relative; margin: clamp(12px, calc(var(--u) * 1.8), 32px) 0 0; max-width: 34ch; font-size: clamp(18px, calc(var(--u) * 2.2), 40px);
   line-height: 1.35; font-weight: 400; color: var(--text-2); font-variation-settings: "opsz" 14; }
-.tagline + .focus { margin-top: clamp(10px, calc(var(--u) * 1.4), 24px); }
+.tagline + .focus { margin-top: clamp(16px, calc(var(--u) * 2), 32px); }
 @media (min-width: 900px) { .tagline { white-space: nowrap; max-width: none; } } /* one line beside the frame's wide columns */
-/* the focus line: "Designing for", then the three areas between thin rules */
-.focus { position: relative; display: flex; flex-wrap: wrap; align-items: baseline; margin: clamp(20px, calc(var(--u) * 3), 56px) 0 0;
-  font-size: clamp(16px, calc(var(--u) * 1.6), 30px); line-height: 1.5; color: var(--text-body); font-variation-settings: "opsz" 14; }
-.focus span:first-child { margin-right: .6em; color: var(--text-2); }
-.focus span + span:not(:nth-child(2))::before { content: ""; display: inline-block; width: 1px; height: .9em; margin: 0 .75em; vertical-align: -.12em; background: #3A3C40; }
+/* the focus areas, as labels under the statement: outlined pills in the body grey */
+.focus { position: relative; display: flex; flex-wrap: wrap; gap: 10px; margin: clamp(20px, calc(var(--u) * 3), 56px) 0 0; padding: 0; list-style: none; }
+.focus li { padding: .5em 1.05em .52em; border: 1px solid #2E3034; border-radius: 999px; background: rgba(255, 255, 255, .02);
+  font-size: clamp(14px, calc(var(--u) * 1.2), 20px); line-height: 1.2; letter-spacing: -0.005em; color: var(--text-body); font-variation-settings: "opsz" 14; }
 /* "Selected work", centred at the hero's foot, above the first case study's phone peeking up below it */
 .s-home .down { position: absolute; left: 50%; translate: -50% 0; margin: 0; bottom: clamp(24px, calc(var(--u) * 2.4), 40px); }
 .hero-title { position: relative; margin: 0; max-width: 11.5ch; font-weight: 400; line-height: 1.18; letter-spacing: 0; font-variation-settings: "opsz" 14; } /* Inter's text cut, open, as in the reference */
@@ -251,9 +250,8 @@
   .s-home::after { content: ""; position: absolute; z-index: 0; left: 0; right: 0; bottom: 0; height: 45%; pointer-events: none;
     background: radial-gradient(45% 70% at 20% 105%, rgba(28, 72, 200, .28), transparent 72%), radial-gradient(45% 70% at 82% 105%, rgba(28, 72, 200, .26), transparent 72%),
       linear-gradient(to top, rgba(12, 24, 70, .22), transparent 60%); }
-  .focus { flex-direction: column; align-items: flex-start; font-size: 18px; line-height: 1.45; }
-  .focus span:first-child { margin: 0 0 4px; }
-  .focus span + span:not(:nth-child(2))::before { display: none; }
+  .focus { gap: 8px; }
+  .focus li { font-size: 14px; }
   .hero-title { font-size: clamp(44px, 12vw, 64px); }
   /* the copy, then the device: the laptop standing on the panel's bottom edge, the phone with its control under it;
      Ask Me Agent's close-ups stay on wide windows */
