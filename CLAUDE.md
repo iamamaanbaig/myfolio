@@ -168,7 +168,8 @@ as needed, keeping the intent of the reference.
 - Case-study footers: "Other projects" shows the other two case studies, each
   a link with its opening screen (the same shot as on the home page), title,
   description and arrow.
-- Contact: the home page's last section (`#contact`), with
+- Contact: the home page's last section (`#contact`), its heading "Designing for
+  AI, cloud networking or cybersecurity? Let's talk" (the hero's focus line), with
   `contact/contact.css` and `contact/contact.js`. `contact/index.html` only
   forwards to it, so old links keep working.
 - Images: case-study screenshots are WebP (quality 88); the home page's images
