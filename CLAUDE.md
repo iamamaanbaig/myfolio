@@ -104,7 +104,8 @@ as needed, keeping the intent of the reference.
   it as soon as the page opens, a laptop when asked; paused, it stays paused.
   A phone can hold a video instead (`data-video`), with one button and no
   Restart: "Pause" while it plays, "Play" when paused, "Replay" (the circling
-  arrow) once it has played through; muted, it plays once as the page opens
+  arrow) once it has played through (its end, or stopped within its last
+  moment: Safari can stop short without saying so); muted, it plays once as the page opens
   (with reduced motion, when asked) and rests while out of view, over a poster
   of its own first frame. The agents play their screen recordings this
   way, not Figma prototypes: `assets/ask-me-agent/demo.mp4` and
@@ -182,7 +183,7 @@ as needed, keeping the intent of the reference.
   image `assets/og-image.jpg` (the earlier hero, with the signature, as a 1200×630
   card; not yet redone for design-2).
 - Cache tags: every style sheet and script is loaded with one site-wide tag
-  (`?v=r48`); bump it on every release.
+  (`?v=r49`); bump it on every release.
 - "Global Incentive Fee Awards case study":
   `case-studies/global-incentive-fee-awards/index.html`. A case study page,
   not the home page. Its images live in `GIFAcasestudyimages/`.

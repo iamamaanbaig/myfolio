@@ -209,17 +209,26 @@
       if (poster) v.poster = poster.currentSrc || poster.src;
       v.src = src;
       screen.append(v);
+      let done = false; // played through
       let want = !matchMedia('(prefers-reduced-motion: reduce)').matches, seen = !('IntersectionObserver' in window);
       const go = () => {
         if (want && !seen) set('playing'); // on, resting out of view
         if (want && seen) { if (v.paused) { if (v.readyState < 3) set('loading'); v.play().catch(e => { if (e.name === 'NotAllowedError') { want = false; set('idle'); } }); } } // an interrupted play is not a refusal
         else if (!v.paused) v.pause();
-        if (!want) set(v.ended ? 'ended' : 'idle');
+        if (!want) set(done ? 'ended' : 'idle');
       };
-      v.addEventListener('playing', () => set('playing'));
-      v.addEventListener('waiting', () => { if (want) set('loading'); });
-      v.addEventListener('ended', () => { want = false; set('ended'); });
-      btn.addEventListener('click', () => { if (v.ended) v.currentTime = 0; want = !want || v.ended; go(); });
+      v.addEventListener('playing', () => { if (!done) set('playing'); });
+      v.addEventListener('waiting', () => { if (want && !done) set('loading'); });
+      // played through: 'ended', or (some browsers, Safari among them, stop a hair short and never say so) at or
+      // stalled within the last moment, by its time, a pause there, or no progress there for a second
+      const finish = () => { if (done) return; done = true; want = false; if (!v.paused) v.pause(); set('ended'); };
+      const atEnd = () => v.duration > 0 && v.currentTime >= v.duration - .3;
+      v.addEventListener('ended', finish);
+      v.addEventListener('timeupdate', () => { if (atEnd()) finish(); });
+      v.addEventListener('pause', () => { if (atEnd()) finish(); });
+      let last = -1;
+      setInterval(() => { if (want && seen && !v.paused && !done) { if (v.currentTime === last && v.duration - v.currentTime < 1) finish(); last = v.currentTime; } }, 1000);
+      btn.addEventListener('click', () => { if (done) { done = false; v.currentTime = 0; want = true; } else want = !want; go(); });
       if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { seen = e.isIntersecting; go(); }).observe(device);
       set('idle');
       go();
