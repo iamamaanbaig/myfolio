@@ -43,7 +43,8 @@ as needed, keeping the intent of the reference.
   view is lit. On phones the squares are hidden.
   Hero (design-2): on `--panel`, no signature and no glow image. "UX & Product
   Designer" in Inter's text cut (opsz 14, open tracking), sized so "UX &
-  Product" ends on the frame's middle line; under it the focus line: "Designing
+  Product" ends on the frame's middle line; under it "I make complicated software feel obvious." in grey
+  sentence case (`.tagline`, one line on wide windows), then the focus line: "Designing
   for" (`--text-2`), then "AI & agentic experiences", "Cloud networking",
   "Cybersecurity" (`--text-body`) between thin rules (`.focus`; on phones a
   short list); "↓ Selected work" centred just above the peeking phone (28px
