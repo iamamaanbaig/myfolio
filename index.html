@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Amaan Baig · UX &amp; Product Designer</title>
+  <link rel="icon" href="assets/favicon-64.png?v=3" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=3">
+  <meta name="description" content="Amaan Baig, UX &amp; Product Designer. I make complicated software feel obvious.">
+  <!-- the link preview when the page is shared: the hero as a 1200×630 card -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Amaan Baig">
+  <meta property="og:title" content="Amaan Baig · UX &amp; Product Designer">
+  <meta property="og:description" content="Amaan Baig, UX &amp; Product Designer. I make complicated software feel obvious.">
+  <meta property="og:url" content="https://www.iamamaanbaig.com/">
+  <meta property="og:image" content="https://www.iamamaanbaig.com/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="UX &amp; Product Designer: I make complicated software feel obvious. Amaan Baig's portfolio.">
+  <meta name="twitter:card" content="summary_large_image">
+  <script>document.documentElement.classList.add('js');</script>
+  <!-- the phones' prototypes load as the page opens: reach Figma early -->
+  <link rel="preconnect" href="https://embed.figma.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap">
+  <link rel="stylesheet" href="styles.css?v=r44">
+  <link rel="stylesheet" href="case-studies/case-study.css?v=r44">
+  <link rel="stylesheet" href="contact/contact.css?v=r44">
+  <link rel="stylesheet" href="home.css?v=r44">
+</head>
+<body>
+  <header class="site-head">
+    <a class="logo" href="#home"><img class="logo-face" width="54" height="36" src="assets/avatar-2x.webp?v=3" srcset="assets/avatar-1x.webp?v=3 1x, assets/avatar-2x.webp?v=3 2x, assets/avatar-3x.webp?v=3 3x" alt="" decoding="async"><span class="logo-name">Amaan Baig<span>.</span></span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="#home" data-to="0" aria-current="true">Home</a>
+      <span class="nav-work">
+        <a href="#work" data-to="1" aria-haspopup="true" aria-expanded="false" aria-controls="work-menu">Work</a>
+        <span class="sq-row">
+          <a class="sq" href="#ask-me-agent" data-to="1" aria-label="Case study 1, coming soon: Ask Me Agent"></a>
+          <a class="sq" href="#business-reporting-agent" data-to="2" aria-label="Case study 2, coming soon: Business Reporting Agent"></a>
+          <a class="sq" href="#gifa" data-to="3" aria-label="Case study 3: Saved millions of dollars in taxes"></a>
+          <a class="sq" href="#fee-management" data-to="4" aria-label="Case study 4: Cut fee management effort by 40 minutes"></a>
+          <a class="sq" href="#creating-automation" data-to="5" aria-label="Case study 5: Reduced support calls"></a>
+          <a class="sq" href="#stamp" data-to="6" aria-label="Case study 6, coming soon: Reduced the compliance review effort with AI"></a>
+        </span>
+      </span>
+      <a href="#contact" data-to="7">Contact</a>
+    </nav>
+
+    <!-- WORK's menu: the case studies as a list; the one under the pointer turns light and opens its case study's
+         opening beside it, so item and preview read as one light shape; the preview holds its main screen -->
+    <div class="work-menu" id="work-menu" aria-label="Case studies">
+      <div class="wm-list">
+        <div class="wm-item soon" data-i="0"><span class="wm-title">Ask Me Agent</span><span class="wm-arrow wm-soon">Soon</span><span class="wm-desc">AI that personalizes its answers to your family’s nutrition goals.</span></div>
+        <div class="wm-item soon" data-i="1"><span class="wm-title">Business Reporting Agent</span><span class="wm-arrow wm-soon">Soon</span><span class="wm-desc">An agent that analyses your business data to tell you how your business is performing.</span></div>
+        <a class="wm-item" href="case-studies/global-incentive-fee-awards/" data-i="2"><span class="wm-title">Saved millions of dollars in taxes</span><span class="wm-arrow" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span><span class="wm-desc">By improving stakeholder visibility and coordination across a complex, multi&#8209;stakeholder process.</span></a>
+        <a class="wm-item" href="case-studies/fee-management/" data-i="3"><span class="wm-title">Cut fee management effort by 40 minutes</span><span class="wm-arrow" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span><span class="wm-desc">By reducing the fee templates a single classroom needed from an average of 9&nbsp;to&nbsp;1.</span></a>
+        <a class="wm-item" href="case-studies/creating-automation/" data-i="4"><span class="wm-title">Reduced support calls</span><span class="wm-arrow" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span><span class="wm-desc">By making it easy to create a new automation.</span></a>
+        <div class="wm-item soon" data-i="5"><span class="wm-title">Reduced the compliance review effort with AI</span><span class="wm-arrow wm-soon">Soon</span><span class="wm-desc">By designing an AI feature that does all the review work and suggests a final action.</span></div>
+      </div>
+      <div class="wm-preview" aria-hidden="true">
+        <img class="wm-shot tall" width="473" height="932" src="assets/ask-me-agent/menu.webp" alt="" loading="lazy" decoding="async">
+        <img class="wm-shot tall" width="473" height="932" src="assets/business-reporting-agent/menu.webp" alt="" loading="lazy" decoding="async">
+        <img class="wm-shot" width="1733" height="1092" src="GIFAcasestudyimages/GIFAherocenter.webp" alt="" loading="lazy" decoding="async">
+        <img class="wm-shot" width="1505" height="970" src="Feemanagementcasestudyimages/Heroleft.webp" alt="" loading="lazy" decoding="async">
+        <img class="wm-shot" width="1793" height="1152" src="Creatingautomationcasestudyimages/Group%201321317990.webp" alt="" loading="lazy" decoding="async">
+        <img class="wm-shot" width="1575" height="988" src="Stampcasestudyimages/Hero%20Image%20Left.webp" alt="" loading="lazy" decoding="async">
+      </div>
+    </div>
+  </header>
+  <div class="wm-scrim" aria-hidden="true"></div>
+
+  <main class="page snaps">
+    <section class="snap s-home" id="home" aria-label="About">
+      <h1 class="hero-title">UX &amp; Product Designer</h1>
+      <p class="focus"><span>Designing for</span> <span>AI &amp; agentic experiences</span> <span>Cloud networking</span> <span>Cybersecurity</span></p>
+      <a class="down" href="#ask-me-agent" data-to="1"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v11M3.5 9l4.5 4.5L12.5 9"/></svg>Selected work</a>
+    </section>
+
+    <!-- Work: one section per case study, all on one system (home.css): on the left the headline ("Coming soon" above
+         it while there is no case study), and at the foot one description; on the right the device. A
+         laptop (.lap) stands its base on the bottom line; a phone (.ph) sits in the middle, its prototype control
+         under it, with close-ups beside it (.cs-right) or, alone (.solo), centred in the device area. A link shows
+         the big arrow top right; a case study still to come (.soon) says "Coming soon" in its eyebrow.
+         A Figma share link in data-figma adds the prototype control (home.js); a phone plays it as the page opens. -->
+    <div id="work">
+      <section class="snap s-work ph soon" id="ask-me-agent" aria-labelledby="t-ask" data-figma="https://www.figma.com/proto/x5jEJ2pAdbJ3HLF3esFrGp/Portfolio?node-id=1455-1330&amp;starting-point-node-id=1455-1330">
+        <div class="cs-col cs-left">
+          <p class="cs-eyebrow"><span class="cs-soon">Coming soon</span></p>
+          <h2 id="t-ask">Ask Me Agent.</h2>
+          <p class="cs-desc">“Ask me” doesn’t just answer questions: it personalizes search answers and results to the nutrition goals of each user and their family.</p>
+        </div>
+        <div class="cs-col cs-mid">
+          <div class="device phone">
+            <div class="screen"><img class="poster" width="393" height="852" src="assets/ask-me-agent/screen-poster.webp" alt="" decoding="async"></div>
+            <img class="frame" width="603" height="1190" src="assets/devices/iphone-15-pro.webp" alt="" decoding="async">
+          </div>
+        </div>
+        <div class="cs-col cs-right"><div class="cs-feat">
+          <img class="feat-chat" width="508" height="521" src="assets/ask-me-agent/chat.webp" alt="Ask me suggests cheaper products with similar benefits, each tagged with who in the family it suits" loading="lazy" decoding="async">
+          <div class="feat-note">
+            <h3>Personalization badges show who in the family each product suits</h3>
+            <img class="feat-badges" width="129" height="51" src="assets/ask-me-agent/badges.webp" alt="Badges: pregnancy, heart health, child growth" loading="lazy" decoding="async">
+            <ul class="feat-infos">
+              <li class="growth"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5c4.3 0 7.8 3.2 7.8 7.5S16.3 19.5 12 19.5 4.2 16.3 4.2 12 7.7 4.5 12 4.5z"/><path d="M12 4.5c-1.1 1.3-.5 2.7 1.2 2.6"/><path d="M9.4 14.6c1.5 1.2 3.7 1.2 5.2 0"/></g><circle cx="9.2" cy="11.3" r="1" fill="currentColor"/><circle cx="14.8" cy="11.3" r="1" fill="currentColor"/></svg>15% more calcium than average, good for Raju’s growth needs.</li>
+              <li class="pregnancy"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><circle cx="11.4" cy="3.6" r="2.1"/><path d="M9.6 6.9h2.9c.9 0 1.6.6 1.8 1.4l.2.7c1.3.5 2.1 1.8 2.1 3.2 0 1.6-1.1 2.9-2.6 3.2V21h-1.7l-.4-4.6h-.3L11.3 21H9.6z"/></svg>More potassium than average, good for Manisha’s pregnancy.</li>
+            </ul>
+          </div>
+        </div></div>
+      </section>
+
+      <section class="snap s-work ph solo soon" id="business-reporting-agent" aria-labelledby="t-bra" data-figma="https://www.figma.com/proto/x5jEJ2pAdbJ3HLF3esFrGp/Portfolio?node-id=1451-916&amp;starting-point-node-id=1451-916">
+        <div class="cs-col cs-left">
+          <p class="cs-eyebrow"><span class="cs-soon">Coming soon</span></p>
+          <h2 id="t-bra">Business Reporting Agent</h2>
+          <p class="cs-desc">An agent that analyses your business data to answer your questions about how your business is performing.</p>
+        </div>
+        <div class="cs-col cs-mid">
+          <div class="device phone">
+            <div class="screen"></div>
+            <img class="frame" width="603" height="1190" src="assets/devices/iphone-15-pro.webp" alt="" decoding="async">
+          </div>
+        </div>
+      </section>
+
+      <section class="snap s-work lap" id="gifa" aria-labelledby="t-gifa" data-figma="">
+        <div class="cs-col cs-left">
+          <h2 id="t-gifa"><a href="case-studies/global-incentive-fee-awards/">Saved millions of dollars in taxes</a></h2>
+          <p class="cs-desc">By improving stakeholder visibility and coordination across a complex, multi&#8209;stakeholder process (<span class="term" tabindex="0" aria-describedby="tip-gifa"><span class="accent">GIFA</span><span class="tip" id="tip-gifa" role="tooltip">Global Incentive Fee Awards</span></span>), helping prevent the delays that result in tax liability.</p>
+        </div>
+        <div class="cs-stage"><div class="device laptop">
+          <div class="screen"><img width="1512" height="982" src="GIFAcasestudyimages/GIFA%20fund%20details%20page.webp" alt="The GIFA fund details page: process streamline, allocations and awards for a fund" decoding="async"></div>
+          <img class="frame" width="1885" height="1113" src="assets/devices/macbook-pro-14.webp" alt="" decoding="async">
+        </div></div>
+      </section>
+
+      <section class="snap s-work lap" id="fee-management" aria-labelledby="t-fee" data-figma="">
+        <div class="cs-col cs-left">
+          <h2 id="t-fee"><a href="case-studies/fee-management/">Cut fee management effort by 40 minutes</a></h2>
+          <p class="cs-desc">By reducing the fee templates a single classroom needed from an average of 9&nbsp;to&nbsp;1.</p>
+        </div>
+        <div class="cs-stage"><div class="device laptop">
+          <div class="screen"><img width="1448" height="940" src="assets/devices/screen-fee-management.webp" alt="The fee master template: fee types, amounts and payment schedules in one template" loading="lazy" decoding="async"></div>
+          <img class="frame" width="1885" height="1113" src="assets/devices/macbook-pro-14.webp" alt="" loading="lazy" decoding="async">
+        </div></div>
+      </section>
+
+      <section class="snap s-work lap" id="creating-automation" aria-labelledby="t-auto" data-figma="">
+        <div class="cs-col cs-left">
+          <h2 id="t-auto"><a href="case-studies/creating-automation/">Reduced support calls</a></h2>
+          <p class="cs-desc">By making it easy to create a new automation.</p>
+        </div>
+        <div class="cs-stage"><div class="device laptop">
+          <div class="screen"><img width="1725" height="1116" src="assets/devices/screen-creating-automation.webp" alt="The automation builder: choose the event, the conditions and the action, step by step" loading="lazy" decoding="async"></div>
+          <img class="frame" width="1885" height="1113" src="assets/devices/macbook-pro-14.webp" alt="" loading="lazy" decoding="async">
+        </div></div>
+      </section>
+
+      <section class="snap s-work lap soon" id="stamp" aria-labelledby="t-stamp" data-figma="">
+        <div class="cs-col cs-left">
+          <p class="cs-eyebrow"><span class="cs-soon">Coming soon</span></p>
+          <h2 id="t-stamp">Reduced the compliance review effort with AI</h2>
+          <p class="cs-desc">By designing an AI feature that does all the review work and suggests a final action, with AI reasoning and evidence for humans.</p>
+        </div>
+        <div class="cs-stage"><div class="device laptop">
+          <div class="screen"><img width="1514" height="956" src="assets/devices/screen-stamp.webp" alt="A document under review: the AI suggestion, its confidence score and the evidence behind it" loading="lazy" decoding="async"></div>
+          <img class="frame" width="1885" height="1113" src="assets/devices/macbook-pro-14.webp" alt="" loading="lazy" decoding="async">
+        </div></div>
+      </section>
+    </div>
+
+    <!-- the Next bar: one for all the case studies, held at the foot of the window while one is in view (wide
+         windows); home.js points it at the section after the current one, Stamp's at Contact -->
+    <nav class="dev-next" id="next-bar" aria-label="Next">
+      <a class="dn-go" href="#business-reporting-agent" data-to="2"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v11M3.5 9l4.5 4.5L12.5 9"/></svg><span>Next case study</span></a>
+    </nav>
+
+    <section class="snap s-contact contact-screen" id="contact" aria-labelledby="contact-title">
+      <div class="contact">
+        <svg class="at" viewBox="0 0 16 16" aria-hidden="true">
+          <defs>
+            <linearGradient id="at-fill" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="16"><stop offset="0" stop-color="#6BABFF"/><stop offset="1" stop-color="#0051FF"/></linearGradient>
+            <mask id="at-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="16" height="16">
+              <rect width="16" height="16" fill="#fff"/>
+              <path fill="#000" transform="translate(-2.0010 15.9983) scale(0.006104 -0.006104)" d="M2293 2621V2785H983V2621ZM983 2457V2621H655V2457ZM2621 2457V2621H2293V2457ZM655 2293V2457H491V2293ZM2785 2293V2457H2621V2293ZM491 1966V2293H327V1966ZM2949 1966V2293H2785V1966ZM327 655V1966H164V655ZM1802 1802V1966H1310V1802ZM2130 655V1146H2293V1638H2457V1966H2130V1802H1802V1638H1966V1146H1802V819H1966V655ZM3113 1146V1966H2949V1146ZM1638 491V655H1147V819H983V1310H1147V1638H1310V1802H983V1638H819V1310H655V819H819V655H983V491ZM2949 819V1146H2785V819ZM1802 655V819H1638V655ZM2785 655V819H2457V655ZM491 327V655H327V327ZM2457 491V655H2130V491ZM2949 327V491H2785V327ZM655 163V327H491V163ZM2785 163V327H2621V163ZM983 0V163H655V0ZM2621 0V163H2293V0ZM2293 -163V0H983V-163Z"/>
+            </mask>
+          </defs>
+          <rect width="16" height="16" fill="url(#at-fill)" mask="url(#at-cut)"/>
+        </svg>
+        <form class="msg" id="msg">
+          <h2 class="contact-title" id="contact-title"><label for="msg-text">Have something complicated? Let’s talk</label></h2>
+          <div class="msg-field">
+            <textarea id="msg-text" name="message" rows="1" placeholder="Type your message" required></textarea>
+            <button class="msg-send" type="submit" aria-label="Send message"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></button>
+          </div>
+          <p class="msg-or">Or connect on <a class="chip" href="https://www.linkedin.com/in/iamamaanbaig/" rel="noopener" target="_blank">LinkedIn</a></p>
+        </form>
+      </div>
+      <footer class="contact-foot"><p>© 2026 Amaan Baig</p></footer>
+    </section>
+  </main>
+  <script src="contact/contact.js?v=r44" defer></script>
+  <script src="home.js?v=r44" defer></script>
+  <script src="site-menu.js?v=r44" defer></script>
+</body>
+</html>
