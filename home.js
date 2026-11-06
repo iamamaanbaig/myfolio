@@ -164,8 +164,9 @@
     idle: '<svg viewBox="0 0 10 10"><path d="M2 .8l7.2 4.2L2 9.2z"/></svg>',
     loading: '<svg class="spin" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.5"/></svg>',
     playing: '<svg viewBox="0 0 10 10"><path d="M2 1h2.2v8H2zM5.8 1H8v8H5.8z"/></svg>',
+    ended: '<svg class="re" viewBox="0 0 20 20"><path d="M4.6 7.5A6 6 0 1 1 4 11.2"/><path d="M4.2 3.6v4.2h4.2"/></svg>',
   };
-  const TEXT = { idle: 'Play', loading: 'Loading…', playing: 'Pause' };
+  const TEXT = { idle: 'Play', loading: 'Loading…', playing: 'Pause', ended: 'Replay' };
   document.querySelectorAll('.s-work[data-figma], .s-work[data-video]').forEach(sec => {
     const clip = (sec.dataset.video || '').trim();
     const link = (sec.dataset.figma || '').trim(), src = clip || (link && embed(link));
@@ -192,15 +193,17 @@
       again.hidden = state === 'loading'; // nothing to restart until it has arrived
       icon.innerHTML = ICON[state];
       label.textContent = TEXT[state];
-      device.classList.toggle('playing', state !== 'idle');
-      btn.setAttribute('aria-pressed', state !== 'idle');
-      btn.setAttribute('aria-label', { idle: 'Play', loading: 'Loading, press to cancel:', playing: 'Pause' }[state] + ' the ' + what + ': ' + title);
+      device.classList.toggle('playing', state === 'playing' || state === 'loading');
+      btn.setAttribute('aria-pressed', state === 'playing' || state === 'loading');
+      btn.setAttribute('aria-label', { idle: 'Play', loading: 'Loading, press to cancel:', playing: 'Pause', ended: 'Replay' }[state] + ' the ' + what + ': ' + title);
     };
     if (clip) {
-      // a video: muted, looping, over its poster (its own first frame). It plays as the page opens (not with reduced
-      // motion: then it waits for Play); paused, it stays paused, and it rests while its section is out of view
+      // a video: muted, over its poster (its own first frame), with one button: Pause while it plays, Play when paused,
+      // Replay once it has played through (it plays once). It plays as the page opens (not with reduced motion: then it
+      // waits for Play); paused or played through, it stays so, and it rests while its section is out of view
+      again.remove();
       const v = document.createElement('video');
-      v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
+      v.muted = true; v.playsInline = true; v.preload = 'auto';
       v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('aria-hidden', 'true');
       const poster = screen.querySelector('.poster');
       if (poster) v.poster = poster.currentSrc || poster.src;
@@ -211,12 +214,12 @@
         if (want && !seen) set('playing'); // on, resting out of view
         if (want && seen) { if (v.paused) { if (v.readyState < 3) set('loading'); v.play().catch(e => { if (e.name === 'NotAllowedError') { want = false; set('idle'); } }); } } // an interrupted play is not a refusal
         else if (!v.paused) v.pause();
-        if (!want) set('idle');
+        if (!want) set(v.ended ? 'ended' : 'idle');
       };
       v.addEventListener('playing', () => set('playing'));
       v.addEventListener('waiting', () => { if (want) set('loading'); });
-      btn.addEventListener('click', () => { want = !want; go(); });
-      again.addEventListener('click', () => { v.currentTime = 0; want = true; go(); });
+      v.addEventListener('ended', () => { want = false; set('ended'); });
+      btn.addEventListener('click', () => { if (v.ended) v.currentTime = 0; want = !want || v.ended; go(); });
       if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { seen = e.isIntersecting; go(); }).observe(device);
       set('idle');
       go();

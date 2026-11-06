@@ -110,6 +110,7 @@
 .cs-proto b { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #2A2C30; }
 .cs-proto b svg { width: 10px; height: 10px; fill: var(--text); }
 .cs-proto[data-state="idle"] b svg { margin-left: 2px; }
+.cs-proto b svg.re { width: 14px; height: 14px; fill: none; stroke: var(--text); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
 .cs-proto[data-state="loading"] b { background: none; }
 .cs-proto b .spin { width: 22px; height: 22px; fill: none; stroke: var(--accent-solid); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 32 48; }
 .cs-proto[data-state="loading"] span { color: var(--text-2); }
