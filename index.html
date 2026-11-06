@@ -24,10 +24,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap">
-  <link rel="stylesheet" href="styles.css?v=r44">
-  <link rel="stylesheet" href="case-studies/case-study.css?v=r44">
-  <link rel="stylesheet" href="contact/contact.css?v=r44">
-  <link rel="stylesheet" href="home.css?v=r44">
+  <link rel="stylesheet" href="styles.css?v=r45">
+  <link rel="stylesheet" href="case-studies/case-study.css?v=r45">
+  <link rel="stylesheet" href="contact/contact.css?v=r45">
+  <link rel="stylesheet" href="home.css?v=r45">
 </head>
 <body>
   <header class="site-head">
@@ -35,7 +35,7 @@
     <nav class="site-nav" aria-label="Main">
       <a href="#home" data-to="0" aria-current="true">Home</a>
       <span class="nav-work">
-        <a href="#work" data-to="1" aria-haspopup="true" aria-expanded="false" aria-controls="work-menu">Work</a>
+        <a href="#work" data-to="1">Work</a>
         <span class="sq-row">
           <a class="sq" href="#ask-me-agent" data-to="1" aria-label="Case study 1, coming soon: Ask Me Agent"></a>
           <a class="sq" href="#business-reporting-agent" data-to="2" aria-label="Case study 2, coming soon: Business Reporting Agent"></a>
@@ -48,28 +48,8 @@
       <a href="#contact" data-to="7">Contact</a>
     </nav>
 
-    <!-- WORK's menu: the case studies as a list; the one under the pointer turns light and opens its case study's
-         opening beside it, so item and preview read as one light shape; the preview holds its main screen -->
-    <div class="work-menu" id="work-menu" aria-label="Case studies">
-      <div class="wm-list">
-        <div class="wm-item soon" data-i="0"><span class="wm-title">Ask Me Agent</span><span class="wm-arrow wm-soon">Soon</span><span class="wm-desc">AI that personalizes its answers to your family’s nutrition goals.</span></div>
-        <div class="wm-item soon" data-i="1"><span class="wm-title">Business Reporting Agent</span><span class="wm-arrow wm-soon">Soon</span><span class="wm-desc">An agent that analyses your business data to tell you how your business is performing.</span></div>
-        <a class="wm-item" href="case-studies/global-incentive-fee-awards/" data-i="2"><span class="wm-title">Saved millions of dollars in taxes</span><span class="wm-arrow" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span><span class="wm-desc">By improving stakeholder visibility and coordination across a complex, multi&#8209;stakeholder process.</span></a>
-        <a class="wm-item" href="case-studies/fee-management/" data-i="3"><span class="wm-title">Cut fee management effort by 40 minutes</span><span class="wm-arrow" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span><span class="wm-desc">By reducing the fee templates a single classroom needed from an average of 9&nbsp;to&nbsp;1.</span></a>
-        <a class="wm-item" href="case-studies/creating-automation/" data-i="4"><span class="wm-title">Reduced support calls</span><span class="wm-arrow" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span><span class="wm-desc">By making it easy to create a new automation.</span></a>
-        <div class="wm-item soon" data-i="5"><span class="wm-title">Reduced the compliance review effort with AI</span><span class="wm-arrow wm-soon">Soon</span><span class="wm-desc">By designing an AI feature that does all the review work and suggests a final action.</span></div>
-      </div>
-      <div class="wm-preview" aria-hidden="true">
-        <img class="wm-shot tall" width="473" height="932" src="assets/ask-me-agent/menu.webp" alt="" loading="lazy" decoding="async">
-        <img class="wm-shot tall" width="473" height="932" src="assets/business-reporting-agent/menu.webp" alt="" loading="lazy" decoding="async">
-        <img class="wm-shot" width="1733" height="1092" src="GIFAcasestudyimages/GIFAherocenter.webp" alt="" loading="lazy" decoding="async">
-        <img class="wm-shot" width="1505" height="970" src="Feemanagementcasestudyimages/Heroleft.webp" alt="" loading="lazy" decoding="async">
-        <img class="wm-shot" width="1793" height="1152" src="Creatingautomationcasestudyimages/Group%201321317990.webp" alt="" loading="lazy" decoding="async">
-        <img class="wm-shot" width="1575" height="988" src="Stampcasestudyimages/Hero%20Image%20Left.webp" alt="" loading="lazy" decoding="async">
-      </div>
     </div>
   </header>
-  <div class="wm-scrim" aria-hidden="true"></div>
 
   <main class="page snaps">
     <section class="snap s-home" id="home" aria-label="About">
@@ -200,8 +180,9 @@
       <footer class="contact-foot"><p>© 2026 Amaan Baig</p></footer>
     </section>
   </main>
-  <script src="contact/contact.js?v=r44" defer></script>
-  <script src="home.js?v=r44" defer></script>
-  <script src="site-menu.js?v=r44" defer></script>
+  <script src="contact/contact.js?v=r45" defer></script>
+  <script src="home.js?v=r45" defer></script>
+  <script src="site-menu.js?v=r45" defer></script>
+  <script src="work-menu.js?v=r45" defer></script>
 </body>
 </html>

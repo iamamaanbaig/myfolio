@@ -144,67 +144,6 @@
   }, { passive: true });
 })();
 
-// WORK's menu: opens while the pointer is on WORK, its squares or the menu; Esc, a scroll or leaving closes it
-(() => {
-  if (!matchMedia('(hover: hover)').matches) return;
-  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const root = document.documentElement, head = document.querySelector('.site-head');
-  const trigger = document.querySelector('.nav-work'), link = trigger.querySelector('a');
-  const menu = document.getElementById('work-menu'), items = $$('.wm-item', menu), comps = $$('.wm-shot', menu), list = menu.querySelector('.wm-list'), pv = menu.querySelector('.wm-preview');
-  // the menu starts under HOME (its text on the HOME label) and runs to the frame's right line, list and preview 50-50;
-  // --wm-lh is the list's height, which a mobile screen's preview takes
-  const home = head.querySelector('.site-nav > a');
-  const place = () => {
-    const pad = parseFloat(getComputedStyle(items[0]).paddingLeft) || 0;
-    head.style.setProperty('--wm-x', (home.getBoundingClientRect().left - head.getBoundingClientRect().left - pad) + 'px');
-    head.style.setProperty('--wm-lh', list.offsetHeight + 'px');
-  };
-  addEventListener('resize', () => { if (root.classList.contains('menu-open')) place(); });
-  let t;
-  let quiet = false; // set while Esc hands focus back to WORK, so that focus doesn't reopen the menu
-  let clicked = false; // set by a click on WORK or a square: the menu stays shut until the pointer leaves them
-  const open = () => { if (quiet || clicked) return; leaving = false; clearTimeout(t); place(); root.classList.add('menu-open'); link.setAttribute('aria-expanded', 'true'); };
-  let leaving = false;
-  const close = () => { if (leaving) return; leaving = true; clearTimeout(t); t = setTimeout(() => shut(), 250); }; // grace: the preview may still be sliding open
-  const show = i => {
-    items.forEach((m, k) => m.classList.toggle('on', k === i));
-    comps.forEach((c, k) => c.classList.toggle('on', k === i));
-    if (i < 0) return;
-    // the preview's height follows the screen: landscape for a desktop one, the list's height for a mobile one
-    root.classList.toggle('pv-tall', comps[i].classList.contains('tall'));
-    head.style.setProperty('--pv-h', (comps[i].classList.contains('tall') ? list.offsetHeight : pv.offsetWidth * .72) + 'px'); // glides between the two
-    root.classList.add('previewing');
-  };
-  [trigger, menu].forEach(el => { el.addEventListener('pointerenter', open); el.addEventListener('pointerleave', close); });
-  trigger.addEventListener('click', () => { shut(); clicked = true; });
-  trigger.addEventListener('pointerleave', () => { clicked = false; });
-  // a backstop for the leave events: the pointer anywhere but WORK, the list or the open preview starts the close;
-  // coming back cancels it
-  addEventListener('pointermove', e => {
-    if (!root.classList.contains('menu-open') || e.pointerType !== 'mouse') return;
-    const inside = trigger.contains(e.target) || menu.contains(e.target);
-    if (inside) { if (leaving) open(); } else close();
-  }, { passive: true });
-  link.addEventListener('focus', open);
-  link.addEventListener('blur', e => { clicked = false; if (!menu.contains(e.relatedTarget)) close(); });
-  menu.addEventListener('focusout', e => { if (!menu.contains(e.relatedTarget) && e.relatedTarget !== link) close(); });
-  items.forEach((m, i) => { m.addEventListener('pointerenter', () => show(i)); m.addEventListener('focus', () => { open(); show(i); }); });
-  const shut = () => { leaving = false; clearTimeout(t); root.classList.remove('menu-open', 'previewing', 'pv-tall'); link.setAttribute('aria-expanded', 'false'); show(-1); };
-  // a case study still to come has no page: its item closes the menu and takes the visitor to its section on this page
-  // (through the header square for that section, which glides there)
-  items.forEach((m, i) => {
-    if (!m.classList.contains('soon')) return;
-    m.setAttribute('role', 'link'); m.tabIndex = 0;
-    const goTo = () => { const sq = head.querySelectorAll('.site-nav .sq')[i]; if (sq) sq.click(); shut(); clicked = false; }; // the menu opens again on the next hover
-    m.addEventListener('click', goTo);
-    m.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goTo(); } });
-  });
-  addEventListener('keydown', e => {
-    if (e.key !== 'Escape' || !root.classList.contains('menu-open')) return;
-    shut(); quiet = true; link.focus(); quiet = false;
-  });
-  addEventListener('wheel', e => { if (root.classList.contains('menu-open') && !list.contains(e.target)) shut(); }, { passive: true });
-})();
 
 // Figma prototypes: a section with a Figma link (data-figma) gets the prototype control, a small dark pill (under a
 // phone, under the description beside a laptop) with three states: "Play" (not loaded, or paused), "Loading…" with a

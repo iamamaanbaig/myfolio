@@ -2976,3 +2976,74 @@ div.sol-view {
 .site-nav .sq { padding: 0; }
 .site-nav .sq:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
 .site-nav a[aria-current="true"] { color: var(--text); } /* the section in view */
+
+/* the WORK menu's scale unit, as on the home page */
+:root { --u: 1vw; }
+@media (min-width: 900px) { :root { --u: min(1vw, 1.6vh); } }
+
+/* ---------- WORK's menu (pointer screens) ----------
+   Hovering WORK (or its squares) drops a dark list of the case studies from the header, lined up under WORK.
+   The page behind steps back: the glow goes out, and a blurred shade covers it, darkening downwards.
+   The item under the pointer turns light and its case study's opening opens beside it, reaching down at
+   least to the item's foot, so the two read as one light shape. */
+.work-menu, .wm-scrim { display: none; }
+@media (hover: hover) and (min-width: 900px) {
+  /* from the HOME label to the frame's right line, split 50-50: the list on the left half, the preview on the right.
+     All six case studies fit; a window too short for the list scrolls it, inside the menu */
+  .work-menu { --wm-w: calc((100% - var(--wm-x, 30%)) / 2); display: block; position: absolute; left: 0; right: 0; top: 100%; pointer-events: none; }
+  .site-head { position: relative; } /* the menu hangs from it (floating, it is fixed) */
+  .menu-open .site-head { z-index: 41; }
+  .wm-list { position: relative; z-index: 2; margin-left: var(--wm-x, 30%); width: var(--wm-w); background: var(--bg);
+    max-height: calc(100vh - var(--head) - 24px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
+    clip-path: inset(0 0 100% 0); transition: clip-path .5s var(--ease); }
+  .wm-item { position: relative; display: grid; grid-template-columns: 1fr auto; column-gap: 20px; padding: 0 var(--pad); color: inherit; text-decoration: none;
+    transition: background .25s, opacity .3s; }
+  .wm-item > * { transition: color .25s; }
+  .wm-item::before { content: ""; grid-column: 1 / -1; height: clamp(12px, calc(var(--u) * 1.3), 20px); }
+  .wm-item::after { content: ""; grid-column: 1 / -1; height: clamp(12px, calc(var(--u) * 1.3), 20px); border-bottom: 1px solid var(--frame); }
+  .wm-item:last-child::after { border-bottom: 0; }
+  /* type: a menu to scan, not to read. The title leads (20px at 1440, medium, tight), the description steps back
+     a size and a shade (14px, the secondary grey), in full; both scale with --u */
+  .wm-item { --wm-t: clamp(17px, calc(var(--u) * 1.45), 24px); }
+  .wm-title { font-size: var(--wm-t); font-weight: 500; line-height: 1.25; letter-spacing: -0.02em; color: var(--text); text-wrap: balance; }
+  .wm-desc { grid-column: 1; margin-top: 4px; font-size: clamp(13px, calc(var(--u) * 1), 15px); line-height: 1.45; color: var(--text-2); text-wrap: pretty; }
+  .wm-arrow { grid-column: 2; grid-row: 2; display: grid; place-items: center; width: 18px; height: calc(var(--wm-t) * 1.25); color: var(--text-2); transition: color .25s, transform .3s var(--ease); }
+  .wm-arrow svg { width: 100%; fill: none; stroke: currentColor; stroke-width: 1.5; }
+  .wm-item.on .wm-arrow { transform: translate(2px, -2px); }
+  .wm-soon { width: auto; height: calc(var(--wm-t) * 1.25); font-size: var(--t-label); font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+  .wm-item.on { background: var(--surface); border-color: var(--surface); }
+  .wm-item.on::after { border-color: transparent; }
+  .wm-item.on .wm-title, .wm-item.on .wm-arrow { color: var(--bg); }
+  .wm-item.on .wm-desc { color: #5B5D62; }
+  .wm-item.on.soon .wm-arrow { color: #8A8C91; }
+  .wm-item:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+  .wm-item.soon { cursor: pointer; } /* it takes you to its section */
+
+  /* the preview: the right half, from the top, its height following the screen it shows: a desktop screen gets a
+     landscape panel (its width × .72), a mobile screen (.tall) the list's full height (--wm-lh); the case study's
+     main screen stands on the panel's bottom edge. --drop hides a file's own transparent margin below the laptop
+     (GIFA's shadow: 20 of 1092px) */
+  .wm-preview { position: absolute; z-index: 1; left: calc(var(--wm-x, 30%) + var(--wm-w) - 1px); /* tucked 1px under the list, so no seam shows */ right: 0;
+    top: 0; height: var(--pv-h, 60vh); overflow: hidden; background: var(--surface);
+    clip-path: inset(0 0 0 100%); transition: clip-path .5s var(--ease), height .45s var(--ease); } /* height set by home.js, so it can glide */
+  .wm-shot { position: absolute; left: 50%; bottom: 0; width: 84%; height: auto; opacity: 0;
+    transform: translate(-50%, calc(var(--drop, 0%) + 24px)); transition: opacity .3s, transform .6s var(--ease); }
+  .wm-shot[src*="GIFAherocenter"] { --drop: 1.9%; }
+  .wm-shot.tall { width: auto; height: auto; max-width: 84%; max-height: 88%; }
+  .wm-shot.on { opacity: 1; transform: translate(-50%, var(--drop, 0%)); transition-delay: .06s; }
+
+  .wm-scrim { display: block; position: fixed; z-index: 15; inset: var(--wm-y, var(--head, 88px)) 0 0; /* the margins too: a laptop or a screen may run into them */ pointer-events: none; opacity: 0; transition: opacity .4s;
+    -webkit-backdrop-filter: blur(22px) saturate(.4); backdrop-filter: blur(22px) saturate(.4);
+    background: linear-gradient(rgba(18,19,21,.14) 0%, rgba(18,19,21,.2) 34%, rgba(18,19,21,.9) 52%, var(--bg) 72%); }
+
+  /* only the list and the open preview count as the menu: the box around them lets the pointer through, so
+     leaving them for the page around closes it */
+  .menu-open .wm-list, .menu-open.previewing .wm-preview { pointer-events: auto; }
+  .menu-open .wm-list { clip-path: inset(0); }
+  .menu-open.previewing .wm-preview { clip-path: inset(0); }
+  .menu-open .wm-scrim { opacity: 1; }
+  .menu-open nav.index { opacity: 0; pointer-events: none; transition: opacity .3s; } /* a case study's section index steps aside */
+  .menu-open .site-nav > a[aria-current="true"] { color: var(--text-2); } /* one lit item: WORK, while its menu is open */
+  .menu-open .site-nav .nav-work > a { color: var(--text); }
+}
+@media (prefers-reduced-motion: reduce) { .wm-list, .wm-preview, .wm-shot, .wm-scrim { transition: none; } }

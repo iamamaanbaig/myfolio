@@ -113,7 +113,8 @@ as needed, keeping the intent of the reference.
   light grey pill "Case study coming soon".
   Phones: the headline and description, then the device (the phone with its
   control under it; no close-ups).
-  WORK menu (pointer screens): hovering WORK or its squares drops a dark list
+  WORK menu (pointer screens; on every page, built by the shared `work-menu.js`
+  from its one list of the case studies, styles `.wm-*` in case-study.css): hovering WORK or its squares drops a dark list
   of the six case studies (no border; title, full description, arrow or
   "Soon") under the header, from the HOME label (its text on HOME) to the
   frame's right line, split 50-50: the list on the left half, the preview on
@@ -175,7 +176,7 @@ as needed, keeping the intent of the reference.
   image `assets/og-image.jpg` (the earlier hero, with the signature, as a 1200×630
   card; not yet redone for design-2).
 - Cache tags: every style sheet and script is loaded with one site-wide tag
-  (`?v=r44`); bump it on every release.
+  (`?v=r45`); bump it on every release.
 - "Global Incentive Fee Awards case study":
   `case-studies/global-incentive-fee-awards/index.html`. A case study page,
   not the home page. Its images live in `GIFAcasestudyimages/`.
