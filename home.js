@@ -166,9 +166,11 @@
     playing: '<svg viewBox="0 0 10 10"><path d="M2 1h2.2v8H2zM5.8 1H8v8H5.8z"/></svg>',
   };
   const TEXT = { idle: 'Play', loading: 'Loading…', playing: 'Pause' };
-  document.querySelectorAll('.s-work[data-figma]').forEach(sec => {
-    const link = sec.dataset.figma.trim(), src = link && embed(link);
+  document.querySelectorAll('.s-work[data-figma], .s-work[data-video]').forEach(sec => {
+    const clip = (sec.dataset.video || '').trim();
+    const link = (sec.dataset.figma || '').trim(), src = clip || (link && embed(link));
     if (!src) return;
+    const what = clip ? 'video' : 'Figma prototype';
     const device = sec.querySelector('.device'), screen = device.querySelector('.screen');
     const title = sec.querySelector('h2').textContent.trim();
     const btn = document.createElement('button');
@@ -178,7 +180,7 @@
     // beside it, a round Restart: the prototype from its first screen again
     const again = document.createElement('button');
     again.type = 'button'; again.className = 'cs-restart'; again.title = 'Restart';
-    again.setAttribute('aria-label', 'Restart the Figma prototype: ' + title);
+    again.setAttribute('aria-label', 'Restart the ' + what + ': ' + title);
     again.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4.6 7.5A6 6 0 1 1 4 11.2"/><path d="M4.2 3.6v4.2h4.2"/></svg>';
     const ctrl = document.createElement('div');
     ctrl.className = 'cs-ctrl';
@@ -192,8 +194,34 @@
       label.textContent = TEXT[state];
       device.classList.toggle('playing', state !== 'idle');
       btn.setAttribute('aria-pressed', state !== 'idle');
-      btn.setAttribute('aria-label', { idle: 'Play', loading: 'Loading, press to cancel:', playing: 'Pause' }[state] + ' the Figma prototype: ' + title);
+      btn.setAttribute('aria-label', { idle: 'Play', loading: 'Loading, press to cancel:', playing: 'Pause' }[state] + ' the ' + what + ': ' + title);
     };
+    if (clip) {
+      // a video: muted, looping, over its poster (its own first frame). It plays as the page opens (not with reduced
+      // motion: then it waits for Play); paused, it stays paused, and it rests while its section is out of view
+      const v = document.createElement('video');
+      v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
+      v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('aria-hidden', 'true');
+      const poster = screen.querySelector('.poster');
+      if (poster) v.poster = poster.currentSrc || poster.src;
+      v.src = src;
+      screen.append(v);
+      let want = !matchMedia('(prefers-reduced-motion: reduce)').matches, seen = !('IntersectionObserver' in window);
+      const go = () => {
+        if (want && !seen) set('playing'); // on, resting out of view
+        if (want && seen) { if (v.paused) { if (v.readyState < 3) set('loading'); v.play().catch(e => { if (e.name === 'NotAllowedError') { want = false; set('idle'); } }); } } // an interrupted play is not a refusal
+        else if (!v.paused) v.pause();
+        if (!want) set('idle');
+      };
+      v.addEventListener('playing', () => set('playing'));
+      v.addEventListener('waiting', () => { if (want) set('loading'); });
+      btn.addEventListener('click', () => { want = !want; go(); });
+      again.addEventListener('click', () => { v.currentTime = 0; want = true; go(); });
+      if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { seen = e.isIntersecting; go(); }).observe(device);
+      set('idle');
+      go();
+      return;
+    }
     const start = () => {
       frame = document.createElement('iframe');
       frame.loading = 'eager'; frame.src = src; frame.title = 'Figma prototype: ' + title; frame.allowFullscreen = true;

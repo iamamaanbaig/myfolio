@@ -24,10 +24,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap">
-  <link rel="stylesheet" href="styles.css?v=r46">
-  <link rel="stylesheet" href="case-studies/case-study.css?v=r46">
-  <link rel="stylesheet" href="contact/contact.css?v=r46">
-  <link rel="stylesheet" href="home.css?v=r46">
+  <link rel="stylesheet" href="styles.css?v=r47">
+  <link rel="stylesheet" href="case-studies/case-study.css?v=r47">
+  <link rel="stylesheet" href="contact/contact.css?v=r47">
+  <link rel="stylesheet" href="home.css?v=r47">
 </head>
 <body>
   <header class="site-head">
@@ -64,9 +64,11 @@
          laptop (.lap) stands its base on the bottom line; a phone (.ph) sits in the middle, its prototype control
          under it, with close-ups beside it (.cs-right) or, alone (.solo), centred in the device area. A link shows
          the big arrow top right; a case study still to come (.soon) says "Coming soon" in its eyebrow.
-         A Figma share link in data-figma adds the prototype control (home.js); a phone plays it as the page opens. -->
+         A Figma share link in data-figma adds the prototype control (home.js); a phone plays it as the page opens.
+         A phone's screen can instead hold a video (data-video on the section, its first frame as the poster): the same
+         control plays and pauses it, and it plays, looping, as the page opens. -->
     <div id="work">
-      <section class="snap s-work ph soon" id="ask-me-agent" aria-labelledby="t-ask" data-figma="https://www.figma.com/proto/x5jEJ2pAdbJ3HLF3esFrGp/Portfolio?node-id=1455-1330&amp;starting-point-node-id=1455-1330">
+      <section class="snap s-work ph soon" id="ask-me-agent" aria-labelledby="t-ask" data-video="assets/ask-me-agent/demo.mp4">
         <div class="cs-col cs-left">
           <p class="cs-eyebrow"><span class="cs-soon">Coming soon</span></p>
           <h2 id="t-ask">Ask Me Agent.</h2>
@@ -74,7 +76,7 @@
         </div>
         <div class="cs-col cs-mid">
           <div class="device phone">
-            <div class="screen"><img class="poster" width="393" height="852" src="assets/ask-me-agent/screen-poster.webp" alt="" decoding="async"></div>
+            <div class="screen"><img class="poster" width="500" height="1080" src="assets/ask-me-agent/video-poster.webp" alt="" decoding="async"></div>
             <img class="frame" width="603" height="1190" src="assets/devices/iphone-15-pro.webp" alt="" decoding="async">
           </div>
         </div>
@@ -91,7 +93,7 @@
         </div></div>
       </section>
 
-      <section class="snap s-work ph solo soon" id="business-reporting-agent" aria-labelledby="t-bra" data-figma="https://www.figma.com/proto/x5jEJ2pAdbJ3HLF3esFrGp/Portfolio?node-id=1451-916&amp;starting-point-node-id=1451-916">
+      <section class="snap s-work ph solo soon" id="business-reporting-agent" aria-labelledby="t-bra" data-video="assets/business-reporting-agent/demo.mp4">
         <div class="cs-col cs-left">
           <p class="cs-eyebrow"><span class="cs-soon">Coming soon</span></p>
           <h2 id="t-bra">Business Reporting Agent</h2>
@@ -99,7 +101,7 @@
         </div>
         <div class="cs-col cs-mid">
           <div class="device phone">
-            <div class="screen"></div>
+            <div class="screen"><img class="poster" width="500" height="1080" src="assets/business-reporting-agent/video-poster.webp" alt="" decoding="async"></div>
             <img class="frame" width="603" height="1190" src="assets/devices/iphone-15-pro.webp" alt="" decoding="async">
           </div>
         </div>
@@ -181,9 +183,9 @@
       <footer class="contact-foot"><p>© 2026 Amaan Baig</p></footer>
     </section>
   </main>
-  <script src="contact/contact.js?v=r46" defer></script>
-  <script src="home.js?v=r46" defer></script>
-  <script src="site-menu.js?v=r46" defer></script>
-  <script src="work-menu.js?v=r46" defer></script>
+  <script src="contact/contact.js?v=r47" defer></script>
+  <script src="home.js?v=r47" defer></script>
+  <script src="site-menu.js?v=r47" defer></script>
+  <script src="work-menu.js?v=r47" defer></script>
 </body>
 </html>

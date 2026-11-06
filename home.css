@@ -85,10 +85,12 @@
 .device { position: relative; z-index: 0; transition: transform .9s var(--ease); }
 .device > .frame { position: relative; z-index: 2; display: block; width: 100%; height: auto; pointer-events: none; }
 .screen { position: absolute; z-index: 1; overflow: hidden; background: #F4F4F5; }
-.screen img, .screen iframe { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; border: 0; }
+.screen img, .screen iframe, .screen video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; border: 0; }
 /* a prototype is hidden until it has loaded: the screenshot (or the light screen) shows meanwhile, and stays under it */
 .screen iframe { z-index: 1; background: #fff; opacity: 0; transition: opacity .5s; }
 .screen iframe.ready { opacity: 1; }
+/* a video (data-video) lies over its poster, its own first frame, so it shows from the start */
+.screen video { z-index: 1; pointer-events: none; }
 .laptop .screen { left: calc(220 / 1885 * 100%); top: calc(31 / 1113 * 100%); width: calc(1445 / 1885 * 100%); height: calc(939 / 1113 * 100%);
   border-radius: 1% 1% 0 0 / 1.5% 1.5% 0 0; background: #fff; }
 .phone .screen { left: calc(51 / 603 * 100%); top: calc(51 / 1190 * 100%); width: calc(501 / 603 * 100%); height: calc(1088 / 1190 * 100%); border-radius: 14.4% / 6.6%; }

@@ -102,10 +102,14 @@ as needed, keeping the intent of the reference.
   the prototype from its first screen again (hidden while loading). The prototype plays in the screen
   (embed.figma.com) over the screenshot and appears once loaded; a phone plays
   it as soon as the page opens, a laptop when asked; paused, it stays paused.
-  Ask Me Agent: the Portfolio file's prototype from frame 1455-1330, its
-  opening screen (`assets/ask-me-agent/screen-poster.webp`) under it; Business
-  Reporting Agent: from frame 1451-916, a light screen under it until it has
-  an opening screen. The cursor over a case study is a dark pill, the arrow in
+  A phone can hold a video instead (`data-video`): the same control plays and
+  pauses it (Restart from its start); muted and looping, it plays as the page
+  opens (with reduced motion, when asked) and rests while out of view, over a
+  poster of its own first frame. The agents play their screen recordings this
+  way, not Figma prototypes: `assets/ask-me-agent/demo.mp4` and
+  `assets/business-reporting-agent/demo.mp4` (the uploads cropped to the
+  phone's screen, 500 × 1080, H.264, no sound), posters `video-poster.webp`
+  beside them. The cursor over a case study is a dark pill, the arrow in
   the brand gradient and "View case study" (`.cs-cursor`), stepping aside only over
   the term and the prototype control (it stays over the devices, a playing
   prototype too: on wide pointer screens the prototype is watched, not
@@ -177,7 +181,7 @@ as needed, keeping the intent of the reference.
   image `assets/og-image.jpg` (the earlier hero, with the signature, as a 1200×630
   card; not yet redone for design-2).
 - Cache tags: every style sheet and script is loaded with one site-wide tag
-  (`?v=r46`); bump it on every release.
+  (`?v=r47`); bump it on every release.
 - "Global Incentive Fee Awards case study":
   `case-studies/global-incentive-fee-awards/index.html`. A case study page,
   not the home page. Its images live in `GIFAcasestudyimages/`.
