@@ -127,7 +127,7 @@
     '<path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="url(#cur-grad)" stroke-width="2" stroke-linecap="square"/></svg><span>View case study</span>';
   document.body.append(cur);
   const label = cur.querySelector('span');
-  const OWN = '.term, .cs-ctrl'; // where the pointer is theirs, not the pill's (devices keep the pill, prototypes too)
+  const OWN = '.term, .cs-ctrl, .cs-seek'; // where the pointer is theirs, not the pill's (devices keep the pill, prototypes too)
   addEventListener('pointermove', e => { cur.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`; }, { passive: true });
   $$('.s-work').forEach(s => {
     s.addEventListener('pointerenter', e => {
@@ -227,7 +227,51 @@
       v.addEventListener('timeupdate', () => { if (atEnd()) finish(); });
       v.addEventListener('pause', () => { if (atEnd()) finish(); });
       let last = -1;
-      setInterval(() => { if (want && seen && !v.paused && !done) { if (v.currentTime === last && v.duration - v.currentTime < 1) finish(); last = v.currentTime; } }, 1000);
+      setInterval(() => { if (want && seen && !v.paused && !done && !drag) { if (v.currentTime === last && v.duration - v.currentTime < 1) finish(); last = v.currentTime; } }, 1000);
+      // between the phone and the button, the video's progress: a thin track the screen's width, filling blue as it
+      // plays; press or drag along it to move through the video (it pauses while held, then carries on as it was),
+      // or focus it and use the arrow keys (5s), Home and End
+      const seek = document.createElement('div');
+      seek.className = 'cs-seek'; seek.tabIndex = 0; seek.setAttribute('role', 'slider');
+      seek.setAttribute('aria-label', 'Position in the video: ' + title); seek.setAttribute('aria-valuemin', 0);
+      seek.innerHTML = '<i><b></b></i>';
+      const fill = seek.querySelector('b');
+      ctrl.before(seek);
+      let drag = false, resume = false;
+      const draw = () => {
+        const d = v.duration || 0, t = v.currentTime;
+        fill.style.transform = 'scaleX(' + (d ? Math.min(1, t / d) : 0) + ')';
+        seek.style.setProperty('--at', (d ? Math.min(1, t / d) * 100 : 0) + '%');
+        seek.setAttribute('aria-valuemax', Math.round(d)); seek.setAttribute('aria-valuenow', Math.round(t));
+        seek.setAttribute('aria-valuetext', Math.round(t) + ' of ' + Math.round(d) + ' seconds');
+      };
+      const loop = () => { draw(); if (!v.paused || drag) requestAnimationFrame(loop); };
+      ['play', 'seeked', 'loadedmetadata', 'pause'].forEach(t => v.addEventListener(t, () => requestAnimationFrame(loop)));
+      const jump = t => {
+        if (!v.duration) return;
+        t = Math.max(0, Math.min(v.duration, t));
+        if (done && t < v.duration - .3) { done = false; set('idle'); } // back from the end: paused there, Play to go on
+        v.currentTime = t; draw();
+      };
+      const at = e => { const r = seek.getBoundingClientRect(); return (e.clientX - r.left) / r.width * v.duration; };
+      seek.addEventListener('pointerdown', e => {
+        if (!v.duration || e.button) return;
+        drag = true; resume = want && !done; seek.setPointerCapture(e.pointerId); seek.classList.add('held');
+        if (!v.paused) v.pause();
+        jump(at(e)); requestAnimationFrame(loop);
+      });
+      seek.addEventListener('pointermove', e => { if (drag) jump(at(e)); });
+      const let_go = () => {
+        if (!drag) return; drag = false; seek.classList.remove('held');
+        if (atEnd()) { done = false; finish(); return; }
+        want = resume; go();
+      };
+      seek.addEventListener('pointerup', let_go); seek.addEventListener('pointercancel', let_go);
+      seek.addEventListener('keydown', e => {
+        const k = { ArrowRight: 5, ArrowUp: 5, ArrowLeft: -5, ArrowDown: -5 }[e.key];
+        if (k) jump(v.currentTime + k); else if (e.key === 'Home') jump(0); else if (e.key === 'End') jump(v.duration); else return;
+        e.preventDefault();
+      });
       btn.addEventListener('click', () => { if (done) { done = false; v.currentTime = 0; want = true; } else want = !want; go(); });
       if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { seen = e.isIntersecting; go(); }).observe(device);
       set('idle');

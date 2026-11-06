@@ -118,6 +118,16 @@
 @keyframes spin { to { transform: rotate(360deg); } }
 /* the control's row: the pill and, beside it, a round Restart of the same height */
 .cs-ctrl { position: relative; z-index: 3; display: flex; align-items: center; gap: 8px; align-self: center; }
+/* a video's progress, between the phone and its button (home.js): a thin track the phone's screen wide, its played part
+   in blue; it thickens and shows its handle under the pointer, held, or focused. Its tap area is 20px tall */
+.cs-seek { position: relative; z-index: 3; flex: none; align-self: center; height: 20px; display: flex; align-items: center; cursor: pointer; touch-action: none; outline: none; }
+.cs-seek i { position: relative; display: block; width: 100%; height: 3px; border-radius: 2px; background: rgba(255,255,255,.1); overflow: hidden; transition: height .2s var(--ease); }
+.cs-seek b { position: absolute; inset: 0; background: var(--accent-solid); transform: scaleX(0); transform-origin: left; border-radius: inherit; }
+.cs-seek::after { content: ''; position: absolute; top: 50%; left: var(--at, 0%); width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--text);
+  box-shadow: 0 1px 4px rgba(0,0,0,.4); transform: scale(0); transition: transform .2s var(--ease); pointer-events: none; }
+.cs-seek:hover i, .cs-seek.held i, .cs-seek:focus-visible i { height: 5px; }
+.cs-seek:hover::after, .cs-seek.held::after, .cs-seek:focus-visible::after { transform: scale(1); }
+.cs-seek:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; border-radius: 4px; }
 .cs-restart { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: #1C1D20;
   color: var(--text); cursor: pointer; transition: background .2s; }
 .cs-restart[hidden] { display: none; }
@@ -214,6 +224,8 @@
   .cs-mid { align-items: center; }
   .phone { width: calc(var(--ph) * 603 / 1132); margin: calc(var(--ph) * -29 / 1132) 0; }
   .cs-mid .cs-ctrl { margin-top: auto; }
+  .cs-mid .cs-seek { margin-top: auto; width: calc(var(--ph) * 501 / 1132); }
+  .cs-mid .cs-seek + .cs-ctrl { margin-top: 12px; }
   .cs-feat { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: flex-end; margin-top: calc(var(--py) * -1); container-type: size;
     --note: clamp(250px, calc(var(--u) * 19), 340px);
     --cw: max(160px, min(100cqw, (100cqh - var(--note)) * 418 / 521)); }
@@ -242,8 +254,8 @@
       radial-gradient(70% 38% at 50% 38%, rgba(12, 24, 70, .3), transparent 75%);
     transition: opacity .6s var(--ease); }
   .at-hero #work > .s-work:first-child::after { opacity: 0; }
-  #work > .s-work:first-child > :not(.cs-mid), #work > .s-work:first-child .cs-ctrl { transition: opacity .6s var(--ease); }
-  .at-hero #work > .s-work:first-child > :not(.cs-mid), .at-hero #work > .s-work:first-child .cs-ctrl { opacity: 0; pointer-events: none; }
+  #work > .s-work:first-child > :not(.cs-mid), #work > .s-work:first-child .cs-ctrl, #work > .s-work:first-child .cs-seek { transition: opacity .6s var(--ease); }
+  .at-hero #work > .s-work:first-child > :not(.cs-mid), .at-hero #work > .s-work:first-child .cs-ctrl, .at-hero #work > .s-work:first-child .cs-seek { opacity: 0; pointer-events: none; }
 }
 
 /* ---------- phones: no stepping; the sections stack and scroll freely ---------- */
@@ -267,6 +279,8 @@
   .cs-mid { display: flex; flex-direction: column; align-items: center; padding: 28px var(--pad) 40px; }
   .phone { width: min(62%, 300px); }
   .cs-mid .cs-ctrl { margin-top: 16px; }
+  .cs-mid .cs-seek { margin-top: 14px; width: calc(min(62%, 300px) * 501 / 603); }
+  .cs-mid .cs-seek + .cs-ctrl { margin-top: 10px; }
   .cs-right { display: none; }
   .s-contact { min-height: calc(100svh - var(--head)); }
 }
