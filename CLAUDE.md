@@ -41,7 +41,7 @@ as needed, keeping the intent of the reference.
   Header: fixed; HOME, WORK with one square per case study (Stamp included;
   the case-study squares' style, the current one blue), CONTACT; the section in
   view is lit. On phones the squares are hidden.
-  Hero (design-2): on `--panel`, no signature and no glow image. "UX & Product
+  Hero (design-2): on `--panel` (#121315, the header's), no signature and no glow image. "UX & Product
   Designer" in Inter's text cut (opsz 14, open tracking), sized so "UX &
   Product" ends on the frame's middle line; under it "I make complicated software feel obvious." in grey
   sentence case (`.tagline`, one line on wide windows), then the focus areas as labels
@@ -53,13 +53,10 @@ as needed, keeping the intent of the reference.
   own phone (Ask Me Agent) peeks up below it: one continuous phone, not a copy.
   While the hero is in view (`.at-hero`) only that phone shows; the section's
   copy, close-ups and prototype control fade in as the page moves on, and its
-  top rule is hidden. The mesh gradient (three soft deep-blue pools, left, a
-  weaker one centre, right) is drawn by that section, reaching up into the
-  hero, centred on the window's foot as the page opens;
-  it shows while the hero is in view; on every case study (through Stamp) the
-  mesh is a large soft glow across the upper middle of the section, behind the
-  copy and device, as in the reference; Contact has none. Phones: no peek; the
-  hero ends with "Selected work" over the mesh. On load the title, focus line
+  top rule is hidden. No mesh gradient anywhere (design-3): the hero, the
+  case studies and Contact all sit on the header's own ground, `--bg`
+  #121315 (`--panel` is set to it). Phones: no peek; the
+  hero ends with "Selected work". On load the title, focus line
   and label rise in, the peeking phone rises last.
   Case-study sections: one system for all six, on the plain `--panel` (the glow
   belongs to the hero alone), on the frame's thirds (the background's grid
@@ -191,7 +188,7 @@ as needed, keeping the intent of the reference.
   image `assets/og-image.jpg` (the earlier hero, with the signature, as a 1200×630
   card; not yet redone for design-2).
 - Cache tags: every style sheet and script is loaded with one site-wide tag
-  (`?v=r53`); bump it on every release.
+  (`?v=r54`); bump it on every release.
 - "Global Incentive Fee Awards case study":
   `case-studies/global-incentive-fee-awards/index.html`. A case study page,
   not the home page. Its images live in `GIFAcasestudyimages/`.

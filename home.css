@@ -1,7 +1,7 @@
 /* Home: Home, Work and Contact on one page. On wide windows one scroll moves one section (home.js); each
    section takes the top 85% of the window, so the last 15% shows the start of the next. Phones
    scroll freely. Sits on styles.css, the shared case-studies/case-study.css and contact/contact.css. */
-:root { --head: clamp(88px, 7vw, 112px); --u: 1vw; --panel: #0C0B0E; } /* --panel: the glow image's own base, under the hero and the case-study captions */
+:root { --head: clamp(88px, 7vw, 112px); --u: 1vw; --panel: var(--bg); } /* --panel: the sections' ground, the header's own (#121315) */
 @media (min-width: 900px) {
   :root { --head: clamp(60px, min(7vw, 11.2vh), 112px); --u: min(1vw, 1.6vh); --sec: calc(85vh - var(--head)); }
 }
@@ -23,9 +23,6 @@
 
 /* ---------- Home: the glow panel, the title, the statement, the signature ---------- */
 .s-home { display: flex; flex-direction: column; overflow: hidden; background: var(--panel); padding: clamp(28px, calc(var(--u) * 5), 88px) var(--pad) clamp(24px, calc(var(--u) * 3), 48px); }
-/* the mesh: deep blue light, three soft pools (left, a weaker one behind the phone, right), centred on the window's foot
-   as the page opens: drawn by the first case study (the seam with the hero, where its phone peeks up) and reaching up
-   into the hero, faded out above and below, under the hero's copy and the section's own */
 .s-home > * { z-index: 1; }
 /* the statement under the title, in grey sentence case; the focus line follows it */
 .tagline { position: relative; margin: clamp(12px, calc(var(--u) * 1.8), 32px) 0 0; max-width: 34ch; font-size: clamp(18px, calc(var(--u) * 2.2), 40px);
@@ -229,38 +226,15 @@
   .feat-note { width: var(--cw); margin-top: auto; padding-top: 24px; }
   @media (max-height: 760px) { .feat-note h3 { display: none; } }
   .s-contact { height: calc(100vh - var(--head)); }
-  #work > .s-work:first-child { z-index: 0; border-top-color: transparent; } /* its own layer, for the mesh; no seam with the hero */
-  #work > .s-work:first-child::before { content: ""; position: absolute; z-index: -1; left: 0; right: 0; top: calc(-.55 * 100vh + var(--peek)); height: calc(.85 * 100vh); pointer-events: none;
-    background:
-      radial-gradient(30% 45% at 22% 64%, rgba(28, 72, 200, .26), transparent 72%),
-      radial-gradient(22% 35% at 50% 66%, rgba(40, 90, 220, .14), transparent 72%),
-      radial-gradient(30% 45% at 82% 64%, rgba(28, 72, 200, .24), transparent 72%),
-      radial-gradient(70% 40% at 50% 64%, rgba(12, 24, 70, .3), transparent 75%);
-    opacity: 0; transition: opacity .6s var(--ease); } /* the hero's alone: gone once the case study is in view */
-  .at-hero #work > .s-work:first-child::before { opacity: 1; }
-  /* on each case study the mesh sits as in the reference: a large soft glow across the upper middle of the section
-     (a deep-blue pool behind the copy, a weaker one behind the device, one at the right), behind everything; on the
-     home page it stays at the foot (the hero's). The first case study's shows once the hero's has faded */
-  .s-work { z-index: 0; }
-  .s-work::after { content: ""; position: absolute; z-index: -1; left: 0; right: 0; top: 0; bottom: var(--nb); pointer-events: none;
-    background:
-      radial-gradient(30% 42% at 22% 38%, rgba(28, 72, 200, .26), transparent 72%),
-      radial-gradient(22% 32% at 50% 40%, rgba(40, 90, 220, .14), transparent 72%),
-      radial-gradient(30% 42% at 82% 38%, rgba(28, 72, 200, .24), transparent 72%),
-      radial-gradient(70% 38% at 50% 38%, rgba(12, 24, 70, .3), transparent 75%);
-    transition: opacity .6s var(--ease); }
-  .at-hero #work > .s-work:first-child::after { opacity: 0; }
+  #work > .s-work:first-child { border-top-color: transparent; } /* no seam with the hero */
   #work > .s-work:first-child > :not(.cs-mid), #work > .s-work:first-child .cs-ctrl, #work > .s-work:first-child .cs-seek { transition: opacity .6s var(--ease); }
   .at-hero #work > .s-work:first-child > :not(.cs-mid), .at-hero #work > .s-work:first-child .cs-ctrl, .at-hero #work > .s-work:first-child .cs-seek { opacity: 0; pointer-events: none; }
 }
 
 /* ---------- phones: no stepping; the sections stack and scroll freely ---------- */
 @media (max-width: 899px) {
-  /* phones: no peek (a case study's copy comes before its phone); "Selected work" at the foot, over the mesh */
+  /* phones: no peek (a case study's copy comes before its phone); "Selected work" at the foot */
   .s-home { min-height: calc(82svh - var(--head)); padding-top: 40px; padding-bottom: 96px; }
-  .s-home::after { content: ""; position: absolute; z-index: 0; left: 0; right: 0; bottom: 0; height: 45%; pointer-events: none;
-    background: radial-gradient(45% 70% at 20% 105%, rgba(28, 72, 200, .28), transparent 72%), radial-gradient(45% 70% at 82% 105%, rgba(28, 72, 200, .26), transparent 72%),
-      linear-gradient(to top, rgba(12, 24, 70, .22), transparent 60%); }
   .focus { gap: 8px; }
   .focus li { font-size: 14px; }
   .hero-title { font-size: clamp(44px, 12vw, 64px); }
