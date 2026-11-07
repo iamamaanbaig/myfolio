@@ -125,6 +125,8 @@ as needed, keeping the intent of the reference.
   control under it; no close-ups). Spacing says whose device it is: 24px from
   the copy to its device, 64px of air under the device, then the rule and 48px
   down to the next headline (a laptop no longer stands on the rule).
+  The copy has room on phones: the headline at line-height 1.12, then 16px to
+  the description at 17px / 1.6; 16px under the "Coming soon" chip.
   WORK menu (pointer screens; on every page, built by the shared `work-menu.js`
   from its one list of the case studies, styles `.wm-*` in case-study.css): hovering WORK or its squares drops a dark list
   of the six case studies (no border; title, full description, arrow or
@@ -189,7 +191,7 @@ as needed, keeping the intent of the reference.
   image `assets/og-image.jpg` (the earlier hero, with the signature, as a 1200×630
   card; not yet redone for design-2).
 - Cache tags: every style sheet and script is loaded with one site-wide tag
-  (`?v=r52`); bump it on every release.
+  (`?v=r53`); bump it on every release.
 - "Global Incentive Fee Awards case study":
   `case-studies/global-incentive-fee-awards/index.html`. A case study page,
   not the home page. Its images live in `GIFAcasestudyimages/`.

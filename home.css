@@ -270,7 +270,11 @@
      then the rule and 48px down to the next headline */
   .s-work { --py: 48px; --t-work: clamp(28px, 8vw, 36px); padding-top: var(--py); padding-bottom: 64px; }
   .cs-left { padding: 0 var(--pad); }
-  .cs-desc { margin-top: 16px; }
+  /* the copy, given room: the headline a touch looser, the description a step smaller with open leading, and clear
+     air between them (and under the "Coming soon" chip) */
+  .s-work h2 { line-height: 1.12; letter-spacing: -0.025em; }
+  .s-work .cs-left .cs-desc { margin-top: 16px; font-size: 17px; line-height: 1.6; }
+  .s-work .cs-left .cs-eyebrow { margin-bottom: 16px; }
   .cs-stage { margin-top: 24px; padding: 0 var(--pad); }
   .cs-left .cs-ctrl { margin-top: 20px; }
   .cs-mid { display: flex; flex-direction: column; align-items: center; padding: 24px var(--pad) 0; }
