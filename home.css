@@ -118,15 +118,11 @@
 @keyframes spin { to { transform: rotate(360deg); } }
 /* the control's row: the pill and, beside it, a round Restart of the same height */
 .cs-ctrl { position: relative; z-index: 3; display: flex; align-items: center; gap: 8px; align-self: center; }
-/* a video's progress, between the phone and its button (home.js): a thin track the phone's screen wide, its played part
-   in blue; it thickens and shows its handle under the pointer, held, or focused. Its tap area is 20px tall */
+/* a video's progress, between the phone and its button (home.js): a 2px track the phone's screen wide, fully rounded,
+   its played part in the brand gradient (run along it, light to deep); no handle. Its tap area is 20px tall */
 .cs-seek { position: relative; z-index: 3; flex: none; align-self: center; height: 20px; display: flex; align-items: center; cursor: pointer; touch-action: none; outline: none; }
-.cs-seek i { position: relative; display: block; width: 100%; height: 3px; border-radius: 2px; background: rgba(255,255,255,.1); overflow: hidden; transition: height .2s var(--ease); }
-.cs-seek b { position: absolute; inset: 0; background: var(--accent-solid); transform: scaleX(0); transform-origin: left; border-radius: inherit; }
-.cs-seek::after { content: ''; position: absolute; top: 50%; left: var(--at, 0%); width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--text);
-  box-shadow: 0 1px 4px rgba(0,0,0,.4); transform: scale(0); transition: transform .2s var(--ease); pointer-events: none; }
-.cs-seek:hover i, .cs-seek.held i, .cs-seek:focus-visible i { height: 5px; }
-.cs-seek:hover::after, .cs-seek.held::after, .cs-seek:focus-visible::after { transform: scale(1); }
+.cs-seek i { position: relative; display: block; width: 100%; height: 2px; border-radius: 999px; background: rgba(255,255,255,.1); overflow: hidden; }
+.cs-seek b { position: absolute; left: 0; top: 0; bottom: 0; width: var(--at, 0%); border-radius: 999px; background: linear-gradient(90deg, #6BABFF 0%, #0051FF 100%); }
 .cs-seek:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; border-radius: 4px; }
 .cs-restart { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: #1C1D20;
   color: var(--text); cursor: pointer; transition: background .2s; }

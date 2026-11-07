@@ -235,12 +235,10 @@
       seek.className = 'cs-seek'; seek.tabIndex = 0; seek.setAttribute('role', 'slider');
       seek.setAttribute('aria-label', 'Position in the video: ' + title); seek.setAttribute('aria-valuemin', 0);
       seek.innerHTML = '<i><b></b></i>';
-      const fill = seek.querySelector('b');
       ctrl.before(seek);
       let drag = false, resume = false;
       const draw = () => {
         const d = v.duration || 0, t = v.currentTime;
-        fill.style.transform = 'scaleX(' + (d ? Math.min(1, t / d) : 0) + ')';
         seek.style.setProperty('--at', (d ? Math.min(1, t / d) * 100 : 0) + '%');
         seek.setAttribute('aria-valuemax', Math.round(d)); seek.setAttribute('aria-valuenow', Math.round(t));
         seek.setAttribute('aria-valuetext', Math.round(t) + ' of ' + Math.round(d) + ' seconds');
