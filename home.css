@@ -266,13 +266,14 @@
   .hero-title { font-size: clamp(44px, 12vw, 64px); }
   /* the copy, then the device: the laptop standing on the panel's bottom edge, the phone with its control under it;
      Ask Me Agent's close-ups stay on wide windows */
-  .s-work { --py: 28px; --t-work: clamp(28px, 8vw, 36px); padding-top: var(--py); }
+  /* spacing tells which device is whose: 24px from a case study's copy to its device, 64px of air under the device,
+     then the rule and 48px down to the next headline */
+  .s-work { --py: 48px; --t-work: clamp(28px, 8vw, 36px); padding-top: var(--py); padding-bottom: 64px; }
   .cs-left { padding: 0 var(--pad); }
   .cs-desc { margin-top: 16px; }
-  .cs-stage { margin-top: 28px; padding: 0 var(--pad); }
-  .laptop { margin-bottom: calc(-9 / 1885 * 100%); }
+  .cs-stage { margin-top: 24px; padding: 0 var(--pad); }
   .cs-left .cs-ctrl { margin-top: 20px; }
-  .cs-mid { display: flex; flex-direction: column; align-items: center; padding: 28px var(--pad) 40px; }
+  .cs-mid { display: flex; flex-direction: column; align-items: center; padding: 24px var(--pad) 0; }
   .phone { width: min(62%, 300px); }
   .cs-mid .cs-ctrl { margin-top: 16px; }
   .cs-mid .cs-seek { margin-top: 14px; width: calc(min(62%, 300px) * 501 / 603); }
