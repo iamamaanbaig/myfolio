@@ -3047,3 +3047,62 @@ div.sol-view {
   .menu-open .site-nav .nav-work > a { color: var(--text); }
 }
 @media (prefers-reduced-motion: reduce) { .wm-list, .wm-preview, .wm-shot, .wm-scrim { transition: none; } }
+
+/* ---------- Ask Me Agent ----------
+   Built from the approved mockup; the full design (with "How it knows you" and "Compare", not built yet) is in
+   drafts/ask-me-agent-full-case-study-draft/. Image holders: an empty phone frame, its screen a quiet panel saying
+   "Image", a caption naming the screen that will go there */
+.am-ph { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.am-phone { position: relative; width: 100%; aspect-ratio: 603 / 1190; }
+.am-frame { position: relative; z-index: 2; display: block; width: 100%; height: auto; pointer-events: none; }
+.am-screen { position: absolute; z-index: 1; left: calc(51 / 603 * 100%); top: calc(51 / 1190 * 100%); width: calc(501 / 603 * 100%); height: calc(1088 / 1190 * 100%);
+  border-radius: 14.4% / 6.6%; background: #1B1C1F; display: grid; place-items: center; }
+.am-screen span { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #4A4C52; }
+.am-ph figcaption { font-size: 13px; line-height: 1.35; color: var(--text-2); text-align: center; max-width: 22ch; }
+
+/* the hero band: three phones, the answer in front and taller, all cut off by the band's foot */
+.am-hero-shot { background: #17181B; }
+.am-hero-comp { position: absolute; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: 4%; pointer-events: none; }
+.am-hero-comp .am-ph { width: clamp(130px, 15vw, 250px); }
+.am-hero-comp .am-ph figcaption { display: none; }
+.am-hero-comp .back { margin-top: 5%; opacity: .7; }
+.am-hero-comp .back.l { margin-right: -2.5%; }
+.am-hero-comp .back.r { margin-left: -2.5%; }
+.am-hero-comp .front { position: relative; z-index: 2; }
+
+/* the problem: the statement and the brief beside the question the case study answers; its own height */
+.panel.am-problem-sec { min-height: 0; }
+.am-problem { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 96px); padding: 0 var(--pad) clamp(56px, 6vw, 96px); align-items: start; }
+.am-brief { margin: 28px 0 0; max-width: 46ch; font-size: var(--t-body); line-height: 1.55; color: var(--text-2); }
+.am-brief strong { color: var(--text); font-weight: 500; }
+.am-question { margin: 0; padding: 28px 0 0 28px; border-left: 2px solid; border-image: linear-gradient(#6BABFF, #0051FF) 1;
+  font-size: clamp(26px, 2.5vw, 40px); line-height: 1.2; letter-spacing: -0.02em; font-weight: 500; color: var(--text); text-wrap: balance; }
+.am-question span { display: block; margin-bottom: 16px; font-size: var(--t-label); letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--text-2); }
+
+/* Ask & learn: the listening phone, the three points, then the answer and the read */
+.am-lede { padding: 0 var(--pad); }
+.am-ask { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 72px); align-items: center;
+  padding: clamp(40px, 4vw, 64px) var(--pad) clamp(56px, 6vw, 96px); }
+.am-ask-main .am-ph { width: min(100%, 300px); margin: 0 auto; }
+.am-points { list-style: none; margin: 0; padding: 0; counter-reset: p; display: grid; gap: 36px; }
+.am-points li { counter-increment: p; position: relative; padding-left: 52px; }
+.am-points li::before { content: counter(p); position: absolute; left: 0; top: -.1em; font-size: 34px; font-weight: 500; line-height: 1;
+  background: linear-gradient(180deg, #6BABFF, #0051FF); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.am-points h3 { margin: 0 0 10px; font-size: clamp(19px, 1.5vw, 24px); font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; color: var(--text); }
+.am-points p { margin: 0; font-size: var(--t-body); line-height: 1.55; color: var(--text-body); max-width: 40ch; }
+.am-ask-side { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* the outcome: its own height, not a whole screen */
+.panel.am-outcome { min-height: 0; }
+
+@media (max-width: 899px) {
+  .am-hero-comp .am-ph { width: 30vw; }
+  .am-problem { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .am-question { padding: 20px 0 0 20px; font-size: 24px; }
+  .am-ask { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+  .am-ask-main .am-ph { width: min(70%, 280px); }
+  .am-points { gap: 28px; }
+  .am-ask-side { max-width: 420px; width: 100%; margin: 0 auto; }
+  .outcomes.three { grid-template-columns: minmax(0, 1fr); }
+  .outcomes.three .outcome + .outcome { border-left: 0; border-top: 1px solid var(--frame); }
+}

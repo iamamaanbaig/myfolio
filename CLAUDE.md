@@ -188,7 +188,16 @@ as needed, keeping the intent of the reference.
   image `assets/og-image.jpg` (the earlier hero, with the signature, as a 1200×630
   card; not yet redone for design-2).
 - Cache tags: every style sheet and script is loaded with one site-wide tag
-  (`?v=r54`); bump it on every release.
+  (`?v=r55`); bump it on every release.
+- "Ask Me Agent case study": `case-studies/ask-me-agent/index.html` (design-3),
+  built from the approved mockup without "How it knows you" and "Compare":
+  Overview (three empty phones on the hero band, "Ask Me Agent.", "A smart
+  food app: …"; never "grocery app", no mention of retail stores), Problem
+  (statement and brief beside the question), Ask & learn (the listening
+  phone, three numbered points, the answer and the short read), Outcome
+  (three principles, no numbers). Image holders are empty phone frames with
+  captions (`.am-*` in case-study.css). Nothing links to it yet: the home
+  page and menus still show Ask Me Agent as "Coming soon".
 - Drafts (not part of the site, nothing links to them): `drafts/`.
   "Ask ME Agent full case study draft" is `drafts/ask-me-agent-full-case-study-draft/`
   (README with all the copy, the mockup images, CSS and markup): the full
