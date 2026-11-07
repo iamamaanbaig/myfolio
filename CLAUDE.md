@@ -189,6 +189,11 @@ as needed, keeping the intent of the reference.
   card; not yet redone for design-2).
 - Cache tags: every style sheet and script is loaded with one site-wide tag
   (`?v=r54`); bump it on every release.
+- Drafts (not part of the site, nothing links to them): `drafts/`.
+  "Ask ME Agent full case study draft" is `drafts/ask-me-agent-full-case-study-draft/`
+  (README with all the copy, the mockup images, CSS and markup): the full
+  design, including "How it knows you" and "Compare", which are left out of
+  the built page for now.
 - "Global Incentive Fee Awards case study":
   `case-studies/global-incentive-fee-awards/index.html`. A case study page,
   not the home page. Its images live in `GIFAcasestudyimages/`.

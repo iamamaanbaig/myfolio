@@ -1,0 +1,90 @@
+/* Ask Me Agent case study: mockup styles, on top of case-study.css */
+
+/* an empty image holder: the phone frame, its screen a quiet panel saying "Image", a caption naming what goes there */
+.am-ph { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.am-phone { position: relative; width: 100%; aspect-ratio: 603 / 1190; }
+.am-frame { position: relative; z-index: 2; display: block; width: 100%; height: auto; pointer-events: none; }
+.am-screen { position: absolute; z-index: 1; left: calc(51 / 603 * 100%); top: calc(51 / 1190 * 100%); width: calc(501 / 603 * 100%); height: calc(1088 / 1190 * 100%);
+  border-radius: 14.4% / 6.6%; background: #1B1C1F; display: grid; place-items: center; }
+.am-screen span { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #4A4C52; }
+.am-ph figcaption { font-size: 13px; line-height: 1.35; color: var(--text-2); text-align: center; max-width: 22ch; }
+
+/* hero: three phones on the surface band, the answer in front, cut off by the band's foot */
+.am-hero-shot { background: #17181B; }
+.am-hero-comp { position: absolute; inset: 0; display: flex; justify-content: center; align-items: flex-start; gap: 0; padding-top: 4%; }
+.am-hero-comp .am-ph { width: clamp(150px, 15vw, 250px); }
+.am-hero-comp .am-ph figcaption { display: none; }
+.am-hero-comp .back { margin-top: 5%; opacity: .7; }
+.am-hero-comp .back.l { margin-right: -2.5%; }
+.am-hero-comp .back.r { margin-left: -2.5%; }
+.am-hero-comp .front { position: relative; z-index: 2; }
+
+/* problem: the statement and the brief beside the question that drives the case study */
+.am-problem { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 96px); padding: 0 var(--pad) clamp(56px, 6vw, 96px); align-items: start; }
+.am-brief { margin: 28px 0 0; max-width: 46ch; font-size: 16px; line-height: 1.55; color: var(--text-2); }
+.am-brief strong { color: var(--text); font-weight: 500; }
+.am-question { margin: 0; padding: 28px 0 0 28px; border-left: 2px solid; border-image: linear-gradient(#6BABFF, #0051FF) 1;
+  font-size: clamp(26px, 2.5vw, 40px); line-height: 1.2; letter-spacing: -0.02em; font-weight: 500; color: var(--text); text-wrap: balance; }
+.am-question span { display: block; margin-bottom: 16px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--text-2); }
+
+.am-lede { padding: 0 var(--pad); }
+
+/* Ask me: the main phone, the three points, then the answer and the read */
+.am-ask { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 72px); align-items: center;
+  padding: clamp(40px, 4vw, 64px) var(--pad) clamp(56px, 6vw, 96px); }
+.am-ask-main .am-ph { width: min(100%, 300px); margin: 0 auto; }
+.am-points { list-style: none; margin: 0; padding: 0; counter-reset: p; display: grid; gap: 36px; }
+.am-points li { counter-increment: p; position: relative; padding-left: 52px; }
+.am-points li::before { content: counter(p); position: absolute; left: 0; top: -.1em; font-size: 34px; font-weight: 500; line-height: 1;
+  background: linear-gradient(180deg, #6BABFF, #0051FF); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.am-points h3, .am-row h3, .am-sub { margin: 0 0 10px; font-size: clamp(19px, 1.5vw, 24px); font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; color: var(--text); }
+.am-points p { margin: 0; font-size: 16px; line-height: 1.55; color: var(--text-body); max-width: 40ch; }
+.am-ask-side { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* How it knows you: one row per feature, copy left, screens right, on the frame's thirds */
+.am-row { display: grid; grid-template-columns: 1fr 2fr; gap: clamp(32px, 4vw, 72px); padding: clamp(48px, 5vw, 80px) var(--pad); border-top: 1px solid var(--frame); align-items: center; }
+.am-flow > .lede { padding-bottom: clamp(40px, 4vw, 64px); }
+.am-step { display: flex; align-items: center; gap: 12px; margin: 0 0 18px; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text-2); }
+.am-step span { display: inline-grid; place-items: center; width: 30px; height: 22px; border-radius: 999px; border: 1px solid #2E3034; font-size: 11px; letter-spacing: 0; color: var(--text); }
+.am-row h3 { font-size: clamp(26px, 2.2vw, 36px); letter-spacing: -0.02em; margin-bottom: 14px; }
+.am-q { margin: 0 0 14px; font-size: 16px; line-height: 1.5; font-weight: 500;
+  background: linear-gradient(90deg, #6BABFF, #367FFF); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.am-body { margin: 0; font-size: 16px; line-height: 1.6; color: var(--text-body); max-width: 42ch; }
+.am-shots { display: flex; justify-content: center; gap: clamp(20px, 3vw, 56px); }
+.am-shots .am-ph { width: clamp(150px, 15vw, 240px); }
+
+/* Personalization: three ways to say the same thing, the last one chosen */
+.am-trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 28px; }
+.am-trio > div { padding: 14px; border-radius: 12px; border: 1px solid #26282C; background: #17181B; }
+.am-trio b { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; font-size: 12px; font-weight: 600; color: var(--text-2); }
+.am-trio b::before { content: ""; width: 14px; height: 14px; border-radius: 50%; flex: none;
+  background: #E5484D center / 8px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M1.5 1.5l5 5M6.5 1.5l-5 5' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E"); }
+.am-trio .yes { border-color: #1F4D3A; background: #13201B; }
+.am-trio .yes b { color: #46C98A; }
+.am-trio .yes b::before { background: #2BA86A center / 9px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath d='M1.5 4.6l2 2 4-4.5' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E"); }
+.am-trio p { margin: 0; font-size: 13px; line-height: 1.45; color: var(--text-body); }
+.am-trio .no p span { display: block; }
+.am-trio .yes p { color: var(--text); }
+
+/* Compare: the three ways in, then the comparison screen and what it shows */
+.am-sel { display: grid; grid-template-columns: 1fr 2fr; grid-template-rows: auto 1fr; column-gap: clamp(32px, 4vw, 72px); padding: clamp(48px, 5vw, 80px) var(--pad); align-items: start; }
+.am-sel .am-sub { grid-column: 1; }
+.am-sel ol { grid-column: 1; list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 22px; }
+.am-sel li { display: flex; gap: 16px; }
+.am-sel li span { flex: none; width: 30px; font-size: 30px; font-weight: 500; line-height: 1; color: #3A3C42; }
+.am-sel li p { margin: 0; font-size: 16px; line-height: 1.55; color: var(--text-body); }
+.am-sel li b { color: var(--text); font-weight: 500; }
+.am-sel .am-shots { grid-column: 2; grid-row: 1 / span 2; }
+.am-anat { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: clamp(32px, 4vw, 72px); align-items: center; padding: clamp(48px, 5vw, 80px) var(--pad) clamp(56px, 6vw, 96px); border-top: 1px solid var(--frame); }
+.am-anat-l p { margin: 0; font-size: 16px; line-height: 1.6; color: var(--text-body); max-width: 38ch; }
+.am-anat-c .am-ph { width: min(100%, 280px); margin: 0 auto; }
+.am-anat-r { list-style: none; margin: 0; padding: 0; display: grid; gap: 28px; }
+.am-anat-r li { position: relative; padding-left: 28px; font-size: 15px; line-height: 1.5; color: var(--text-body); }
+.am-anat-r li::before { content: ""; position: absolute; left: 0; top: .7em; width: 16px; height: 1px; background: var(--accent-solid); }
+.am-anat-r b { display: block; margin-bottom: 4px; font-size: 17px; font-weight: 500; color: var(--text); }
+
+.outcomes.three { grid-template-columns: repeat(3, 1fr); }
+
+/* the problem is a statement and a question: it takes its own height, not a whole screen */
+.panel.problem { min-height: 0; }
+.panel.impact { min-height: 0; padding-bottom: 0; }
